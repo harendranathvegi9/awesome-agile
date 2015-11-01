@@ -82,3 +82,7 @@ platform.
 - Qanit Al-Syed, Developer
 - Linghong Chen, Developer
 
+## Product Backlog
+
+The product and sprint backlogs is managed via
+[Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
