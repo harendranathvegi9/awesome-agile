@@ -84,5 +84,5 @@ platform.
 
 ## Product Backlog
 
-The product and sprint backlogs is managed via
+The product and sprint backlogs are managed via
 [Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
