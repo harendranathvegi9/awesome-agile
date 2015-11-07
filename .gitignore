@@ -7,6 +7,9 @@
 *~
 *.swp
 
+# log files
+*.log
+
 # eclipse artifacts
 .classpath
 .project
@@ -37,4 +40,7 @@ $RECYCLE.BIN
 /application*.properties
 /application*.yml
 /application*.yaml
+
+# frontend plugin stuff
+node*
 
