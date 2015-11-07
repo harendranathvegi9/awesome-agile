@@ -3,3 +3,7 @@ jdk:
   - oraclejdk8
 notifications:
   slack: agilesoftwaredev:yKS4WhHr2yIHbcxOwXIvCNpv
+sudo: required
+
+services:
+  - docker
