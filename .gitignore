@@ -1,5 +1,46 @@
-.idea
-*.iml
+# dotfiles, except .gitignore and .keep
+.*
+!.gitignore
+!.keep
+
+# backup files
+*~
+*.swp
+
+# log files
+*.log
+
+# eclipse artifacts
+.classpath
 .project
 .settings
-.classpath
+
+# intellij artifacts
+.idea
+*.iml
+
+# OS caches, etc.
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN
+
+# generate stuff
+/bin
+/target
+
+# config overrides for personal dev environment
+/application*.properties
+/application*.yml
+/application*.yaml
+
+# frontend plugin stuff
+node*
+
