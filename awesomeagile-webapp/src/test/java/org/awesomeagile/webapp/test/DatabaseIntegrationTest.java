@@ -48,8 +48,8 @@ public class DatabaseIntegrationTest {
     docker.pull(POSTGRES_9_2_IMAGE);
     this.container = docker.createContainer(ContainerConfig.builder()
         .image(POSTGRES_9_2_IMAGE)
-        .hostConfig(hostConfig)
-        .exposedPorts(String.valueOf(PORT))
+//        .hostConfig(hostConfig)
+//        .exposedPorts(String.valueOf(PORT))
         .build());
     docker.startContainer(container.id());
     waitForDatabase(RETRIES);
