@@ -31,6 +31,7 @@ public class DatabaseIntegrationTest {
   public static final int TIMEOUT = 5;
   public static final int RETRIES = 30;
   public static final int PORT = 5432;
+  public static final String POSTGRES_9_2_IMAGE = "postgres:9.2";
   private String hostName;
   private ContainerCreation container;
   private DefaultDockerClient docker;
@@ -44,8 +45,9 @@ public class DatabaseIntegrationTest {
     final HostConfig hostConfig = HostConfig.builder()
         .portBindings(createPortBindings(PORT))
         .build();
+    docker.pull(POSTGRES_9_2_IMAGE);
     this.container = docker.createContainer(ContainerConfig.builder()
-        .image("postgres:9.2")
+        .image(POSTGRES_9_2_IMAGE)
         .hostConfig(hostConfig)
         .exposedPorts(String.valueOf(PORT))
         .build());
