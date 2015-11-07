@@ -1,6 +1,11 @@
 # awesome-agile
 Awesome Agile Project Management
-https://travis-ci.org/cs71-caffeine/awesome-agile.svg
+</br>
+<a href="https://travis-ci.org/cs71-caffeine/awesome-agile">
+    <img src="https://travis-ci.org/cs71-caffeine/awesome-agile.svg"
+         alt="build status">
+</a>
+
 
 ## Vision
 A web portal that describes and proposes tools for each component of
