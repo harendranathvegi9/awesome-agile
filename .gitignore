@@ -34,7 +34,7 @@ $RECYCLE.BIN
 
 # generate stuff
 /bin
-/target
+target/
 
 # config overrides for personal dev environment
 /application*.properties
