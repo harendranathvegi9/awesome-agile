@@ -14,3 +14,12 @@
     left: 0;
     width: 100%;
 }
+
+#logo{
+	font-weight:bold;
+	font-size:36px;
+}
+#subtitle{
+	font-weight:bold;
+	font-size:24px;
+}
