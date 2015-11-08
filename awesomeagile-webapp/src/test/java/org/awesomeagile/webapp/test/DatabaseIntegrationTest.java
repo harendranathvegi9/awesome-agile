@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +32,12 @@ public class DatabaseIntegrationTest {
 
   public static final int TIMEOUT = 5;
   public static final int RETRIES = 30;
-  public static final int PORT = 5432;
-  public static final String POSTGRES_9_2_IMAGE = "postgres:9.2";
+  public static final int POSTGRESQL_PORT = 5432;
+  public static final String POSTGRES_9_2_IMAGE = "postgres:9.4";
   private String hostName;
   private ContainerCreation container;
   private DefaultDockerClient docker;
+  private int localPort;
 
   @Before
   public void setUp() throws Exception {
@@ -42,14 +45,15 @@ public class DatabaseIntegrationTest {
     docker = DefaultDockerClient.fromEnv().build();
     hostName = docker.getHost();
     // Bind container ports to host ports
+    localPort = findAvailablePort();
     final HostConfig hostConfig = HostConfig.builder()
-        .portBindings(createPortBindings(PORT))
+        .portBindings(createPortBinding(POSTGRESQL_PORT, localPort))
         .build();
     docker.pull(POSTGRES_9_2_IMAGE);
     this.container = docker.createContainer(ContainerConfig.builder()
         .image(POSTGRES_9_2_IMAGE)
-//        .hostConfig(hostConfig)
-//        .exposedPorts(String.valueOf(PORT))
+        .hostConfig(hostConfig)
+        .exposedPorts(String.valueOf(POSTGRESQL_PORT))
         .build());
     docker.startContainer(container.id());
     waitForDatabase(RETRIES);
@@ -62,13 +66,11 @@ public class DatabaseIntegrationTest {
     docker.removeContainer(container.id());
   }
 
-  private static Map<String, List<PortBinding>> createPortBindings(int... ports) {
+  private static Map<String, List<PortBinding>> createPortBinding(int from, int to) {
     final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-    for (int port : ports) {
-      List<PortBinding> hostPorts = new ArrayList<>();
-      hostPorts.add(PortBinding.of("0.0.0.0", port));
-      portBindings.put(String.valueOf(port), hostPorts);
-    }
+    List<PortBinding> hostPorts = new ArrayList<>();
+    hostPorts.add(PortBinding.of("0.0.0.0", to));
+    portBindings.put(String.valueOf(from), hostPorts);
     return portBindings;
   }
 
@@ -106,7 +108,19 @@ public class DatabaseIntegrationTest {
     throw new RuntimeException("Database did not come up after " + retries + " attempts");
   }
 
+  private int findAvailablePort() throws IOException {
+    ServerSocket serverSocket = null;
+    try {
+      serverSocket = new ServerSocket(0);
+      return serverSocket.getLocalPort();
+    } finally {
+      if (serverSocket != null) {
+        serverSocket.close();
+      }
+    }
+  }
+
   private String getUrl() {
-    return String.format("jdbc:postgresql://%s:%d/", hostName, PORT);
+    return String.format("jdbc:postgresql://%s:%d/", hostName, localPort);
   }
 }
