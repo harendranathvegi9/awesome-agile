@@ -1,4 +1,4 @@
-# docker-machine
+# Docker
 
 Docker is used as part of the integration environment by this project. Specifically, it is used to bring up a local instance of the PostgreSQL. Docker is a required dependency for the integration tests to run. Instructions on how to configure Docker under different operating systems follow below.
 
