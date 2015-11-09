@@ -1,3 +1,4 @@
+/* =============== flowchart ===============*/
 .svg-container {
     display: inline-block;
     position: relative;
@@ -15,6 +16,7 @@
     width: 100%;
 }
 
+
 #logo{
 	font-weight:bold;
 	font-size:36px;
@@ -23,3 +25,10 @@
 	font-weight:bold;
 	font-size:24px;
 }
+
+/* =============== hover ===============*/
+.hover-pointer {
+    cursor: pointer;
+}
+
+

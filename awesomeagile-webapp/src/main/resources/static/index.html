@@ -1,5 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        hide_descriptions();
+        $("#sprint-planning-oval").click(function (event) {
+            hide_descriptions(event.target.id);
+            $("#sprint-planning-description").toggle();
+        });
+        $("#daily-scrum-oval").click(function () {
+            hide_descriptions(event.target.id);
+            $("#daily-scrum-description").toggle();
+        });
+        $("#tdd-background").click(function () {
+            hide_descriptions(event.target.id);
+            $("#tdd-description").toggle();
+        });
+        $("#sprint-review-oval").click(function () {
+            hide_descriptions(event.target.id);
+            $("#sprint-review-description").toggle();
+        });
+        $("#sprint-retrospective-oval").click(function () {
+            hide_descriptions(event.target.id);
+            $("#sprint-retrospective-description").toggle();
+        });
+
+    });
+    function hide_descriptions(callerid){
+        if (callerid != "sprint-planning-oval"){
+            $("#sprint-planning-description").hide();
+        }
+        if (callerid != "daily-scrum-oval"){
+            $("#daily-scrum-description").hide();
+        }
+        if (callerid != "tdd-background"){
+            $("#tdd-description").hide();
+        }
+        if (callerid != "sprint-review-oval"){
+            $("#sprint-review-description").hide();
+        }
+        if (callerid != "sprint-retrospective-oval"){
+            $("#sprint-retrospective-description").hide();
+        }
+    }
+</script>
 <head>
     <meta charset="UTF-8">
     <title>Awesome Agile!</title>
@@ -19,28 +63,28 @@
                 <svg viewBox="0 0 902 327" class="svg-content" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
                     <g id="agile-workflow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
                         <rect id="sprint-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="1" y="1" width="900" height="325" rx="8"></rect>
-                        <circle id="sprint-planning-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="71" cy="161" r="45"></circle>
+                        <circle id="sprint-planning-oval" class="hover-pointer" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="71" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="51.2792969" y="159">Sprint</tspan>
                             <tspan x="41.9448242" y="175">Planning</tspan>
                         </text>
                         <rect id="daily-work-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="166" y="21" width="485" height="275" rx="8"></rect>
-                        <circle id="sprint-review-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="725" cy="161" r="45"></circle>
+                        <circle id="sprint-review-oval" class="hover-pointer" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="725" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="704.779297" y="160">Sprint</tspan>
                             <tspan x="700.875977" y="176">Review</tspan>
                         </text>
-                        <circle id="sprint-retrospective-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="844" cy="161" r="45"></circle>
+                        <circle id="sprint-retrospective-oval" class="hover-pointer" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="844" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="12" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="827.667969" y="157">Sprint</tspan>
                             <tspan x="805.317383" y="171">Retrospective</tspan>
                         </text>
-                        <circle id="daily-scrum-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="249" cy="166" r="40"></circle>
+                        <circle id="daily-scrum-oval" class="hover-pointer" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="249" cy="166" r="40"></circle>
                         <text id="Daily" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="232.769043" y="163">Daily</tspan>
                             <tspan x="227.713867" y="179">Scrum</tspan>
                         </text>
-                        <rect id="tdd-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="341" y="41" width="290" height="235" rx="8"></rect>
+                        <rect id="tdd-background" class="hover-pointer" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="341" y="41" width="290" height="235" rx="8"></rect>
                         <path d="M395,196 C414.329966,196 430,180.329966 430,161 C430,141.670034 414.329966,126 395,126 C375.670034,126 360,141.670034 360,161 C360,180.329966 375.670034,196 395,196 Z" id="write-test-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
                         <text id="Write" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="377.626465" y="159">Write</tspan>
@@ -54,15 +98,15 @@
                             <tspan x="470.04834" y="106">Fails</tspan>
                         </text>
                         <text id="Write" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
-                            <tspan x="566.126465" y="160">Write</tspan>
-                            <tspan x="566" y="176">Code</tspan>
+                            <tspan x="566.126465" y="159">Write</tspan>
+                            <tspan x="566" y="175">Code</tspan>
                         </text>
                         <text id="Test" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="472.126465" y="221">Test</tspan>
                             <tspan x="461.865723" y="237">Passes</tspan>
                         </text>
-                        <path d="M118.5,163.5 L203.523529,163.5" id="planning-scrum-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                        <path id="planning-scrum-line-decoration-1" d="M203.523529,163.5 L192.723529,160.5 L192.723529,166.5 L203.523529,163.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
+                        <path d="M118.5,163.5 L161.5,163.5" id="planning-scrum-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                        <path id="planning-scrum-line-decoration-1" d="M161.5,163.5 L150.7,160.5 L150.7,166.5 L161.5,163.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
                         <path d="M289.5,163.5 L337.541649,163.5" id="scrum-tdd-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
                         <path id="scrum-tdd-line-decoration-1" d="M337.541649,163.5 L326.741649,160.5 L326.741649,166.5 L337.541649,163.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
                         <path d="M415.5,131.5 L447.319805,99.6801948" id="write-fails-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
@@ -73,8 +117,8 @@
                         <path id="code-pass-line-decoration-1" d="M523.680195,218.319805 L533.438268,212.804372 L529.195628,208.561731 L523.680195,218.319805 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
                         <path d="M450.5,225.5 L418.680195,193.680195" id="pass-write-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
                         <path id="pass-write-line-decoration-1" d="M418.680195,193.680195 L424.195628,203.438268 L428.438268,199.195628 L418.680195,193.680195 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
-                        <path d="M650.5,161.5 L675.5,161.5" id="tdd-review-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
-                        <path id="tdd-review-line-decoration-1" d="M675.5,161.5 L664.7,158.5 L664.7,164.5 L675.5,161.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
+                        <path d="M651.5,161.5 L676.5,161.5" id="tdd-review-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
+                        <path id="tdd-review-line-decoration-1" d="M676.5,161.5 L665.7,158.5 L665.7,164.5 L676.5,161.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
                         <path d="M770.5,160.5 L795.5,160.5" id="review-retrospective-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
                         <path id="review-retrospective-line-decoration-1" d="M795.5,160.5 L784.7,157.5 L784.7,163.5 L795.5,160.5 Z" stroke="#979797" stroke-width="3" stroke-linecap="square"></path>
                         <path d="M845.5,206.5 L845.5,311.5" id="retro-down-line" stroke="#979797" stroke-width="3" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
@@ -107,6 +151,57 @@
 	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
+                <div id="sprint-planning-description" class="panel panel-info">
+                    <div class="panel-heading"><Strong>Sprint Planning</Strong></div>
+                    <div class="panel-body">
+                        <div class="col-xs-6 col-md-3">
+                            <Span>
+                            All about cool planning activities
+                            </Span>
+                        </div>
+                    </div>
+                </div>
+                <div id="daily-scrum-description" class="panel panel-info">
+                    <div class="panel-heading"><Strong>Daily Scrum</Strong></div>
+                    <div class="panel-body">
+                        <div class="col-xs-6 col-md-3">
+                            <Span>
+                            All about cool planning activities
+                            </Span>
+                        </div>
+                    </div>
+                </div>
+                <div id="tdd-description" class="panel panel-info">
+                    <div class="panel-heading"><Strong>Test Driven Development (TDD)</Strong></div>
+                    <div class="panel-body">
+                        <div class="col-xs-6 col-md-3">
+                            <Span>
+                            All about cool TDD!!!
+                            </Span>
+                        </div>
+                    </div>
+                </div>
+                <div id="sprint-review-description" class="panel panel-info">
+                    <div class="panel-heading"><Strong>Sprint Review</Strong></div>
+                    <div class="panel-body">
+                        <div class="col-xs-6 col-md-3">
+                            <Span>
+                            All about cool sprint reviews activities
+                            </Span>
+                        </div>
+                    </div>
+                </div>
+                <div id="sprint-retrospective-description" class="panel panel-info">
+                    <div class="panel-heading"><Strong>Sprint Retrospective</Strong></div>
+                    <div class="panel-body">
+                        <div class="col-xs-6 col-md-3">
+                            <Span>
+                            All about cool planning activities
+                            </Span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel panel-info">
                     <div class="panel-heading">Tools</div>
                     <div class="panel-body">
