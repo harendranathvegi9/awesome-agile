@@ -1,7 +1,6 @@
 package org.awesomeagile.data.test;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -13,8 +12,6 @@ import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
 
-import org.apache.commons.lang.math.RandomUtils;
-import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
@@ -80,15 +77,6 @@ public class TestDatabase extends ExternalResource {
 
   public void executeScript(final String script) {
     executeScript(Optional.of(databaseName), script);
-  }
-
-  @Test
-  public void testPostgres() throws Exception {
-    JdbcTemplate jdbcTemplate = jdbcTemplate();
-    int random = RandomUtils.nextInt(1000);
-    Integer integer = jdbcTemplate.queryForObject("select " + random, Integer.class);
-    assertEquals(random, integer.intValue());
-    System.out.printf("select %d returns: %d\n", random, integer);
   }
 
   public JdbcTemplate jdbcTemplate() {

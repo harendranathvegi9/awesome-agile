@@ -26,6 +26,10 @@
     </dependency>
     <dependency>
       <groupId>org.awesomeagile</groupId>
+      <artifactId>awesomeagile-dao-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.awesomeagile</groupId>
       <artifactId>awesomeagile-model</artifactId>
     </dependency>
     <dependency>
