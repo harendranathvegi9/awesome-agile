@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#sprint-planning-oval").click(function () {
+            alert("You clicked on circle");
+        });
+    });
+</script>
 <head>
     <meta charset="UTF-8">
     <title>Awesome Agile!</title>
@@ -18,36 +26,36 @@
                 <svg viewBox="0 0 902 327" class="svg-content" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
                     <g id="agile-workflow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
                         <rect id="sprint-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="1" y="1" width="900" height="325" rx="8"></rect>
-                        <circle id="sprint-planning-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="71" cy="161" r="45"></circle>
+                        <circle id="sprint-planning-oval" class="oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="71" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="51.2792969" y="159">Sprint</tspan>
                             <tspan x="41.9448242" y="175">Planning</tspan>
                         </text>
                         <rect id="daily-work-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="166" y="21" width="485" height="275" rx="8"></rect>
-                        <circle id="sprint-review-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="725" cy="161" r="45"></circle>
+                        <circle id="sprint-review-oval" class="oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="725" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="704.779297" y="160">Sprint</tspan>
                             <tspan x="700.875977" y="176">Review</tspan>
                         </text>
-                        <circle id="sprint-retrospective-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="844" cy="161" r="45"></circle>
+                        <circle id="sprint-retrospective-oval" class="oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="844" cy="161" r="45"></circle>
                         <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="12" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="827.667969" y="157">Sprint</tspan>
                             <tspan x="805.317383" y="171">Retrospective</tspan>
                         </text>
-                        <circle id="daily-scrum-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="249" cy="166" r="40"></circle>
+                        <circle id="daily-scrum-oval" class="oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="249" cy="166" r="40"></circle>
                         <text id="Daily" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="232.769043" y="163">Daily</tspan>
                             <tspan x="227.713867" y="179">Scrum</tspan>
                         </text>
                         <rect id="tdd-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="341" y="41" width="290" height="235" rx="8"></rect>
-                        <path d="M395,196 C414.329966,196 430,180.329966 430,161 C430,141.670034 414.329966,126 395,126 C375.670034,126 360,141.670034 360,161 C360,180.329966 375.670034,196 395,196 Z" id="write-test-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
+                        <path class="oval" d="M395,196 C414.329966,196 430,180.329966 430,161 C430,141.670034 414.329966,126 395,126 C375.670034,126 360,141.670034 360,161 C360,180.329966 375.670034,196 395,196 Z" id="write-test-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
                         <text id="Write" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="377.626465" y="159">Write</tspan>
                             <tspan x="381.126465" y="175">Test</tspan>
                         </text>
-                        <path d="M486,128 C505.329966,128 521,112.329966 521,93 C521,73.6700338 505.329966,58 486,58 C466.670034,58 451,73.6700338 451,93 C451,112.329966 466.670034,128 486,128 Z" id="test-fails-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
-                        <path d="M582,196 C601.329966,196 617,180.329966 617,161 C617,141.670034 601.329966,126 582,126 C562.670034,126 547,141.670034 547,161 C547,180.329966 562.670034,196 582,196 Z" id="write-code-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
-                        <path d="M486,258 C505.329966,258 521,242.329966 521,223 C521,203.670034 505.329966,188 486,188 C466.670034,188 451,203.670034 451,223 C451,242.329966 466.670034,258 486,258 Z" id="test-passes-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
+                        <path class="oval" d="M486,128 C505.329966,128 521,112.329966 521,93 C521,73.6700338 505.329966,58 486,58 C466.670034,58 451,73.6700338 451,93 C451,112.329966 466.670034,128 486,128 Z" id="test-fails-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
+                        <path class="oval" d="M582,196 C601.329966,196 617,180.329966 617,161 C617,141.670034 601.329966,126 582,126 C562.670034,126 547,141.670034 547,161 C547,180.329966 562.670034,196 582,196 Z" id="write-code-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
+                        <path class="oval" d="M486,258 C505.329966,258 521,242.329966 521,223 C521,203.670034 505.329966,188 486,188 C466.670034,188 451,203.670034 451,223 C451,242.329966 466.670034,258 486,258 Z" id="test-passes-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup"></path>
                         <text id="Test" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="472.126465" y="90">Test</tspan>
                             <tspan x="470.04834" y="106">Fails</tspan>
