@@ -16,7 +16,8 @@
     width: 100%;
 }
 
-/* =============== hover box ===============*/
-.oval {
+/* =============== hover ===============*/
+.hover-pointer {
     cursor: pointer;
 }
+
