@@ -56,6 +56,9 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <addResources>true</addResources>
+        </configuration>
       </plugin>
       <plugin>
         <!-- remove node_modules on clean -->
@@ -93,6 +96,9 @@
             <goals>
               <goal>npm</goal>
             </goals>
+            <configuration>
+              <arguments>install --production</arguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>
