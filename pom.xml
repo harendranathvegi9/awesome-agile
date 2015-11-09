@@ -14,6 +14,8 @@
     <npm.version>2.7.6</npm.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <junit.version>4.12</junit.version>
+    <docker.client.version>3.2.1</docker.client.version>
   </properties>
 
   <parent>
@@ -26,6 +28,7 @@
     <module>awesomeagile-webapp</module>
     <module>awesomeagile-model</module>
     <module>awesomeagile-dao</module>
+    <module>awesomeagile-dao-test</module>
   </modules>
 
   <repositories>
@@ -45,5 +48,55 @@
       <url>https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/</url>
     </pluginRepository>
   </pluginRepositories>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.awesomeagile</groupId>
+        <artifactId>awesomeagile-dao</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awesomeagile</groupId>
+        <artifactId>awesomeagile-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awesomeagile</groupId>
+        <artifactId>awesomeagile-dao-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>18.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-client</artifactId>
+        <version>${docker.client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>
