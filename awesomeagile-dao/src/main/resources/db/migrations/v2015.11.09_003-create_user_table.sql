@@ -1,7 +1,3 @@
-DROP SCHEMA IF EXISTS teams;
-
-CREATE SCHEMA teams;
-
 CREATE TABLE "teams"."user" (
   user_id       BIGSERIAL PRIMARY KEY,
   primary_email TEXT,
