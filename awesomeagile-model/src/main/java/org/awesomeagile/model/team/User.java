@@ -18,6 +18,24 @@ public class User {
   private UserStatus status;
   private Date signupDate;
 
+  public User() {
+  }
+
+  /**
+   * Copy constructor
+   *
+   * @param other user object to copy fields from
+   */
+  public User(User other) {
+    this.userId = other.userId;
+    this.primaryEmail = other.primaryEmail;
+    this.displayName = other.displayName;
+    this.avatar = other.avatar;
+    this.isVisible = other.isVisible;
+    this.status = other.status;
+    this.signupDate = other.signupDate;
+  }
+
   public Date getSignupDate() {
     return signupDate;
   }
