@@ -1,12 +1,14 @@
 package org.awesomeagile.dao;
 
 import org.awesomeagile.model.team.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 /**
  * @author sbelov@google.com (Stan Belov)
  */
+@Repository
 public class UserDaoJdbcTemplate implements UserDao {
 
   private static final String SELECT_USERS = "select * from teams.user where user_id = ?";
@@ -27,6 +30,7 @@ public class UserDaoJdbcTemplate implements UserDao {
   private static final String USER_ID_COLUMN = "user_id";
   private final JdbcTemplate jdbcTemplate;
 
+  @Autowired
   public UserDaoJdbcTemplate(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
