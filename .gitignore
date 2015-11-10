@@ -1,0 +1,50 @@
+# most dotfiles
+.*
+!.gitignore
+!.keep
+!.travis.yml
+
+# backup files
+*~
+*.swp
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# log files
+*.log
+
+# eclipse artifacts
+.classpath
+.project
+.settings
+
+# intellij artifacts
+.idea*
+*.iml
+/out/
+
+# OS caches, etc.
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN
+
+# generated stuff
+/bin
+/target
+
+# config overrides for personal dev environment
+/application*.properties
+/application*.yml
+/application*.yaml
+
+# frontend plugin stuff
+node*
+
