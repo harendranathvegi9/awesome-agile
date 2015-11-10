@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -20,7 +21,8 @@ import java.sql.SQLException;
 @Repository
 public class UserDaoJdbcTemplate implements UserDao {
 
-  private static final String SELECT_USERS = "select * from teams.user where user_id = ?";
+  private static final String SELECT_USERS = "select * from teams.user";
+  private static final String SELECT_USER = "select * from teams.user where user_id = ?";
   private static final String INSERT_USER =
       "insert into teams.user (primary_email, status, display_name, avatar, is_visible)"
           + " values (?, ?, ?, ?, ?)";
@@ -28,6 +30,7 @@ public class UserDaoJdbcTemplate implements UserDao {
       "update teams.user set (primary_email, status, display_name, avatar, is_visible) = "
           + " (?, ?, ?, ?, ?) where user_id = ?";
   private static final String USER_ID_COLUMN = "user_id";
+  private static final BeanPropertyRowMapper<User> ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
   private final JdbcTemplate jdbcTemplate;
 
   @Autowired
@@ -37,8 +40,7 @@ public class UserDaoJdbcTemplate implements UserDao {
 
   @Override
   public User getUserById(int id) {
-    User user = jdbcTemplate.queryForObject(SELECT_USERS,
-        new BeanPropertyRowMapper<>(User.class), id);
+    User user = jdbcTemplate.queryForObject(SELECT_USER, ROW_MAPPER, id);
     return user;
   }
 
@@ -84,5 +86,10 @@ public class UserDaoJdbcTemplate implements UserDao {
           /* actual */ 0);
     }
     return getUserById(updatedUser.getUserId());
+  }
+
+  @Override
+  public Collection<User> listUsers() {
+    return jdbcTemplate.query(SELECT_USERS, ROW_MAPPER);
   }
 }

@@ -3,6 +3,8 @@ package org.awesomeagile.dao;
 import org.awesomeagile.model.team.User;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 
+import java.util.Collection;
+
 /**
  * DAO for operating on user entities.
  *
@@ -36,4 +38,11 @@ public interface UserDao {
    * @return updated user.
    */
   User updateUser(User updatedUser);
+
+  /**
+   * Retrieves all known users from the database.
+   *
+   * @return a collection of all know users.
+   */
+  Collection<User> listUsers();
 }

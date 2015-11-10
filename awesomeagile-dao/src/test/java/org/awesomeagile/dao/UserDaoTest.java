@@ -1,8 +1,11 @@
 package org.awesomeagile.dao;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.awesomeagile.data.test.TestDatabase;
@@ -13,6 +16,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.Collection;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -102,6 +107,25 @@ public class UserDaoTest {
     User updated = userDao.updateUser(withDifferentSignupDate);
     assertEquals(toUpdate, updated);
     assertEquals(toUpdate, userDao.getUserById(createdId));
+  }
+
+  @Test
+  public void testListUsers() throws Exception {
+    Collection<User> users = userDao.listUsers();
+    assertNotNull(users);
+    assertTrue(users.isEmpty());
+    User newUserOne = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User one = userDao.createUser(newUserOne);
+    users = userDao.listUsers();
+    assertNotNull(users);
+    assertEquals(1, users.size());
+    assertThat(users, hasItem(one));
+    User newUserTwo = userWithNameAndEmail("anand", "anand@hotmail.com");
+    User two = userDao.createUser(newUserTwo);
+    users = userDao.listUsers();
+    assertNotNull(users);
+    assertEquals(2, users.size());
+    assertThat(users, hasItems(one, two));
   }
 
   private void assertUserUpdated(int createdId, User toUpdate) {
