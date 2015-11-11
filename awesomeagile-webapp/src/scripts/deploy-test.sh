@@ -1,12 +1,10 @@
 #!/bin/sh
 
-cd awesomeagile-webapp
-
-mvn docker:build
+mvn -pl org.awesomeagile:awesomeagile-webapp docker:build
 
 # set DOCKERHUB_USERNAME, DOCKERHUB_PASSWORD, and DOCKERHUB_EMAIL
 
-mvn docker:push --settings src/scripts/maven_settings.xml
+mvn -pl org.awesomeagile:awesomeagile-webapp docker:push --settings awesomeagile-webapp/src/scripts/maven_settings.xml
 
 # set AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY
 
