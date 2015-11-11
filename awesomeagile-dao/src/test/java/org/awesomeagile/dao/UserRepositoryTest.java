@@ -44,19 +44,14 @@ public class UserRepositoryTest {
 
   @ClassRule
   public static TestDatabase testDatabase = new TestDatabase(
-      DATABASE_NAME,
-      "/create-schema.sql",
-      "/create-sample-data.sql"
+      DATABASE_NAME
   );
 
   @Configuration
   protected static class TestConfiguration {
     @Bean
     public DataSource getDataSource() {
-      return new DriverManagerDataSource(
-          testDatabase.getUrl(DATABASE_NAME),
-          testDatabase.getUserName(),
-          testDatabase.getPassword());
+      return testDatabase.getDataSource(DATABASE_NAME);
     }
   }
 
