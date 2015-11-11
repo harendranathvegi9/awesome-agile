@@ -14,18 +14,22 @@ spring.datasource:
   validation-query: select 1
 
 # hibernate configuration
-spring.jpa.hibernate:
-  # flyway does migrations, so hibernate should just validate
-  ddl-auto: validate
+spring.jpa:
+  hibernate:
+    # flyway does migrations, so hibernate should just validate
+    ddl-auto: validate
 
-  # make hibernate prefer snake case instead of camel case for db names
-  naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    # make hibernate prefer snake case instead of camel case for db names
+    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 # make hibernate increment sequences by 1 by default
-hibernate.id.new_generator_mappings: true
+hibernate:
+  id.new_generator_mappings: true
 
 # flyway configuration, makes the migration filenames a bit nicer
 flyway:
-  sql-migration-prefix: v
+  sql-migration-prefix: 'v'
   sql-migration-separator: '-'
 

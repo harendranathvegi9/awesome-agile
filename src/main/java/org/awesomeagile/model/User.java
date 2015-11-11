@@ -1,16 +1,15 @@
 package org.awesomeagile.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "aa_user")
 @SequenceGenerator(name = "idgen", sequenceName = "aa_user_id_seq")
+@EntityListeners(AuditingEntityListener.class)
 public class User extends AbstractAuditable<Long> {
 
     @NotEmpty
