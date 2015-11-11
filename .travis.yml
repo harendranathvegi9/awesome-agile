@@ -5,3 +5,9 @@ sudo: required
 
 services:
   - docker
+
+deploy:
+  - provider: script
+    script: src/scripts/deploy-test.sh
+    on:
+      branch: cdtest

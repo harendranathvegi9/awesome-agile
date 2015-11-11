@@ -1,0 +1,2 @@
+CREATE ROLE aa_user WITH LOGIN PASSWORD 'aa_pass';
+CREATE DATABASE aa_db WITH OWNER=aa_user;
