@@ -38,6 +38,8 @@ public class TestDatabase extends ExternalResource {
   public static final int RETRIES = 30;
   public static final int POSTGRESQL_PORT = 5432;
   public static final String POSTGRES_9_2_IMAGE = "postgres:9.4";
+  private static final String USERNAME = "postgres";
+  private static final String PASSWORD = "";
   private String hostName;
   private ContainerCreation container;
   private DefaultDockerClient docker;
@@ -166,5 +168,13 @@ public class TestDatabase extends ExternalResource {
     JdbcTemplate jdbcTemplate = jdbcTemplate();
     jdbcTemplate.execute(String.format("DROP DATABASE IF EXISTS %s", databaseName));
     jdbcTemplate.execute(String.format("CREATE DATABASE %s", databaseName));
+  }
+
+  public String getUserName() {
+    return USERNAME;
+  }
+
+  public String getPassword() {
+    return PASSWORD;
   }
 }

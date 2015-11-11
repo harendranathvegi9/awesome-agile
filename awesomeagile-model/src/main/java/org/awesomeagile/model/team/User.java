@@ -2,21 +2,50 @@ package org.awesomeagile.model.team;
 
 import com.google.common.base.MoreObjects;
 
+import org.awesomeagile.model.AbstractAuditable;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.util.Date;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author sbelov@google.com (Stan Belov)
  */
-public class User {
+@Entity
+@Table(name = "user", schema = "teams")
+@SequenceGenerator(name = "idgen", sequenceName = "teams.user_id_seq")
+@EntityListeners(AuditingEntityListener.class)
+public class User extends AbstractAuditable<Long> {
 
-  private int userId;
+  @NotEmpty
+  @Column(unique = true, nullable = false, updatable = false)
   private String primaryEmail;
+
+  @NotEmpty
+  @Column(nullable = false)
   private String displayName;
+
+  @Column(nullable = false)
   private String avatar;
+
+  @NotNull
+  @Column(nullable = false)
   private boolean isVisible;
+
+  @NotNull
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private UserStatus status;
-  private Date signupDate;
 
   public User() {
   }
@@ -27,22 +56,14 @@ public class User {
    * @param other user object to copy fields from
    */
   public User(User other) {
-    this.userId = other.userId;
+    this.setId(other.getId());
+    this.setCreatedDate(other.getCreatedDate());
+    this.setLastModifiedDate(other.getLastModifiedDate());
     this.primaryEmail = other.primaryEmail;
     this.displayName = other.displayName;
     this.avatar = other.avatar;
     this.isVisible = other.isVisible;
     this.status = other.status;
-    this.signupDate = other.signupDate;
-  }
-
-  public Date getSignupDate() {
-    return signupDate;
-  }
-
-  public User setSignupDate(Date signupDate) {
-    this.signupDate = signupDate;
-    return this;
   }
 
   public UserStatus getStatus() {
@@ -69,15 +90,6 @@ public class User {
 
   public User setIsVisible(boolean isVisible) {
     this.isVisible = isVisible;
-    return this;
-  }
-
-  public int getUserId() {
-    return userId;
-  }
-
-  public User setUserId(int userId) {
-    this.userId = userId;
     return this;
   }
 
@@ -108,30 +120,26 @@ public class User {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(userId, user.userId)
-        && Objects.equals(isVisible, user.isVisible)
+    return Objects.equals(isVisible, user.isVisible)
         && Objects.equals(primaryEmail, user.primaryEmail)
         && Objects.equals(displayName, user.displayName)
         && Objects.equals(avatar, user.avatar)
-        && Objects.equals(status, user.status)
-        && Objects.equals(signupDate, user.signupDate);
+        && Objects.equals(status, user.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, primaryEmail, displayName, avatar, isVisible, status, signupDate);
+    return Objects.hash(primaryEmail, displayName, avatar, isVisible, status);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("userId", userId)
         .add("primaryEmail", primaryEmail)
         .add("displayName", displayName)
         .add("avatar", avatar)
         .add("isVisible", isVisible)
         .add("status", status)
-        .add("signupDate", signupDate)
         .toString();
   }
 }
