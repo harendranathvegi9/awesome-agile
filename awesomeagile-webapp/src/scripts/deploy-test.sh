@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd awesomeagile-webapp
+
 mvn docker:build
 
 # set DOCKERHUB_USERNAME, DOCKERHUB_PASSWORD, and DOCKERHUB_EMAIL

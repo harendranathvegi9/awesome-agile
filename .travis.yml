@@ -8,6 +8,6 @@ services:
 
 deploy:
   - provider: script
-    script: src/scripts/deploy-test.sh
+    script: awesomeagile-webapp/src/scripts/deploy-test.sh
     on:
       branch: dev/cdtest
