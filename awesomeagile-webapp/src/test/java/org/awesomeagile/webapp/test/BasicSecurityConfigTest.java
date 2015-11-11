@@ -67,9 +67,11 @@ public class BasicSecurityConfigTest {
     }
 
     @Test
-    public void otherStaticAreProtected() throws Exception {
-        mvc.perform(get("/some.html"))
+    public void apiEndpointsAreProtected() throws Exception {
+        mvc.perform(get("/api"))
             .andExpect(isUnauthorized());
+        mvc.perform(get("/api/foo"))
+                .andExpect(isUnauthorized());
     }
 
     /**

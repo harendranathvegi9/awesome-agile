@@ -12,13 +12,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/", "/index.html", "/css/**", "/images/**", "/node_modules/**",
-                        "/node_modules/**/*.js")
-                    .permitAll()
-                .antMatchers("/error")
-                    .permitAll()
-                .anyRequest()
+                .antMatchers("/api/**")
                     .authenticated()
+                .anyRequest()
+                    .permitAll()
                 .and()
             .httpBasic();
     }
