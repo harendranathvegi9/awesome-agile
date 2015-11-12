@@ -120,26 +120,34 @@ public class User extends AbstractAuditable<Long> {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(isVisible, user.isVisible)
+    return Objects.equals(getId(), user.getId())
+        && Objects.equals(isVisible, user.isVisible)
         && Objects.equals(primaryEmail, user.primaryEmail)
         && Objects.equals(displayName, user.displayName)
         && Objects.equals(avatar, user.avatar)
-        && Objects.equals(status, user.status);
+        && Objects.equals(status, user.status)
+        && Objects.equals(getCreatedDate(), user.getCreatedDate())
+        && Objects.equals(getLastModifiedDate(), user.getLastModifiedDate());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(primaryEmail, displayName, avatar, isVisible, status);
+    return Objects.hash(getId(), primaryEmail, displayName, avatar, isVisible, status,
+        getCreatedDate(), getLastModifiedDate());
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
+        .add("id", getId())
         .add("primaryEmail", primaryEmail)
         .add("displayName", displayName)
         .add("avatar", avatar)
         .add("isVisible", isVisible)
+        .add("isVisible", isVisible)
         .add("status", status)
+        .add("createdDate", getCreatedDate())
+        .add("lastModifiedDate", getLastModifiedDate())
         .toString();
   }
 }
