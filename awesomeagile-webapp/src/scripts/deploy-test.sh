@@ -4,6 +4,7 @@
 
 mvn -pl org.awesomeagile:awesomeagile-webapp \
   -DskipTests \
+  -Dsettings.security=awesomeagile-webapp/src/scripts/maven_security_settings.xml \
   --settings awesomeagile-webapp/src/scripts/maven_settings.xml \
   package docker:build docker:push
 
