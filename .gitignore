@@ -40,7 +40,7 @@ target/
 /application*.properties
 /application*.yml
 /application*.yaml
-
+/awesomeagile-webapp/application*.yml
 # frontend plugin stuff
 node*
 
