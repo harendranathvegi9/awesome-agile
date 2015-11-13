@@ -6,3 +6,8 @@ info.build:
 
 server.port: 8888
 
+# datasource configuration
+spring.datasource:
+  driverClassName: org.postgresql.Driver
+  validation-query: select 1
+
