@@ -10,4 +10,4 @@ deploy:
   - provider: script
     script: awesomeagile-webapp/src/scripts/deploy-test.sh
     on:
-      branch: dev/cdtest
+      branch: master
