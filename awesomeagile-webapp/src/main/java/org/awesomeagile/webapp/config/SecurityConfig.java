@@ -29,13 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public void configure(HttpSecurity http) throws Exception {
         http
-            .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/login/authenticate")
-                .failureUrl("/login?param.error=bad_credentials")
-                .and()
+            // TODO signout isn't currently handled
             .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/signout")
                 .deleteCookies("JSESSIONID")
                 .and()
             .authorizeRequests()

@@ -11,3 +11,7 @@ spring.datasource:
   driverClassName: org.postgresql.Driver
   validation-query: select 1
 
+spring.social:
+  google:
+    scope: 'email profile'
+

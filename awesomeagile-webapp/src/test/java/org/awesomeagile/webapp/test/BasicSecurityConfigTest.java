@@ -1,6 +1,6 @@
 package org.awesomeagile.webapp.test;
 
-import org.awesomeagile.webapp.AwesomeAgileApplication;
+import org.awesomeagile.AwesomeAgileApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +71,7 @@ public class BasicSecurityConfigTest {
         mvc.perform(get("/api"))
             .andExpect(isUnauthorized());
         mvc.perform(get("/api/foo"))
-                .andExpect(isUnauthorized());
+            .andExpect(isUnauthorized());
     }
 
     /**

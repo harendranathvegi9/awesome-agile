@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp;
+package org.awesomeagile;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
