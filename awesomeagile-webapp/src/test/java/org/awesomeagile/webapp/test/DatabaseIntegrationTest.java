@@ -28,7 +28,6 @@ public class DatabaseIntegrationTest {
   @ClassRule
   public static TestDatabase testDatabase = new TestDatabase(
       DATABASE_NAME,
-      "/create-schema.sql",
       "/create-sample-data.sql"
   );
 

@@ -12,6 +12,7 @@ import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
 
+import org.flywaydb.core.Flyway;
 import org.junit.rules.ExternalResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 /**
  * @author sbelov@google.com (Stan Belov)
  */
@@ -38,6 +41,8 @@ public class TestDatabase extends ExternalResource {
   public static final int RETRIES = 30;
   public static final int POSTGRESQL_PORT = 5432;
   public static final String POSTGRES_9_2_IMAGE = "postgres:9.4";
+  private static final String USERNAME = "postgres";
+  private static final String PASSWORD = "";
   private String hostName;
   private ContainerCreation container;
   private DefaultDockerClient docker;
@@ -70,6 +75,11 @@ public class TestDatabase extends ExternalResource {
     docker.startContainer(container.id());
     waitForDatabase(RETRIES);
     createDatabase();
+    Flyway flyway = new Flyway();
+    flyway.setSqlMigrationPrefix("v");
+    flyway.setSqlMigrationSeparator("-");
+    flyway.setDataSource(getDataSource(databaseName));
+    flyway.migrate();
     for (String script : scripts) {
       executeScript(script);
     }
@@ -80,19 +90,25 @@ public class TestDatabase extends ExternalResource {
   }
 
   public JdbcTemplate jdbcTemplate() {
-    return new JdbcTemplate(
-        new DriverManagerDataSource(
-            /* url */ getUrl(),
-            /* username */ "postgres",
-            /* password */ ""));
+    return new JdbcTemplate(getDataSource());
+  }
+
+  public DriverManagerDataSource getDataSource() {
+    return new DriverManagerDataSource(
+        /* url */ getUrl(),
+        /* username */ "postgres",
+        /* password */ "");
   }
 
   public JdbcTemplate jdbcTemplate(String database) {
-    return new JdbcTemplate(
-        new DriverManagerDataSource(
+    return new JdbcTemplate(getDataSource(database));
+  }
+
+  public DataSource getDataSource(String database) {
+    return new DriverManagerDataSource(
             /* url */ getUrl(database),
             /* username */ "postgres",
-            /* password */ ""));
+            /* password */ "");
   }
 
   public String getUrl() {
@@ -166,5 +182,13 @@ public class TestDatabase extends ExternalResource {
     JdbcTemplate jdbcTemplate = jdbcTemplate();
     jdbcTemplate.execute(String.format("DROP DATABASE IF EXISTS %s", databaseName));
     jdbcTemplate.execute(String.format("CREATE DATABASE %s", databaseName));
+  }
+
+  public String getUserName() {
+    return USERNAME;
+  }
+
+  public String getPassword() {
+    return PASSWORD;
   }
 }
