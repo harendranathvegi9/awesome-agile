@@ -1,5 +1,6 @@
 package org.awesomeagile.dao;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -8,7 +9,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import org.awesomeagile.TestApplication;
@@ -24,11 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -39,7 +45,10 @@ import javax.sql.DataSource;
 @SpringApplicationConfiguration(classes = {TestApplication.class, TestConfiguration.class})
 @ActiveProfiles("test")
 public class UserRepositoryTest {
+
   private static final String DATABASE_NAME = "awesomeagile";
+
+  private final AtomicInteger providerKey = new AtomicInteger();
 
   @ClassRule
   public static TestDatabase testDatabase = new TestDatabase(
@@ -94,8 +103,55 @@ public class UserRepositoryTest {
     assertEquals(newUser.getPrimaryEmail(), created.getPrimaryEmail());
     assertEquals(newUser.getAvatar(), created.getAvatar());
     assertEquals(newUser.getStatus(), created.getStatus());
+    assertEquals(newUser.getAuthProviderId(), created.getAuthProviderId());
+    assertEquals(newUser.getAuthProviderUserId(), created.getAuthProviderUserId());
     User databaseUser = userRepository.findOne(created.getId());
     assertEquals(created, databaseUser);
+  }
+
+  @Test
+  public void testFindOneByAuthProviderId() throws Exception {
+    User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User createdOne = userRepository.save(one);
+    User two = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User createdTwo = userRepository.save(two);
+    assertEquals(createdOne, userRepository.findOneByAuthProviderUserId(
+        one.getAuthProviderId(),
+        one.getAuthProviderUserId()));
+    assertEquals(createdTwo, userRepository.findOneByAuthProviderUserId(
+        two.getAuthProviderId(),
+        two.getAuthProviderUserId()));
+  }
+
+  @Test
+  public void testFindOneByAuthProviderIds() throws Exception {
+    User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User createdOne = userRepository.save(one);
+    User two = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User createdTwo = userRepository.save(two);
+    assertEquals(ImmutableList.of(createdOne, createdTwo),
+        ImmutableList.copyOf(userRepository.findOneByAuthProviderUserIds(
+            one.getAuthProviderId(),
+            ImmutableSet.of(one.getAuthProviderUserId(), two.getAuthProviderUserId()))));
+    assertEquals(ImmutableList.of(createdTwo),
+        ImmutableList.copyOf(userRepository.findOneByAuthProviderUserIds(
+            one.getAuthProviderId(),
+            ImmutableSet.of(two.getAuthProviderUserId()))));
+  }
+
+  @Test
+  public void testDuplicateProviderUserId() throws Exception {
+    User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    userRepository.save(one);
+    User two = new User(one);
+    // force creation of a new user
+    two.setId(null);
+    try {
+      userRepository.save(two);
+      fail("DataIntegrityViolationException expected.");
+    } catch (DataIntegrityViolationException ignored) {
+      // no-op
+    }
   }
 
   @Test
@@ -162,11 +218,13 @@ public class UserRepositoryTest {
     assertEquals(toUpdate, databaseUser);
   }
 
-  private static User userWithNameAndEmail(String displayName, String email) {
+  private User userWithNameAndEmail(String displayName, String email) {
     return new User()
         .setStatus(UserStatus.ACTIVE)
         .setIsVisible(true)
         .setDisplayName(displayName)
+        .setAuthProviderId("google")
+        .setAuthProviderUserId(String.valueOf(providerKey.incrementAndGet()))
         .setPrimaryEmail(email);
   }
 

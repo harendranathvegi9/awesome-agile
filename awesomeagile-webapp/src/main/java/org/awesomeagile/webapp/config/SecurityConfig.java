@@ -16,33 +16,38 @@ import org.springframework.social.security.SpringSocialConfigurer;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UsersConnectionRepository usersConnectionRepository;
+  @Autowired
+  private UsersConnectionRepository usersConnectionRepository;
 
-    @Autowired
-    private SocialUserDetailsService socialUserDetailsService;
+  @Autowired
+  private SocialUserDetailsService socialUserDetailsService;
 
-    @Bean
-    public AuthenticationProvider getAuthenticationProvider() {
-        return new SocialAuthenticationProvider(usersConnectionRepository, socialUserDetailsService);
-    }
+  @Bean
+  public AuthenticationProvider getAuthenticationProvider() {
+    return new SocialAuthenticationProvider(usersConnectionRepository, socialUserDetailsService);
+  }
 
-    public void configure(HttpSecurity http) throws Exception {
-        http
-            // TODO signout isn't currently handled
-            .logout()
-                .logoutUrl("/signout")
-                .deleteCookies("JSESSIONID")
-                .and()
-            .authorizeRequests()
-                .antMatchers("/api/**")
-                    .authenticated()
-                .anyRequest()
-                    .permitAll()
-                .and()
-            .rememberMe()
-                .and()
-            .apply(new SpringSocialConfigurer());
-    }
+  public void configure(HttpSecurity http) throws Exception {
+    http
+        // TODO signout isn't currently handled
+        .formLogin()
+        .loginPage("/signin")
+        .loginProcessingUrl("/signin/authenticate")
+        .failureUrl("/signin?param.error=bad_credentials")
+        .and()
+        .logout()
+        .logoutUrl("/signout")
+        .deleteCookies("JSESSIONID")
+        .and()
+        .authorizeRequests()
+        .antMatchers("/auth/**", "/signin/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .rememberMe()
+        .and()
+        .apply(new SpringSocialConfigurer());
+  }
 
 }

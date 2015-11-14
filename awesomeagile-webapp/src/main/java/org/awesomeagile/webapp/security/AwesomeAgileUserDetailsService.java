@@ -17,7 +17,7 @@ public class AwesomeAgileUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findOneByPrimaryEmail(username);
-        return new AwesomeAgileUserDetails(user.getPrimaryEmail(), null);
+        return new AwesomeAgileUserDetails(user.getPrimaryEmail(), "");
     }
 
 }
