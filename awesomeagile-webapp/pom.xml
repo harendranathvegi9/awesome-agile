@@ -130,7 +130,6 @@
           <serverId>docker-hub</serverId>
           <imageName>awesomeagile/${project.artifactId}:latest</imageName>
           <dockerDirectory>${project.basedir}/src/docker/awesomeagile-webapp</dockerDirectory>
-          <!-- <useGitCommitId>true</useGitCommitId> -->
           <resources>
             <resource>
               <targetPath>/</targetPath>
