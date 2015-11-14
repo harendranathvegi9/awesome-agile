@@ -97,7 +97,18 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install --production</arguments>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>javascript tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <!-- optional: the default is "karma.conf.js" in your working directory -->
+              <karmaConfPath>karma.conf.js</karmaConfPath>
             </configuration>
           </execution>
         </executions>
