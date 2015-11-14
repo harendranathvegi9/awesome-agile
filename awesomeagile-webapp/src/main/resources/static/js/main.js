@@ -25,6 +25,24 @@ app.controller('aaController',  function($scope, $uibModal) {
         }
     };
 
+    $scope.openLogin = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'loginModal.html',
+            controller: 'loginModalController',
+            size: 'sm'
+        });
+    };
+
+    $scope.openSignUp = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'signUpModal.html',
+            controller: 'signUpModalController',
+            size: 'sm'
+        });
+    };
+
     $scope.open = function (scrumEvent) {
         var modalInstance = $uibModal.open({
             animation: true,
@@ -52,3 +70,20 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
     };
 
 });
+
+app.controller('loginModalController', function ($scope, $uibModalInstance) {
+
+    $scope.close = function () {
+        $uibModalInstance.close();
+    };
+
+});
+
+app.controller('signUpModalController', function ($scope, $uibModalInstance) {
+
+    $scope.close = function () {
+        $uibModalInstance.close();
+    };
+
+});
+

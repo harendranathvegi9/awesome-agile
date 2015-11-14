@@ -37,3 +37,7 @@
 .scrum-event:hover rect {
     fill: #f7f4ee;
 }
+
+.page-header .btn-group {
+    float: right;
+}
