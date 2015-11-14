@@ -1,6 +1,26 @@
 var app = angular.module('awesome-agile', ['ui.bootstrap']);
 
-app.controller('aaController',  function($scope, $uibModal) {
+app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
+
+    $scope.loggedIn = !!$rootScope.user;
+
+    $scope.auth = function () {
+        $http.get('/api/user').then(function (response) {
+            if (response.data) {
+                $rootScope.user = response.data;
+                $scope.loggedIn = true;
+            }
+        }, function (response) {
+            console.log('error :: ', response);
+        });
+    };
+
+    $scope.init = function () {
+        $scope.auth();
+    };
+
+    $scope.init();
+
 
     $scope.scrumEvents = {
         'sprintPlanning': {
