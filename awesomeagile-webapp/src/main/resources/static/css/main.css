@@ -26,9 +26,18 @@
 	font-size:24px;
 }
 
-/* =============== hover ===============*/
-.hover-pointer {
+.scrum-event {
     cursor: pointer;
 }
 
+.scrum-event:hover circle {
+    fill: #58c5f3;
+}
 
+.scrum-event:hover rect {
+    fill: #f7f4ee;
+}
+
+.page-header .btn-group {
+    float: right;
+}
