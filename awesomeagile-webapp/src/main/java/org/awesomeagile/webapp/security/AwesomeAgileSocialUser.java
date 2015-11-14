@@ -11,11 +11,11 @@ import java.util.Collection;
 /**
  * @author sbelov@google.com (Stan Belov)
  */
-public class AwesomeAgileSocialUserDetails extends SocialUser {
+public class AwesomeAgileSocialUser extends SocialUser {
 
   private final User user;
 
-  public AwesomeAgileSocialUserDetails(User user, Collection<? extends GrantedAuthority> authorities) {
+  public AwesomeAgileSocialUser(User user, Collection<? extends GrantedAuthority> authorities) {
     super(user.getPrimaryEmail(), "", authorities);
     this.user = user;
   }

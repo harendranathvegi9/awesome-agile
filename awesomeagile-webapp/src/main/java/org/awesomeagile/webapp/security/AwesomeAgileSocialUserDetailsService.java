@@ -21,7 +21,7 @@ public class AwesomeAgileSocialUserDetailsService implements SocialUserDetailsSe
     @Override
     public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
         User user = userRepository.findOneByPrimaryEmail(userId);
-        return new AwesomeAgileSocialUserDetails(user, ImmutableSet.<GrantedAuthority>of());
+        return new AwesomeAgileSocialUser(user, ImmutableSet.<GrantedAuthority>of());
     }
 
 }

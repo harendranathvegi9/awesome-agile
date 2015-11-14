@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .deleteCookies("JSESSIONID")
         .and()
         .authorizeRequests()
-        .antMatchers("/index.html", "/", "/auth/**", "/signin/**",
+        .antMatchers("/authstatus", "/index.html", "/", "/auth/**", "/signin/**",
             "/images/**", "/css/**", "/js/**", "/node_modules/**")
         .permitAll()
         .anyRequest()
@@ -50,5 +50,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .apply(new SpringSocialConfigurer());
   }
-
 }
