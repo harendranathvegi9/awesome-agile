@@ -30,24 +30,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(HttpSecurity http) throws Exception {
     http
         // TODO signout isn't currently handled
-        .formLogin()
-        .loginPage("/signin")
-        .loginProcessingUrl("/signin/authenticate")
-        .failureUrl("/signin?param.error=bad_credentials")
-        .and()
         .logout()
-        .logoutUrl("/signout")
-        .deleteCookies("JSESSIONID")
-        .and()
+          .logoutUrl("/signout")
+          .deleteCookies("JSESSIONID")
+          .and()
         .authorizeRequests()
-        .antMatchers("/authstatus", "/index.html", "/", "/auth/**", "/signin/**",
-            "/images/**", "/css/**", "/js/**", "/node_modules/**")
-        .permitAll()
-        .anyRequest()
-        .authenticated()
-        .and()
+          .antMatchers("/index.html", "/", "/auth/**",
+              "/images/**", "/css/**", "/js/**", "/node_modules/**")
+            .permitAll()
+          .anyRequest()
+            .authenticated()
+          .and()
         .rememberMe()
-        .and()
+          .and()
         .apply(new SpringSocialConfigurer());
   }
 }

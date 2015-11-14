@@ -1,5 +1,6 @@
 package org.awesomeagile.webapp.controller;
 
+import org.awesomeagile.model.team.User;
 import org.awesomeagile.webapp.security.AuthenticationStatus;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,13 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UserController {
 
-  @RequestMapping(method = RequestMethod.GET, path = "/authstatus")
+  @RequestMapping(method = RequestMethod.GET, path = "/api/user")
   @ResponseBody
-  public AuthenticationStatus getAuthenticationStatus(
+  public User getAuthenticationStatus(
       @AuthenticationPrincipal AwesomeAgileSocialUser principal) {
-    if (principal == null) {
-      return new AuthenticationStatus(false, null);
-    }
-    return new AuthenticationStatus(true, principal.getUser());
+    return principal.getUser();
   }
 }
