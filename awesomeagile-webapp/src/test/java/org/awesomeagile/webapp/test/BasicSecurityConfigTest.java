@@ -102,6 +102,12 @@ public class BasicSecurityConfigTest {
             .andExpect(isUnauthorized());
     }
 
+    @Test
+    public void arbitraryEndpointsAreProtected() throws Exception {
+        mvc.perform(get("/garbage"))
+            .andExpect(isUnauthorized());
+    }
+
     /**
      * Returns a ResultMatcher that asserts that the result status is either 200 (Ok) or 404 (Not Found).
      *
@@ -118,7 +124,7 @@ public class BasicSecurityConfigTest {
     }
 
     /**
-     * Returns a ResultMatcher that asserts that the result status is either 401 (Unauthorized) or a redirect.
+     * Returns a ResultMatcher that asserts that the result status is either 401 (Unauthorized).
      *
      * @return a ResultMatcher
      */
@@ -127,9 +133,8 @@ public class BasicSecurityConfigTest {
             @Override
             public void match(MvcResult result) throws Exception {
                 HttpStatus status = HttpStatus.valueOf(result.getResponse().getStatus());
-                assertTrue("Response status", status == HttpStatus.UNAUTHORIZED || status.is3xxRedirection());
+                assertTrue("Response status", status == HttpStatus.UNAUTHORIZED);
             }
         };
     }
-
 }
