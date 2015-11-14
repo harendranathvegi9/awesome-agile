@@ -113,7 +113,7 @@ public class UserRepositoryTest {
   public void testFindOneByAuthProviderId() throws Exception {
     User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
     User createdOne = userRepository.save(one);
-    User two = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User two = userWithNameAndEmail("sbelov", "sbelov@google.com");
     User createdTwo = userRepository.save(two);
     assertEquals(createdOne, userRepository.findOneByAuthProviderUserId(
         one.getAuthProviderId(),
@@ -127,7 +127,7 @@ public class UserRepositoryTest {
   public void testFindOneByAuthProviderIds() throws Exception {
     User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
     User createdOne = userRepository.save(one);
-    User two = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    User two = userWithNameAndEmail("sbelov", "sbelov@google.com");
     User createdTwo = userRepository.save(two);
     assertEquals(ImmutableList.of(createdOne, createdTwo),
         ImmutableList.copyOf(userRepository.findOneByAuthProviderUserIds(
