@@ -16,8 +16,16 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.social</groupId>
+      <artifactId>spring-social-google</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.social</groupId>
+      <artifactId>spring-social-security</artifactId>
     </dependency>
     <dependency>
       <groupId>org.awesomeagile</groupId>
@@ -26,14 +34,20 @@
     <dependency>
       <groupId>org.awesomeagile</groupId>
       <artifactId>awesomeagile-dao-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.awesomeagile</groupId>
       <artifactId>awesomeagile-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -96,7 +110,18 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install --production</arguments>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>javascript tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <!-- optional: the default is "karma.conf.js" in your working directory -->
+              <karmaConfPath>karma.conf.js</karmaConfPath>
             </configuration>
           </execution>
         </executions>
@@ -142,3 +167,4 @@
     </plugins>
   </build>
 </project>
+

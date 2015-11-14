@@ -47,6 +47,14 @@ public class User extends AbstractAuditable<Long> {
   @Enumerated(EnumType.STRING)
   private UserStatus status;
 
+  @NotNull
+  @Column(nullable = false, updatable = false)
+  private String authProviderId;
+
+  @NotNull
+  @Column(nullable = false, updatable = false)
+  private String authProviderUserId;
+
   public User() {
   }
 
@@ -64,6 +72,8 @@ public class User extends AbstractAuditable<Long> {
     this.avatar = other.avatar;
     this.isVisible = other.isVisible;
     this.status = other.status;
+    this.authProviderId = other.authProviderId;
+    this.authProviderUserId = other.authProviderUserId;
   }
 
   public UserStatus getStatus() {
@@ -111,6 +121,34 @@ public class User extends AbstractAuditable<Long> {
     return this;
   }
 
+  /**
+   * Returns an identifier of an external authentication provider that can authenticate this user.
+   *
+   * @return identifier of an external authentication provider
+   */
+  public String getAuthProviderId() {
+    return authProviderId;
+  }
+
+  public User setAuthProviderId(String authProviderId) {
+    this.authProviderId = authProviderId;
+    return this;
+  }
+
+  /**
+   * Returns this user's unique identifier within the scope of the external authentication provider
+   *
+   * @return user's unique identifier within the scope of the external authentication provider.
+   */
+  public String getAuthProviderUserId() {
+    return authProviderUserId;
+  }
+
+  public User setAuthProviderUserId(String authProviderUserId) {
+    this.authProviderUserId = authProviderUserId;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -125,12 +163,15 @@ public class User extends AbstractAuditable<Long> {
         && Objects.equals(primaryEmail, user.primaryEmail)
         && Objects.equals(displayName, user.displayName)
         && Objects.equals(avatar, user.avatar)
-        && Objects.equals(status, user.status);
+        && Objects.equals(status, user.status)
+        && Objects.equals(authProviderId, user.authProviderId)
+        && Objects.equals(authProviderUserId, user.authProviderUserId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), primaryEmail, displayName, avatar, isVisible, status);
+    return Objects.hash(getId(), primaryEmail, displayName, avatar, isVisible, status,
+        authProviderId, authProviderUserId);
   }
 
   @Override
@@ -143,6 +184,8 @@ public class User extends AbstractAuditable<Long> {
         .add("isVisible", isVisible)
         .add("isVisible", isVisible)
         .add("status", status)
+        .add("authProviderId", authProviderId)
+        .add("authProviderUserId", authProviderUserId)
         .toString();
   }
 }
