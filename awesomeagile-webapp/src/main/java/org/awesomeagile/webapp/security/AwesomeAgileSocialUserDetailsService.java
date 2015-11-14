@@ -15,13 +15,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class AwesomeAgileSocialUserDetailsService implements SocialUserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
-        User user = userRepository.findOneByPrimaryEmail(userId);
-        return new AwesomeAgileSocialUser(user, ImmutableSet.<GrantedAuthority>of());
+  @Autowired
+  public AwesomeAgileSocialUserDetailsService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  @Override
+  public SocialUserDetails loadUserByUserId(String userId)
+      throws UsernameNotFoundException, DataAccessException {
+    User user = userRepository.findOneByPrimaryEmail(userId);
+    if (user == null) {
+      throw new UsernameNotFoundException(String.format("User with ID %s was not found", userId));
     }
+    return new AwesomeAgileSocialUser(user, ImmutableSet.<GrantedAuthority>of());
+  }
 
 }

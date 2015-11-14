@@ -30,6 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(HttpSecurity http) throws Exception {
     http
         // TODO signout isn't currently handled
+        .httpBasic()
+          .and()
         .logout()
           .logoutUrl("/signout")
           .deleteCookies("JSESSIONID")

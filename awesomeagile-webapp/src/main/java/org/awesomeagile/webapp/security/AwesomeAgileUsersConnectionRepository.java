@@ -12,6 +12,7 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.UsersConnectionRepository;
 
@@ -28,12 +29,13 @@ public class AwesomeAgileUsersConnectionRepository implements UsersConnectionRep
   };
   private final UserRepository userRepository;
   private final ConnectionFactoryLocator connectionFactoryLocator;
+  private final ConnectionSignUp connectionSignUp;
 
-  @Autowired
   public AwesomeAgileUsersConnectionRepository(UserRepository userRepository,
-      ConnectionFactoryLocator connectionFactoryLocator) {
+      ConnectionFactoryLocator connectionFactoryLocator, ConnectionSignUp connectionSignUp) {
     this.userRepository = userRepository;
     this.connectionFactoryLocator = connectionFactoryLocator;
+    this.connectionSignUp = connectionSignUp;
   }
 
   @Override
@@ -43,9 +45,7 @@ public class AwesomeAgileUsersConnectionRepository implements UsersConnectionRep
         key.getProviderId(),
         key.getProviderUserId());
     if (user == null) {
-      // create a new one
-      user = createUserFromProfile(connection);
-      userRepository.save(user);
+      return ImmutableList.of(connectionSignUp.execute(connection));
     }
     return ImmutableList.of(user.getPrimaryEmail());
   }
@@ -65,18 +65,4 @@ public class AwesomeAgileUsersConnectionRepository implements UsersConnectionRep
         user.getId(),
         connectionFactoryLocator);
   }
-
-  private User createUserFromProfile(Connection<?> connection) {
-    UserProfile profile = connection.fetchUserProfile();
-    ConnectionKey key = connection.getKey();
-    return new User()
-        .setPrimaryEmail(profile.getEmail())
-        .setDisplayName(connection.getDisplayName())
-        .setIsVisible(true)
-        .setStatus(UserStatus.ACTIVE)
-        .setAvatar(connection.getImageUrl())
-        .setAuthProviderId(key.getProviderId())
-        .setAuthProviderUserId(key.getProviderUserId());
-  }
-
 }

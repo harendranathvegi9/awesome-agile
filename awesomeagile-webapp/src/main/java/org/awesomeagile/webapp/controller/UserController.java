@@ -1,7 +1,6 @@
 package org.awesomeagile.webapp.controller;
 
 import org.awesomeagile.model.team.User;
-import org.awesomeagile.webapp.security.AuthenticationStatus;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

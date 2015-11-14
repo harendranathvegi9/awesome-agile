@@ -1,6 +1,7 @@
 package org.awesomeagile.webapp.config;
 
 import org.awesomeagile.dao.UserRepository;
+import org.awesomeagile.webapp.security.AwesomeAgileConnectionSignup;
 import org.awesomeagile.webapp.security.AwesomeAgileUsersConnectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurer;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
@@ -44,7 +46,10 @@ public class SocialConfig implements SocialConfigurer {
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(
         ConnectionFactoryLocator connectionFactoryLocator) {
-        return new AwesomeAgileUsersConnectionRepository(userRepository, connectionFactoryLocator);
+        return new AwesomeAgileUsersConnectionRepository(
+            userRepository,
+            connectionFactoryLocator,
+            getConnectionSignUp());
     }
 
     @Override
@@ -52,4 +57,7 @@ public class SocialConfig implements SocialConfigurer {
         return new AuthenticationNameUserIdSource();
     }
 
+    private ConnectionSignUp getConnectionSignUp() {
+        return new AwesomeAgileConnectionSignup(userRepository);
+    }
 }

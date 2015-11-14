@@ -109,22 +109,22 @@ public class AwesomeAgileConnectionRepository implements ConnectionRepository {
 
   @Override
   public void addConnection(Connection<?> connection) {
-
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void updateConnection(Connection<?> connection) {
-
+    // no-op
   }
 
   @Override
   public void removeConnections(String providerId) {
-
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void removeConnection(ConnectionKey connectionKey) {
-
+    throw new UnsupportedOperationException();
   }
 
   private <A> ConnectionFactory<A> getConnectionFactory(Class<A> apiType) {
