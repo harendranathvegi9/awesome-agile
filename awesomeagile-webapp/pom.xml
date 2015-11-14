@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>awesomeagile-parent</artifactId>
@@ -135,7 +134,7 @@
             <id>copy-resources</id>
             <phase>process-resources</phase>
             <goals>
-                <goal>copy-resources</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
               <outputDirectory>${project.build.outputDirectory}/static/node_modules</outputDirectory>
@@ -147,6 +146,23 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.3.5</version>
+        <configuration>
+          <serverId>docker-hub</serverId>
+          <imageName>awesomeagile/${project.artifactId}:latest</imageName>
+          <dockerDirectory>${project.basedir}/src/docker/awesomeagile-webapp</dockerDirectory>
+          <resources>
+            <resource>
+              <targetPath>/</targetPath>
+              <directory>${project.build.directory}</directory>
+              <include>${project.build.finalName}.jar</include>
+            </resource>
+          </resources>
+        </configuration>
       </plugin>
     </plugins>
   </build>
