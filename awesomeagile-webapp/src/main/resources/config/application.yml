@@ -15,3 +15,7 @@ spring.social:
   google:
     scope: 'email profile'
 
+# flyway configuration
+flyway:
+  sql-migration-prefix: v
+  sql-migration-separator: '-'
