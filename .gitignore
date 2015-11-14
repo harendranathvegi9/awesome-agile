@@ -41,7 +41,7 @@ target/
 /application*.yml
 /application*.yaml
 /awesomeagile-webapp/application*.properties
-/awesomeagile-webapp/application.yml
+/awesomeagile-webapp/application*.yml
 /awesomeagile-webapp/application*.yaml
 
 # frontend plugin stuff
