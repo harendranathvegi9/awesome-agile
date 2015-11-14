@@ -40,6 +40,14 @@ $(cat << EOF | sed s/%%ENV%%/$1/
                 {
                     "name": "SPRING_DATASOURCE_PASSWORD",
                     "value": "\${AWS_%%ENV%%_DB_PASSWORD}"
+                },
+                {
+                    "name": "SPRING_SOCIAL_GOOGLE_CLIENTID",
+                    "value": "\${AWS_%%ENV%%_GOOGLE_CLIENTID}"
+                },
+                {
+                    "name": "SPRING_SOCIAL_GOOGLE_SECRET",
+                    "value": "\${AWS_%%ENV%%_GOOGLE_SECRET}"
                 }
             ]
         }
