@@ -1,11 +1,13 @@
 package org.awesomeagile.webapp.security;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.awesomeagile.dao.UserRepository;
+import org.awesomeagile.model.team.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.social.security.SocialUser;
 import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
@@ -14,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class AwesomeAgileSocialUserDetailsService implements SocialUserDetailsService {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserRepository userRepository;
 
     @Override
     public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        return new SocialUser(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        User user = userRepository.findOneByPrimaryEmail(userId);
+        return new AwesomeAgileSocialUserDetails(user, ImmutableSet.<GrantedAuthority>of());
     }
 
 }
