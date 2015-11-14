@@ -155,6 +155,21 @@ public class UserRepositoryTest {
   }
 
   @Test
+  public void testDuplicateEmail() throws Exception {
+    User one = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    userRepository.save(one);
+    User two = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
+    // force creation of a new user
+    two.setId(null);
+    try {
+      userRepository.save(two);
+      fail("DataIntegrityViolationException expected.");
+    } catch (DataIntegrityViolationException ignored) {
+      // no-op
+    }
+  }
+
+  @Test
   public void testUpdateUser() throws Exception {
     User newUser = userWithNameAndEmail("sbelov", "belov.stan@gmail.com");
     User created = userRepository.save(newUser);
