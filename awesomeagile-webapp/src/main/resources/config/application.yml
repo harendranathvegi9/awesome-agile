@@ -19,3 +19,9 @@ spring.social:
 flyway:
   sql-migration-prefix: v
   sql-migration-separator: '-'
+
+# spring-boot-actuator configuration
+endpoints:
+  enabled: false
+  health.enabled: true
+  info.enabled: true
