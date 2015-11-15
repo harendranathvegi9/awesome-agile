@@ -9,7 +9,10 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
             if (response.data) {
                 $rootScope.user = response.data;
                 $scope.loggedIn = true;
+                $scope.loggedOut = false;
             }
+        }, function () {
+            $scope.loggedOut = true;
         });
     };
 

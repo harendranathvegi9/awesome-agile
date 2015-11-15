@@ -20,7 +20,7 @@
             </div>
             <div class="userControls col-sm-2 col-xs-2">
                 <div class="btn-group" role="group">
-                    <button id="login" type="button" class="btn btn-primary" ng-click="openLogin()" ng-hide="loggedIn">Login</button>
+                    <button id="login" type="button" class="btn btn-primary ng-hide" ng-click="openLogin()" ng-show="loggedOut">Login</button>
                 </div>
                 <span ng-show="loggedIn" ng-cloak>{{ user.displayName }}</span>
             </div>
