@@ -2,9 +2,9 @@
     <img src="https://travis-ci.org/cs71-caffeine/awesome-agile.svg"
          alt="build status">
 </a>
-
 # awesome-agile
 Awesome Agile Project Management
+
 [http://www.awesomeagile.org](http://awesomeagile.org/)
 
 ## Vision
