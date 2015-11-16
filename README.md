@@ -1,11 +1,11 @@
-# awesome-agile
-Awesome Agile Project Management
-</br>
 <a href="https://travis-ci.org/cs71-caffeine/awesome-agile">
     <img src="https://travis-ci.org/cs71-caffeine/awesome-agile.svg"
          alt="build status">
 </a>
 
+# awesome-agile
+Awesome Agile Project Management
+[http://www.awesomeagile.org](http://awesomeagile.org/)
 
 ## Vision
 A web portal that describes and proposes tools for each component of
@@ -92,3 +92,7 @@ platform.
 
 The product and sprint backlogs are managed via
 [Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
+
+## Coverage Reports
+
+Coverage reports are currently located [here](https://github.com/cs71-caffeine/awesome-agile/wiki/Code-Coverage).
