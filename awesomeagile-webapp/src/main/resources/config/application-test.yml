@@ -1,0 +1,5 @@
+spring.datasource:
+  url: jdbc:postgresql://@postgres.host@:@postgres.port@/awesomeagile-test
+  username: aa_test
+  password: aa_test
+

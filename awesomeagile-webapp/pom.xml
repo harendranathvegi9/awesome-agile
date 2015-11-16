@@ -10,6 +10,16 @@
 
   <artifactId>awesomeagile-webapp</artifactId>
 
+  <profiles>
+    <profile>
+      <id>local-test</id>
+      <properties>
+        <postgres.host>localhost</postgres.host>
+        <postgres.port>5432</postgres.port>
+      </properties>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -172,6 +182,10 @@
       <plugin>
         <groupId>pl.project13.maven</groupId>
         <artifactId>git-commit-id-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
