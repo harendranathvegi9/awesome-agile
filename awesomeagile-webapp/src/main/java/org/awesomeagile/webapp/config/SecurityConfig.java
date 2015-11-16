@@ -1,5 +1,6 @@
 package org.awesomeagile.webapp.config;
 
+import org.awesomeagile.webapp.security.AwesomeAgileAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,10 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public void configure(HttpSecurity http) throws Exception {
     http
-        // TODO signout isn't currently handled
         .httpBasic()
+          .authenticationEntryPoint(new AwesomeAgileAuthenticationEntryPoint())
           .and()
         .logout()
+          // TODO signout isn't currently handled
           .logoutUrl("/signout")
           .deleteCookies("JSESSIONID")
           .and()
@@ -47,4 +49,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .and()
         .apply(new SpringSocialConfigurer());
   }
+
 }

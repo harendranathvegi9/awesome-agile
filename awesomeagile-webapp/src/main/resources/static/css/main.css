@@ -38,6 +38,6 @@
     fill: #f7f4ee;
 }
 
-.page-header .btn-group {
-    float: right;
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
 }

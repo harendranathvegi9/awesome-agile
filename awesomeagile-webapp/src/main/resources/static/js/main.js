@@ -1,6 +1,27 @@
 var app = angular.module('awesome-agile', ['ui.bootstrap']);
 
-app.controller('aaController',  function($scope, $uibModal) {
+app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
+
+    $scope.loggedIn = !!$rootScope.user;
+
+    $scope.auth = function () {
+        $http.get('/api/user').then(function (response) {
+            if (response.data) {
+                $rootScope.user = response.data;
+                $scope.loggedIn = true;
+                $scope.loggedOut = false;
+            }
+        }, function () {
+            $scope.loggedOut = true;
+        });
+    };
+
+    $scope.init = function () {
+        $scope.auth();
+    };
+
+    $scope.init();
+
 
     $scope.scrumEvents = {
         'sprintPlanning': {
@@ -34,15 +55,6 @@ app.controller('aaController',  function($scope, $uibModal) {
         });
     };
 
-    $scope.openSignUp = function () {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            templateUrl: 'signUpModal.html',
-            controller: 'signUpModalController',
-            size: 'sm'
-        });
-    };
-
     $scope.open = function (scrumEvent) {
         var modalInstance = $uibModal.open({
             animation: true,
@@ -72,14 +84,6 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
 });
 
 app.controller('loginModalController', function ($scope, $uibModalInstance) {
-
-    $scope.close = function () {
-        $uibModalInstance.close();
-    };
-
-});
-
-app.controller('signUpModalController', function ($scope, $uibModalInstance) {
 
     $scope.close = function () {
         $uibModalInstance.close();
