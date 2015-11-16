@@ -12,6 +12,7 @@ import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.PortBinding;
 
+import org.awesomeagile.testutils.NetworkUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.rules.ExternalResource;
 import org.springframework.core.io.ClassPathResource;
@@ -21,8 +22,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class TestDatabase extends ExternalResource {
     docker = DefaultDockerClient.fromEnv().build();
     hostName = docker.getHost();
     // Bind container ports to host ports
-    localPort = findAvailablePort();
+    localPort = NetworkUtils.findAvailablePort();
     final HostConfig hostConfig = HostConfig.builder()
         .portBindings(createPortBinding(POSTGRESQL_PORT, localPort))
         .build();
@@ -135,18 +134,6 @@ public class TestDatabase extends ExternalResource {
     hostPorts.add(PortBinding.of("0.0.0.0", to));
     portBindings.put(String.valueOf(from), hostPorts);
     return portBindings;
-  }
-
-  private int findAvailablePort() throws IOException {
-    ServerSocket serverSocket = null;
-    try {
-      serverSocket = new ServerSocket(0);
-      return serverSocket.getLocalPort();
-    } finally {
-      if (serverSocket != null) {
-        serverSocket.close();
-      }
-    }
   }
 
   private void waitForDatabase(int retries) {

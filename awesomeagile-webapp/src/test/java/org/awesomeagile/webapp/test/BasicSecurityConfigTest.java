@@ -2,14 +2,18 @@ package org.awesomeagile.webapp.test;
 
 import org.awesomeagile.AwesomeAgileApplication;
 import org.awesomeagile.data.test.TestDatabase;
+import org.awesomeagile.webapp.test.BasicSecurityConfigTest.Env;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.TestPropertySource;
@@ -24,12 +28,14 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = AwesomeAgileApplication.class)
+@SpringApplicationConfiguration(classes = AwesomeAgileApplication.class, initializers = Env.class)
 @WebAppConfiguration
 @TestPropertySource(properties = {
     "spring.social.google.clientId=client",
@@ -44,11 +50,18 @@ public class BasicSecurityConfigTest {
         DATABASE_NAME
     );
 
-    @Configuration
-    protected static class TestConfiguration {
-        @Bean
-        public DataSource getDataSource() {
-            return testDatabase.getDataSource(DATABASE_NAME);
+    public static final class Env implements
+        ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            applicationContext.getEnvironment().getPropertySources().addFirst(
+                new MapPropertySource("overrides",
+                    ImmutableMap.<String, Object>of(
+                        "spring.datasource.url", testDatabase.getUrl(DATABASE_NAME),
+                        "spring.datasource.username", testDatabase.getUserName(),
+                        "spring.datasource.password", testDatabase.getPassword()
+                    )));
         }
     }
 

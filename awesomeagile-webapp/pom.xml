@@ -38,6 +38,10 @@
     </dependency>
     <dependency>
       <groupId>org.awesomeagile</groupId>
+      <artifactId>awesomeagile-testutils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.awesomeagile</groupId>
       <artifactId>awesomeagile-model</artifactId>
     </dependency>
     <dependency>
@@ -48,6 +52,16 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
