@@ -3,3 +3,8 @@ spring.datasource:
   username: aa_test
   password: aa_test
 
+spring.social:
+  google:
+    clientId: testClientId
+    secret: testSecret
+

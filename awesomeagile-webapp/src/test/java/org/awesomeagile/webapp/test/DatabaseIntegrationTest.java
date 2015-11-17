@@ -24,9 +24,6 @@ import javax.sql.DataSource;
 import java.util.List;
 
 /**
- * A test that brings up a local PostgreSQL instance within a Docker container.
- * It is assumed that Docker environment variables are already set up.
- *
  * @author sbelov@google.com (Stan Belov)
  */
 @RunWith(SpringJUnit4ClassRunner.class)

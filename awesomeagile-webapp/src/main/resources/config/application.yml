@@ -1,3 +1,9 @@
+project:
+  artifactId: awesomeagile
+  name: Awesome Agile
+  description: Awesome Agile tools and integrations
+  version: unknown
+
 info.build:
   artifact: '@project.artifactId@'
   name: '@project.name@'
