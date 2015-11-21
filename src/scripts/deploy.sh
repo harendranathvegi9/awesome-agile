@@ -13,7 +13,7 @@ mvn package -DskipTests \
 && \
 echo "======== Building and pushing Docker Image" \
 && \
-mvn -pl org.awesomeagile:awesomeagile-webapp \
+mvn \
   -DskipTests \
   --settings src/scripts/maven_settings.xml \
   docker:build docker:push \
