@@ -15,13 +15,13 @@ echo "======== Building and pushing Docker Image" \
 && \
 mvn -pl org.awesomeagile:awesomeagile-webapp \
   -DskipTests \
-  --settings awesomeagile-webapp/src/scripts/maven_settings.xml \
+  --settings src/scripts/maven_settings.xml \
   docker:build docker:push \
 && \
 echo "======== Revising the AWS ECS Task Definition" \
 && \
 aws ecs register-task-definition \
-  --cli-input-json "`awesomeagile-webapp/src/scripts/get-task-definition.sh $1`" \
+  --cli-input-json "`src/scripts/get-task-definition.sh $1`" \
   >> /dev/null \
 && \
 echo "======== Updating the AWS ECS Service to use the latest Task Definition" \
