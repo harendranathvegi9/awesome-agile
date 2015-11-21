@@ -1,7 +1,11 @@
 package org.awesomeagile.webapp.test;
 
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.awesomeagile.AwesomeAgileApplication;
 import org.awesomeagile.data.test.TestDatabase;
+import org.awesomeagile.webapp.test.BasicSecurityConfigTest.TestConfiguration;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -21,15 +25,10 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.util.AssertionErrors.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.sql.DataSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = AwesomeAgileApplication.class)
+@SpringApplicationConfiguration(classes = {AwesomeAgileApplication.class, TestConfiguration.class})
 @WebAppConfiguration
 @TestPropertySource(properties = {
     "spring.social.google.clientId=client",
