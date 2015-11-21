@@ -1,5 +1,8 @@
 package org.awesomeagile.webapp.test;
 
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.awesomeagile.AwesomeAgileApplication;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +24,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = AwesomeAgileApplication.class)
+@SpringApplicationConfiguration(classes = {AwesomeAgileApplication.class})
 @WebAppConfiguration
 @TestPropertySource(properties = {
     "spring.social.google.clientId=client",
