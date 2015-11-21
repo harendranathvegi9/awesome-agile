@@ -13,11 +13,11 @@ if [ "$#" -eq 1 ]; then
 eval "cat <<EOF
 $(cat << EOF | sed s/%%ENV%%/$1/
 {
-    "family": "awesomeagile-webapp", 
+    "family": "awesomeagile", 
     "containerDefinitions": [
         {
             "name": "awesomeagile",
-            "image": "awesomeagile/awesomeagile-webapp:latest", 
+            "image": "awesomeagile/awesomeagile:latest", 
             "cpu": 0,
             "memory": 512,
             "portMappings": [

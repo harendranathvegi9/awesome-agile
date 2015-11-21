@@ -2,7 +2,7 @@
 
 # set DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD, and DOCKER_HUB_EMAIL
 
-echo "======== Deploying awesomeagile-webapp to $1 environment"
+echo "======== Deploying awesomeagile to $1 environment"
 echo "======== Installing the AWS CLI"
 pip install --user awscli \
 && \
@@ -28,8 +28,8 @@ echo "======== Updating the AWS ECS Service to use the latest Task Definition" \
 && \
 aws ecs update-service \
   --cluster $1\
-  --service awesomeagile-webapp \
-  --task-definition awesomeagile-webapp \
+  --service awesomeagile \
+  --task-definition awesomeagile \
   >> /dev/null \
 && \
 echo "======== Deployment complete" \
