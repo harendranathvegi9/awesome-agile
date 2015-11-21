@@ -275,7 +275,7 @@
         <configuration>
           <serverId>docker-hub</serverId>
           <imageName>awesomeagile/${project.artifactId}:latest</imageName>
-          <dockerDirectory>${project.basedir}/src/docker/awesomeagile-webapp</dockerDirectory>
+          <dockerDirectory>${project.basedir}/src/docker/awesomeagile</dockerDirectory>
           <resources>
             <resource>
               <targetPath>/</targetPath>
