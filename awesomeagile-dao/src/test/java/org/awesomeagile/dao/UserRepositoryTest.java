@@ -74,7 +74,7 @@ public class UserRepositoryTest {
 
   @Test
   public void testFindOne() throws Exception {
-    String email = "mwarren@gmail.com";
+    String email = "mwarren42@gmail.com";
     long userId = 1234;
     String displayName = "Mark";
     String avatar = "ava";
