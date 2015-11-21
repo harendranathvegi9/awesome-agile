@@ -11,6 +11,6 @@ after_success:
 
 deploy:
   - provider: script
-    script: awesomeagile-webapp/src/scripts/deploy-test.sh
+    script: src/scripts/deploy-test.sh
     on:
       branch: master
