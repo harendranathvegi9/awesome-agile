@@ -29,11 +29,20 @@
     <version>1.3.0.RC1</version>
   </parent>
 
+  <profiles>
+    <profile>
+      <id>local-test</id>
+      <properties>
+        <postgres.host>localhost</postgres.host>
+        <postgres.port>5432</postgres.port>
+      </properties>
+    </profile>
+  </profiles>
+
   <modules>
     <module>awesomeagile-webapp</module>
     <module>awesomeagile-model</module>
     <module>awesomeagile-dao</module>
-    <module>awesomeagile-dao-test</module>
   </modules>
 
   <repositories>

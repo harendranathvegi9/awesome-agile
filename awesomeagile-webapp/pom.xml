@@ -10,16 +10,6 @@
 
   <artifactId>awesomeagile-webapp</artifactId>
 
-  <profiles>
-    <profile>
-      <id>local-test</id>
-      <properties>
-        <postgres.host>localhost</postgres.host>
-        <postgres.port>5432</postgres.port>
-      </properties>
-    </profile>
-  </profiles>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -162,7 +152,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--plugin>
         <groupId>com.spotify</groupId>
         <artifactId>docker-maven-plugin</artifactId>
         <version>0.3.5</version>
@@ -177,6 +167,31 @@
               <include>${project.build.finalName}.jar</include>
             </resource>
           </resources>
+        </configuration>
+      </plugin-->
+      <plugin>
+        <groupId>org.jolokia</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.13.6</version>
+        <configuration>
+          <keepContainer>false</keepContainer>
+          <images>
+            <image>
+              <name>postgres:9.4</name>
+              <alias>postgres</alias>
+              <run>
+                <ports>
+                  <port>+postgres.host:postgres.port:5432</port>
+                </ports>
+                <wait>
+                  <log>database system is ready to accept connections</log>
+                  <exec>
+                    <postStart>bash -c /usr/lib/postgresql/9.4/bin/createuser\ -U\ postgres\ -DElRS\ aa_test;/usr/lib/postgresql/9.4/bin/createdb\ -U\ postgres\ -O\ aa_test\ awesomeagile-test;/usr/lib/postgresql/9.4/bin/psql\ -a\ -U\ postgres\ -c\ "alter\ user\ aa_test\ with\ password\ 'aa_test'"\ template1</postStart>
+                  </exec>
+                </wait>
+              </run>
+            </image>
+          </images>
         </configuration>
       </plugin>
       <plugin>
