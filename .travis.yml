@@ -3,11 +3,20 @@ jdk:
   - oraclejdk8
 sudo: required
 
+addons:
+  postgresql: "9.4"
+
 services:
   - docker
+  - postgresql
 
 deploy:
   - provider: script
     script: awesomeagile-webapp/src/scripts/deploy-test.sh
     on:
       branch: master
+
+before_script:
+  - psql -c 'create role aa_test' -U postgres
+  - psql -c 'create database awesomeagile with owner aa_test' -U postgres
+

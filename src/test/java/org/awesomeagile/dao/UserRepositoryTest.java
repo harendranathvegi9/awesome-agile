@@ -1,6 +1,5 @@
 package org.awesomeagile.dao;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -16,18 +15,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import org.awesomeagile.TestApplication;
-import org.awesomeagile.dao.UserRepositoryTest.TestConfiguration;
-import org.awesomeagile.data.test.TestDatabase;
 import org.awesomeagile.model.team.User;
 import org.awesomeagile.model.team.UserStatus;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -36,32 +30,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.sql.DataSource;
-
 /**
  * @author sbelov@google.com (Stan Belov)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TestApplication.class, TestConfiguration.class})
+@SpringApplicationConfiguration(classes = {TestApplication.class})
 @ActiveProfiles("test")
 public class UserRepositoryTest {
 
-  private static final String DATABASE_NAME = "awesomeagile";
-
   private final AtomicInteger providerKey = new AtomicInteger();
 
-  @ClassRule
-  public static TestDatabase testDatabase = new TestDatabase(
-      DATABASE_NAME
-  );
-
-  @Configuration
-  protected static class TestConfiguration {
-    @Bean
-    public DataSource getDataSource() {
-      return testDatabase.getDataSource(DATABASE_NAME);
-    }
-  }
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   // Object under test
   @Autowired
@@ -78,7 +58,7 @@ public class UserRepositoryTest {
     long userId = 1234;
     String displayName = "Mark";
     String avatar = "ava";
-    jdbcTemplate().update("insert into teams.user(id, primary_email,display_name,avatar,is_visible,status)"
+    jdbcTemplate.update("insert into teams.user(id, primary_email,display_name,avatar,is_visible,status)"
         + " values(?, ?, ?, ?, ?, ?)", userId, email, displayName, avatar, false, "INACTIVE");
     User user = userRepository.findOne(userId);
     assertNotNull(user);
@@ -243,11 +223,7 @@ public class UserRepositoryTest {
         .setPrimaryEmail(email);
   }
 
-  private JdbcTemplate jdbcTemplate() {
-    return testDatabase.jdbcTemplate(DATABASE_NAME);
-  }
-
   private void clearTable() {
-    jdbcTemplate().update("delete from teams.user");
+    jdbcTemplate.update("delete from teams.user");
   }
 }

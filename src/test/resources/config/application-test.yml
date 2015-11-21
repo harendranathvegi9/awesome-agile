@@ -1,0 +1,3 @@
+spring.datasource:
+  url: jdbc:postgresql://localhost/awesomeagile
+  username: aa_test
