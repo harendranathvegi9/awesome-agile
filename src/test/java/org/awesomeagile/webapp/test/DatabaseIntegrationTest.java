@@ -3,11 +3,16 @@ package org.awesomeagile.webapp.test;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.awesomeagile.TestApplication;
 import org.awesomeagile.model.team.User;
 import org.hamcrest.CustomMatcher;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * A test that brings up a local PostgreSQL instance within a Docker container.
@@ -15,6 +20,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
  *
  * @author sbelov@google.com (Stan Belov)
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = {TestApplication.class})
+@ActiveProfiles("test")
 public class DatabaseIntegrationTest {
 
   @Autowired
