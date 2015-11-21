@@ -1,5 +1,5 @@
-![Build Status](https://travis-ci.org/cs71-caffeine/awesome-agile.svg)
-  ![Code Coverage](https://coveralls.io/repos/cs71-caffeine/awesome-agile/badge.svg?branch=master&service=github)
+[![Build Status](https://travis-ci.org/cs71-caffeine/awesome-agile.svg)](https://travis-ci.org/cs71-caffeine/awesome-agile)
+  [![Code Coverage](https://coveralls.io/repos/cs71-caffeine/awesome-agile/badge.svg?branch=master&service=github)](https://coveralls.io/github/cs71-caffeine/awesome-agile?branch=master)
 
 # awesome-agile
 Awesome Agile Project Management
