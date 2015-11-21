@@ -61,12 +61,12 @@ public class TestDatabase extends ExternalResource {
     // Create a client based on DOCKER_HOST and DOCKER_CERT_PATH env vars
     docker = DefaultDockerClient.fromEnv().build();
     hostName = docker.getHost();
+    docker.pull(POSTGRES_9_2_IMAGE);
     // Bind container ports to host ports
     localPort = findAvailablePort();
     final HostConfig hostConfig = HostConfig.builder()
         .portBindings(createPortBinding(POSTGRESQL_PORT, localPort))
         .build();
-    docker.pull(POSTGRES_9_2_IMAGE);
     this.container = docker.createContainer(ContainerConfig.builder()
         .image(POSTGRES_9_2_IMAGE)
         .hostConfig(hostConfig)
