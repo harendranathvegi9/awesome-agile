@@ -1,7 +1,6 @@
-<a href="https://travis-ci.org/cs71-caffeine/awesome-agile">
-    <img src="https://travis-ci.org/cs71-caffeine/awesome-agile.svg"
-         alt="build status">
-</a>
+![Build Status](https://travis-ci.org/cs71-caffeine/awesome-agile.svg)
+  ![Code Coverage](https://coveralls.io/repos/cs71-caffeine/awesome-agile/badge.svg?branch=master&service=github)
+
 # awesome-agile
 Awesome Agile Project Management
 
@@ -92,7 +91,3 @@ platform.
 
 The product and sprint backlogs are managed via
 [Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
-
-## Coverage Reports
-
-Coverage reports are currently located [here](https://github.com/cs71-caffeine/awesome-agile/wiki/Code-Coverage).
