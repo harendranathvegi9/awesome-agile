@@ -127,26 +127,21 @@
 	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
 	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="panel panel-info">
-                    <div class="panel-heading">Tools</div>
-                    <div class="panel-body">
-                        <div class="col-xs-6 col-md-3">
-                            <a href="#" class="thumbnail"><img src="images/hackpad.png" alt="hackpad" class="img-responsive"></a>
-                        </div>
-                        <div class="col-xs-6 col-md-3">
-                            <a href="#" class="thumbnail"><img src="images/trello.png" alt="trello" class="img-responsive"></a>
-                        </div>
-                        <div class="col-xs-6 col-md-3">
-                            <a href="#" class="thumbnail"><img src="images/github.png" alt="github" class="img-responsive"></a>
-                        </div>
-                        <div class="col-xs-6 col-md-3">
-                            <a href="#" class="thumbnail"><img src="images/TravisCl.png" alt="TravisCl" class="img-responsive"></a>
-                        </div>
-                    </div>
+            <div ng-controller="ToolsCarouselCtrl">
+                <div style="height: 305px">
+                    <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="templates/carousel.html">
+                        <uib-slide ng-repeat="slide in slides" active="slide.active">
+                            <img ng-src="{{slide.image}}" style="margin:auto;"/>
+                            <div class="carousel-caption">
+                                <p>{{slide.description}}</p>
+                                <a href="{{slide.link}}">Go to {{slide.title}}</a>
+                            </div>
+                        </uib-slide>
+                    </uib-carousel>
                 </div>
             </div>
         </div>
+
         <script type="text/ng-template" id="aaModalContent.html">
             <div class="modal-header">
                 <h3 class="modal-title">{{ title }}</h3>

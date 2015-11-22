@@ -41,3 +41,34 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
 }
+
+.carousel-inner {
+    padding-left: 5%;
+    padding-right: 5%;
+    border: 1px solid rgb(151, 151, 151)
+}
+
+.carousel-inner img {
+    float: left;
+    padding: 10px;
+}
+
+.carousel-caption {
+    color: black;
+    text-shadow: none;
+    position: static;
+    text-align: left;
+}
+
+.carousel-control.tools-slider{
+    color: black;
+    background-image: none; !important;
+}
+
+.carousel-control .glyphicon-chevron-left, .carousel-control .icon-prev {
+    left: 20%;
+}
+.carousel-control .glyphicon-chevron-right, .carousel-control .icon-prev {
+    right: 20%;
+}
+
