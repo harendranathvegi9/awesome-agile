@@ -320,7 +320,7 @@
           <sourceDirectories>
             <sourceDirectory>${project.basedir}</sourceDirectory>
           </sourceDirectories>
-          <repoToken>1234</repoToken>
+          <repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
         </configuration>
       </plugin>
     </plugins>
