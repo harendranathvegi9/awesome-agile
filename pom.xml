@@ -317,7 +317,10 @@
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>${coveralls-maven-plugin.version}</version>
         <configuration>
-          <repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+          <sourceDirectories>
+            <sourceDirectory>${project.basedir}</sourceDirectory>
+          </sourceDirectories>
+          <repoToken>1234</repoToken>
         </configuration>
       </plugin>
     </plugins>
