@@ -68,7 +68,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.openLogin = function () {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'loginModal.html',
+            templateUrl: '/partials/loginModal.html',
             controller: 'loginModalController',
             size: 'sm'
         });
@@ -77,7 +77,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.open = function (scrumEvent) {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'aaModalContent.html',
+            templateUrl: '/partials/aaModalContent.html',
             controller: 'aaModalController',
             resolve: {
                 scrumEvent: function () {
@@ -86,7 +86,6 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
             }
         });
     }
-
 });
 
 app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEvent) {
@@ -99,7 +98,6 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
     $scope.close = function () {
         $uibModalInstance.close();
     };
-
 });
 
 app.controller('loginModalController', function ($scope, $uibModalInstance) {

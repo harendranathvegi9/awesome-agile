@@ -29,9 +29,10 @@
     <link rel="stylesheet" href="/css/main.css"/>
     <script type="text/javascript" src="/node_modules/angular/angular.min.js"></script>
 </head>
-<body ng-controller="aaController">
-    <div class="container">
 
+<body ng-controller="aaController">
+
+    <div class="container">
         <!--site head-->
         <header class="page-header row">
             <div id="logo" class="col-sm-12">Awesome Agile </div>
@@ -173,30 +174,7 @@
         </div>
 
     </div>
-
-    <script type="text/ng-template" id="aaModalContent.html">
-        <div class="modal-header">
-            <h3 class="modal-title">{{ title }}</h3>
-        </div>
-        <div class="modal-body">
-            <p>{{ description }}</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
-        </div>
-    </script>
-    <script type="text/ng-template" id="loginModal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Choose Provider</h3>
-        </div>
-        <div class="modal-body">
-            <a href="/auth/google" class="btn btn-block btn-social btn-google"><span class="fa fa-google-plus"></span> Google</a>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
-        </div>
-    </script>
-
+   
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="/node_modules/angular-animate/angular-animate.min.js"></script>
     <script type="text/javascript" src="/node_modules/angular-route/angular-route.min.js"></script>
