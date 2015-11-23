@@ -33,6 +33,7 @@ import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.NoSuchConnectionException;
 import org.springframework.social.connect.NotConnectedException;
 import org.springframework.util.MultiValueMap;
 
@@ -76,7 +77,10 @@ public class AwesomeAgileConnectionRepository implements ConnectionRepository {
     User user = getUser();
     ConnectionFactory<A> connectionFactory =
         connectionFactoryLocator.getConnectionFactory(apiType);
-    return ImmutableList.of(connectionFactory.createConnection(connectionData(user)));
+    if (connectionFactory != null) {
+      return ImmutableList.of(connectionFactory.createConnection(connectionData(user)));
+    }
+    return ImmutableList.of();
   }
 
   @Override
@@ -88,11 +92,13 @@ public class AwesomeAgileConnectionRepository implements ConnectionRepository {
   @Override
   public Connection<?> getConnection(ConnectionKey key) {
     User user = userRepository.findOneByAuthProviderUserId(
-        key.getProviderId(),
-        key.getProviderUserId());
-    ConnectionFactory<?> connectionFactory = connectionFactoryLocator
-        .getConnectionFactory(key.getProviderId());
-    return connectionFactory.createConnection(connectionData(user));
+        key.getProviderId(), key.getProviderUserId());
+    if (user.getId() == userId) {
+      ConnectionFactory<?> connectionFactory = connectionFactoryLocator
+          .getConnectionFactory(key.getProviderId());
+      return connectionFactory.createConnection(connectionData(user));
+    }
+    throw new NoSuchConnectionException(key);
   }
 
   @Override

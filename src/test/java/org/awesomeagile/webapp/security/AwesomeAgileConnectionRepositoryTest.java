@@ -1,14 +1,19 @@
 package org.awesomeagile.webapp.security;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.awesomeagile.dao.UserRepository;
@@ -23,7 +28,11 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.NoSuchConnectionException;
+import org.springframework.social.connect.NotConnectedException;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -36,7 +45,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class AwesomeAgileConnectionRepositoryTest {
 
-  public static final String PROVIDER_ONE = "one";
+  private static final String PROVIDER_ONE = "one";
+  private static final String PROVIDER_TWO = "two";
   private ConnectionRepository connectionRepository;
   private UserRepository userRepository;
   private ConnectionFactoryLocator connectionFactoryLocator;
@@ -55,13 +65,16 @@ public class AwesomeAgileConnectionRepositoryTest {
     userRepository = mock(UserRepository.class);
     when(userRepository.findOne(userId)).thenReturn(user());
     connectionFactoryLocator = new TestConnectionFactoryLocator();
-    connectionFactoryOne = mock(TestConnectionFactoryTwo.class);
-    connectionFactoryTwo = mock(ConnectionFactory.class);
+    connectionFactoryOne = mock(TestConnectionFactoryOne.class);
+    when(connectionFactoryOne.getProviderId()).thenReturn(PROVIDER_ONE);
+    connectionFactoryTwo = mock(TestConnectionFactoryTwo.class);
+    when(connectionFactoryTwo.getProviderId()).thenReturn(PROVIDER_TWO);
     connectionFactories = ImmutableMap.of(
         PROVIDER_ONE, connectionFactoryOne,
-        "two", connectionFactoryTwo);
+        PROVIDER_TWO, connectionFactoryTwo);
     connectionFactoriesByClass = ImmutableMap.of(
-        TestConnectionFactoryTwo.class, connectionFactoryOne);
+        TestConnectionFactoryOne.class, connectionFactoryOne,
+        TestConnectionFactoryTwo.class, connectionFactoryTwo);
     connectionRepository = new AwesomeAgileConnectionRepository(
         userRepository, userId, connectionFactoryLocator);
   }
@@ -71,13 +84,17 @@ public class AwesomeAgileConnectionRepositoryTest {
     user.setId(userId);
     user
         .setAuthProviderId(PROVIDER_ONE)
-        .setAuthProviderUserId(PROVIDER_ONE + ":" + providerUserId)
+        .setAuthProviderUserId(providerUserId())
         .setPrimaryEmail("belov.stan@gmail.com")
         .setDisplayName("stan")
         .setIsVisible(true)
         .setStatus(UserStatus.ACTIVE)
         .setAvatar("http://static.akamai.com/image.png");
     return user;
+  }
+
+  private String providerUserId() {
+    return PROVIDER_ONE + ":" + providerUserId;
   }
 
   @Test
@@ -121,8 +138,7 @@ public class AwesomeAgileConnectionRepositoryTest {
         connectionRepository.findConnections(TestConnectionFactoryOne.class);
     assertThat(providerOneConnections, contains(connection));
     ConnectionData connectionData = connectionDataCaptor.getValue();
-    User user = user();
-    assertConnectionData(user, connectionData);
+    assertConnectionData(user(), connectionData);
   }
 
   @Test
@@ -132,75 +148,168 @@ public class AwesomeAgileConnectionRepositoryTest {
         ArgumentCaptor.forClass(ConnectionData.class);
     when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
         .thenReturn(connection);
+    connectionFactoriesByClass = ImmutableMap.of(
+        TestConnectionFactoryOne.class, connectionFactoryOne);
     List<Connection<TestConnectionFactoryTwo>> providerOneConnections =
         connectionRepository.findConnections(TestConnectionFactoryTwo.class);
-    assertThat(providerOneConnections, contains(connection));
-    ConnectionData connectionData = connectionDataCaptor.getValue();
-    User user = user();
-    assertConnectionData(user, connectionData);
+    assertThat(providerOneConnections, empty());
   }
 
   @Test
   public void testFindConnectionsToUsers() throws Exception {
-
+    MultiValueMap<String, Connection<?>> connectionsToUsers =
+        connectionRepository.findConnectionsToUsers(
+            CollectionUtils.toMultiValueMap(
+                ImmutableMap.of(PROVIDER_ONE, ImmutableList.of(providerUserId()))));
+    assertTrue(connectionsToUsers.isEmpty());
   }
 
   @Test
   public void testGetConnection() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    when(userRepository.findOneByAuthProviderUserId(PROVIDER_ONE, providerUserId()))
+        .thenReturn(user());
+    Connection<?> foundConnection = connectionRepository.getConnection(
+        new ConnectionKey(PROVIDER_ONE, providerUserId()));
+    assertNotNull(foundConnection);
+    assertEquals(connection, foundConnection);
+    ConnectionData connectionData = connectionDataCaptor.getValue();
+    assertConnectionData(user(), connectionData);
+  }
 
+  @Test(expected = NoSuchConnectionException.class)
+  public void testGetConnectionNonMatchingUser() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    User wrongUser = user();
+    wrongUser.setId(idProvider.getAndIncrement());
+    when(userRepository.findOneByAuthProviderUserId(PROVIDER_ONE, providerUserId()))
+        .thenReturn(wrongUser);
+    connectionRepository.getConnection(new ConnectionKey(PROVIDER_ONE, providerUserId()));
   }
 
   @Test
-  public void testGetConnection1() throws Exception {
+  public void testGetConnectionByProviderClass() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    Connection<?> foundConnection = connectionRepository.getConnection(
+        TestConnectionFactoryOne.class, providerUserId());
+    assertNotNull(foundConnection);
+    assertEquals(connection, foundConnection);
+    ConnectionData connectionData = connectionDataCaptor.getValue();
+    assertConnectionData(user(), connectionData);
+  }
 
+  @Test(expected = NotConnectedException.class)
+  public void testGetConnectionByProviderClassNotFound() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    connectionRepository.getConnection(
+        TestConnectionFactoryOne.class, PROVIDER_ONE + ":" + idProvider.getAndIncrement());
+  }
+
+  @Test(expected = NotConnectedException.class)
+  public void testGetConnectionByProviderClassWrongProvider() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    connectionRepository.getConnection(
+        TestConnectionFactoryTwo.class, providerUserId());
   }
 
   @Test
   public void testGetPrimaryConnection() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    Connection<?> foundConnection = connectionRepository.getPrimaryConnection(
+        TestConnectionFactoryOne.class);
+    assertNotNull(foundConnection);
+    assertEquals(connection, foundConnection);
+    ConnectionData connectionData = connectionDataCaptor.getValue();
+    assertConnectionData(user(), connectionData);
+  }
 
+  @Test(expected = NotConnectedException.class)
+  public void testGetPrimaryConnectionNotFound() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    connectionRepository.getPrimaryConnection(TestConnectionFactoryTwo.class);
   }
 
   @Test
   public void testFindPrimaryConnection() throws Exception {
-
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    Connection<?> foundConnection = connectionRepository.findPrimaryConnection(
+        TestConnectionFactoryOne.class);
+    assertNotNull(foundConnection);
+    assertEquals(connection, foundConnection);
+    ConnectionData connectionData = connectionDataCaptor.getValue();
+    assertConnectionData(user(), connectionData);
   }
 
   @Test
-  public void testAddConnection() throws Exception {
+  public void testFindPrimaryConnectionNotFound() throws Exception {
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+    Connection<?> foundConnection = connectionRepository.findPrimaryConnection(
+        TestConnectionFactoryTwo.class);
+    assertNull(foundConnection);
+  }
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void testAddConnection() throws Exception {
+    connectionRepository.addConnection(mock(Connection.class));
   }
 
   @Test
   public void testUpdateConnection() throws Exception {
-
+    connectionRepository.updateConnection(mock(Connection.class));
+    verifyZeroInteractions(userRepository);
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void testRemoveConnections() throws Exception {
-
+    connectionRepository.removeConnections(PROVIDER_ONE);
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void testRemoveConnection() throws Exception {
-
+    connectionRepository.removeConnection(new ConnectionKey(PROVIDER_ONE,providerUserId()));
   }
 
   private static class TestConnectionFactoryOne extends ConnectionFactory {
 
-    /**
-     * Creates a new ConnectionFactory.
-     *
-     * @param providerId the assigned, unique id of the provider this factory creates connections to
-     * (used when indexing this factory in a registry)
-     * @param serviceProvider the model for the ServiceProvider used to conduct the connection
-     * authorization/refresh flow and obtain a native service API instance
-     * @param apiAdapter the adapter that maps common operations exposed by the ServiceProvider's API to
-     * the uniform {@link Connection} model
-     */
-    private TestConnectionFactoryOne(String providerId,
-        ServiceProvider serviceProvider,
-        ApiAdapter apiAdapter) {
-      super(providerId, serviceProvider, apiAdapter);
+    public TestConnectionFactoryOne() {
+      super(PROVIDER_ONE, null, null);
+      throw new RuntimeException("Shouldn't be instantiated");
     }
 
     @Override
@@ -211,20 +320,9 @@ public class AwesomeAgileConnectionRepositoryTest {
 
   private static class TestConnectionFactoryTwo extends ConnectionFactory {
 
-    /**
-     * Creates a new ConnectionFactory.
-     *
-     * @param providerId the assigned, unique id of the provider this factory creates connections to
-     * (used when indexing this factory in a registry)
-     * @param serviceProvider the model for the ServiceProvider used to conduct the connection
-     * authorization/refresh flow and obtain a native service API instance
-     * @param apiAdapter the adapter that maps common operations exposed by the ServiceProvider's API to
-     * the uniform {@link Connection} model
-     */
-    private TestConnectionFactoryTwo(String providerId,
-        ServiceProvider serviceProvider,
-        ApiAdapter apiAdapter) {
-      super(providerId, serviceProvider, apiAdapter);
+    public TestConnectionFactoryTwo() {
+      super(PROVIDER_TWO, null, null);
+      throw new RuntimeException("Shouldn't be instantiated");
     }
 
     @Override

@@ -34,9 +34,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UserController {
 
+  /**
+   * Returns the currently authenticated user
+   * @param principal authenticated user as a {@link AwesomeAgileSocialUser} object
+   * @return user currently logged in
+   */
   @RequestMapping(method = RequestMethod.GET, path = "/api/user")
   @ResponseBody
-  public User getAuthenticationStatus(
+  public User getCurrentUser(
       @AuthenticationPrincipal AwesomeAgileSocialUser principal) {
     return principal.getUser();
   }
