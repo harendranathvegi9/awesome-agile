@@ -17,6 +17,11 @@ $(cat << EOF | sed s/%%ENV%%/$1/g
             "memory": 512,
             "portMappings": [
                 {
+                    "containerPort": 8887,
+                    "hostPort": 8887,
+                    "protocol": "tcp"
+                },
+                {
                     "containerPort": 8888,
                     "hostPort": 8888,
                     "protocol": "tcp"
