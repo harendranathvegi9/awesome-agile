@@ -14,3 +14,7 @@ deploy:
     script: src/scripts/deploy-test.sh
     on:
       branch: master
+  - provider: script
+    script: src/scripts/deploy-prod.sh
+    on:
+      tags: true
