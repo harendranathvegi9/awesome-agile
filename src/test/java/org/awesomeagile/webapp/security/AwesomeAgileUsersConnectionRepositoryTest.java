@@ -35,13 +35,19 @@ import org.awesomeagile.dao.UserRepository;
 import org.awesomeagile.model.team.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
+import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UserProfileBuilder;
 import org.springframework.social.connect.UsersConnectionRepository;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -52,6 +58,7 @@ public class AwesomeAgileUsersConnectionRepositoryTest {
   private UserRepository userRepository;
   private ConnectionSignUp connectionSignUp;
   private ConnectionFactoryLocator connectionFactoryLocator;
+  private AtomicLong idProvider = new AtomicLong(1);
 
   @Before
   public void setUp() throws Exception {
@@ -150,4 +157,24 @@ public class AwesomeAgileUsersConnectionRepositoryTest {
     assertTrue(userIds.isEmpty());
   }
 
+  @Test
+  public void testCreateConnectionRepository() throws Exception {
+    User user = new User(SocialTestUtils.USER_ONE);
+    user.setId(idProvider.getAndIncrement());
+    when(userRepository.findOneByPrimaryEmail(SocialTestUtils.USER_EMAIL_ONE))
+        .thenReturn(user);
+
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    ConnectionFactory connectionFactoryOne = mock(ConnectionFactory.class);
+    when(connectionFactoryLocator.getConnectionFactory(user.getAuthProviderId()))
+        .thenReturn(connectionFactoryOne);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+
+    ConnectionRepository connectionRepository = usersConnectionRepository
+        .createConnectionRepository(SocialTestUtils.USER_EMAIL_ONE);
+    assertTrue(connectionRepository instanceof AwesomeAgileConnectionRepository);
+  }
 }
