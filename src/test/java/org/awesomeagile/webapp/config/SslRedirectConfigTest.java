@@ -26,6 +26,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.awesomeagile.PropertySupportConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.google.common.net.HttpHeaders;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(SslRedirectConfig.class)
+@SpringApplicationConfiguration(classes = { SslRedirectConfig.class,
+        PropertySupportConfig.class })
 @WebAppConfiguration
 @IntegrationTest
 public class SslRedirectConfigTest {

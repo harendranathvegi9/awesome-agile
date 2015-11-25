@@ -43,7 +43,6 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -52,12 +51,6 @@ public class SslRedirectConfig {
 
     @Value("${ssl.redirect.port:8887}")
     private Integer sslRedirectPort;
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-        return c;
-    }
 
 	@Bean
 	public TomcatEmbeddedServletContainerFactory tomcatFactory() {
