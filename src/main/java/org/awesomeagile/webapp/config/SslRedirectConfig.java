@@ -1,5 +1,12 @@
 package org.awesomeagile.webapp.config;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /*
  * ================================================================================================
  * Awesome Agile
@@ -19,8 +26,12 @@ package org.awesomeagile.webapp.config;
  * limitations under the License.
  * ------------------------------------------------------------------------------------------------
  */
-
-import org.apache.catalina.*;
+import org.apache.catalina.Context;
+import org.apache.catalina.Engine;
+import org.apache.catalina.Host;
+import org.apache.catalina.Server;
+import org.apache.catalina.Service;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardEngine;
@@ -31,20 +42,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-@Component
+@Configuration
 public class SslRedirectConfig {
 
-	@Value("${ssl.redirect.port:8887}")
-	private Integer sslRedirectPort;
+    @Value("${ssl.redirect.port:8887}")
+    private Integer sslRedirectPort;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
+        return c;
+    }
 
 	@Bean
 	public TomcatEmbeddedServletContainerFactory tomcatFactory() {
@@ -80,7 +93,8 @@ public class SslRedirectConfig {
 					@Override
 					public void service(HttpServletRequest req, HttpServletResponse res)
 							throws ServletException, IOException {
-						UriComponentsBuilder b = UriComponentsBuilder.fromHttpUrl(req.getRequestURL().toString());
+					    ServletServerHttpRequest r = new ServletServerHttpRequest(req);
+					    UriComponentsBuilder b = UriComponentsBuilder.fromHttpRequest(r);
 						b.scheme("https");
 						b.port(null);
 						res.sendRedirect(b.toUriString());

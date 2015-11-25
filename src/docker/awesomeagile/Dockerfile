@@ -1,8 +1,8 @@
 FROM awesomeagile/tomcat-jar:latest
 
 RUN useradd -r awesomeagile
- 
-EXPOSE 8888
+
+EXPOSE 8887 8888
 
 ADD awesomeagile.jar /awesomeagile.jar
 
