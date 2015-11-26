@@ -157,7 +157,7 @@
         <!-- Popular Tools-->
         <div ng-controller="ToolsCarouselCtrl">
             <div style="height: 305px">
-                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="templates/carousel.html">
+                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="/partials/carousel.html">
                     <uib-slide ng-repeat="slide in slides" active="slide.active">
                         <img ng-src="{{slide.image}}" style="margin:auto;"/>
                         <div class="carousel-caption">
