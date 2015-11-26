@@ -8,6 +8,7 @@
   <artifactId>awesomeagile</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>Awesome Agile</name>
+  <description>An Agile Coaching Resource</description>
   <inceptionYear>2015</inceptionYear>
   <organization>
     <name>Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al</name>
@@ -274,7 +275,7 @@
         <version>0.3.5</version>
         <configuration>
           <serverId>docker-hub</serverId>
-          <imageName>awesomeagile/${project.artifactId}:latest</imageName>
+          <imageName>awesomeagile/${project.artifactId}:${docker.tag}</imageName>
           <dockerDirectory>${project.basedir}/src/docker/awesomeagile</dockerDirectory>
           <resources>
             <resource>
