@@ -1,5 +1,25 @@
 package org.awesomeagile.webapp.security;
 
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -15,13 +35,19 @@ import org.awesomeagile.dao.UserRepository;
 import org.awesomeagile.model.team.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
+import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UserProfileBuilder;
 import org.springframework.social.connect.UsersConnectionRepository;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -32,6 +58,7 @@ public class AwesomeAgileUsersConnectionRepositoryTest {
   private UserRepository userRepository;
   private ConnectionSignUp connectionSignUp;
   private ConnectionFactoryLocator connectionFactoryLocator;
+  private AtomicLong idProvider = new AtomicLong(1);
 
   @Before
   public void setUp() throws Exception {
@@ -130,4 +157,24 @@ public class AwesomeAgileUsersConnectionRepositoryTest {
     assertTrue(userIds.isEmpty());
   }
 
+  @Test
+  public void testCreateConnectionRepository() throws Exception {
+    User user = new User(SocialTestUtils.USER_ONE);
+    user.setId(idProvider.getAndIncrement());
+    when(userRepository.findOneByPrimaryEmail(SocialTestUtils.USER_EMAIL_ONE))
+        .thenReturn(user);
+
+    Connection connection = mock(Connection.class);
+    ArgumentCaptor<ConnectionData> connectionDataCaptor =
+        ArgumentCaptor.forClass(ConnectionData.class);
+    ConnectionFactory connectionFactoryOne = mock(ConnectionFactory.class);
+    when(connectionFactoryLocator.getConnectionFactory(user.getAuthProviderId()))
+        .thenReturn(connectionFactoryOne);
+    when(connectionFactoryOne.createConnection(connectionDataCaptor.capture()))
+        .thenReturn(connection);
+
+    ConnectionRepository connectionRepository = usersConnectionRepository
+        .createConnectionRepository(SocialTestUtils.USER_EMAIL_ONE);
+    assertTrue(connectionRepository instanceof AwesomeAgileConnectionRepository);
+  }
 }

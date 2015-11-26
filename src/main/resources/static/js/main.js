@@ -1,3 +1,22 @@
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
 var app = angular.module('awesome-agile', ['ui.bootstrap']);
 
 app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
@@ -76,7 +95,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.openLogin = function () {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'loginModal.html',
+            templateUrl: '/partials/loginModal.html',
             controller: 'loginModalController',
             size: 'sm'
         });
@@ -85,7 +104,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.open = function (scrumEvent) {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'aaModalContent.html',
+            templateUrl: '/partials/aaModalContent.html',
             controller: 'aaModalController',
             resolve: {
                 scrumEvent: function () {
@@ -94,7 +113,6 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
             }
         });
     }
-
 });
 
 app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEvent) {
@@ -107,7 +125,6 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
     $scope.close = function () {
         $uibModalInstance.close();
     };
-
 });
 
 app.controller('loginModalController', function ($scope, $uibModalInstance) {

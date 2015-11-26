@@ -1,5 +1,25 @@
 package org.awesomeagile.webapp.security;
 
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
 import static org.springframework.util.CollectionUtils.toMultiValueMap;
 
 import com.google.common.collect.ImmutableList;
@@ -13,6 +33,7 @@ import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.NoSuchConnectionException;
 import org.springframework.social.connect.NotConnectedException;
 import org.springframework.util.MultiValueMap;
 
@@ -56,7 +77,10 @@ public class AwesomeAgileConnectionRepository implements ConnectionRepository {
     User user = getUser();
     ConnectionFactory<A> connectionFactory =
         connectionFactoryLocator.getConnectionFactory(apiType);
-    return ImmutableList.of(connectionFactory.createConnection(connectionData(user)));
+    if (connectionFactory != null) {
+      return ImmutableList.of(connectionFactory.createConnection(connectionData(user)));
+    }
+    return ImmutableList.of();
   }
 
   @Override
@@ -68,11 +92,13 @@ public class AwesomeAgileConnectionRepository implements ConnectionRepository {
   @Override
   public Connection<?> getConnection(ConnectionKey key) {
     User user = userRepository.findOneByAuthProviderUserId(
-        key.getProviderId(),
-        key.getProviderUserId());
-    ConnectionFactory<?> connectionFactory = connectionFactoryLocator
-        .getConnectionFactory(key.getProviderId());
-    return connectionFactory.createConnection(connectionData(user));
+        key.getProviderId(), key.getProviderUserId());
+    if (user.getId() == userId) {
+      ConnectionFactory<?> connectionFactory = connectionFactoryLocator
+          .getConnectionFactory(key.getProviderId());
+      return connectionFactory.createConnection(connectionData(user));
+    }
+    throw new NoSuchConnectionException(key);
   }
 
   @Override

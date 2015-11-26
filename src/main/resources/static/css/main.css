@@ -1,3 +1,22 @@
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
 /* =============== flowchart ===============*/
 .svg-container {
     display: inline-block;
@@ -16,16 +35,6 @@
     width: 100%;
 }
 
-
-#logo{
-	font-weight:bold;
-	font-size:36px;
-}
-#subtitle{
-	font-weight:bold;
-	font-size:24px;
-}
-
 .scrum-event {
     cursor: pointer;
 }
@@ -42,6 +51,61 @@
     display: none !important;
 }
 
+/*=================landing page basic looking===========================================================*/
+.container{
+    padding:20px;
+}
+header{
+    margin-top:-8px;
+}
+#logo{
+    font-weight:bold;
+    font-size:2.5em;
+}
+#subtitle{
+    font-weight:bold;
+    font-size:1.5em;
+}
+
+.tools{
+    margin-bottom:10px;
+}
+
+.tool{
+    height:36px;
+    text-align:left;
+    padding-left:25px;
+    padding-top:8px;
+    padding-bottom:8px;
+    font-size: 0.9em;
+}
+
+#login{
+    width: 120px;
+    height:42px;
+    font-size:1.5e;
+    opacity:0.7;
+}
+/*=================landing page basic looking mobile===========================================================*/
+@media screen and (max-width: 480px) {
+    .tool{
+        height:auto;
+        padding:5px;
+    }
+
+    #login{
+        width: 70px;
+        height:30px;
+        opacity:0.8;
+    }
+
+    #subtitle{
+        font-weight:bold;
+        font-size:0.9em;
+    }
+}
+
+/*================= Tools Carousel   ========================================================================*/
 .carousel-inner {
     padding-left: 5%;
     padding-right: 5%;
@@ -71,4 +135,3 @@
 .carousel-control .glyphicon-chevron-right, .carousel-control .icon-prev {
     right: 20%;
 }
-

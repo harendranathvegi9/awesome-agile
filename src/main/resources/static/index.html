@@ -1,3 +1,21 @@
+<!--
+  ================================================================================================
+  Awesome Agile
+  %%
+  Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
 <!DOCTYPE html>
 <html lang="en" ng-app="awesome-agile">
 <head>
@@ -11,22 +29,27 @@
     <link rel="stylesheet" href="/css/main.css"/>
     <script type="text/javascript" src="/node_modules/angular/angular.min.js"></script>
 </head>
+
 <body ng-controller="aaController">
+
     <div class="container">
+        <!--site head-->
         <header class="page-header row">
             <div id="logo" class="col-sm-12">Awesome Agile </div>
-            <div id="subtitle" class="col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-9">
+            <div id="subtitle" class="col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-8">
                 <span>An Agile Coaching Resource</span>
             </div>
-            <div class="userControls col-sm-2 col-xs-2">
-                <div class="btn-group" role="group">
-                    <button id="login" type="button" class="btn btn-primary ng-hide" ng-click="openLogin()" ng-show="loggedOut">Login</button>
+            <div class="userControls col-sm-2 col-xs-3">
+                <div  role="group">
+                    <button id="login" type="button" class="btn btn-primary  ng-hide" ng-click="openLogin()" ng-show="loggedOut">Login</button>
                 </div>
                 <span ng-show="loggedIn" ng-cloak>{{ user.displayName }}</span>
             </div>
         </header>
-        <div class="row">
-            <div class="svg-container">
+
+        <!--work flow-->
+        <div class="row" >
+            <section class="col-xs-12 svg-container">
                 <svg viewBox="0 0 902 327" class="svg-content" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
                     <g id="agile-workflow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
                         <rect id="sprint-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="1" y="1" width="900" height="325" rx="8"></rect>
@@ -40,14 +63,14 @@
                         <rect id="daily-work-background" stroke="#979797" fill="#F1EDE2" sketch:type="MSShapeGroup" x="166" y="21" width="485" height="275" rx="8"></rect>
                         <g class="scrum-event" ng-click="open('sprintReview')">
                             <circle id="sprint-review-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="725" cy="161" r="45"></circle>
-                            <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
+                            <text id="Sprint1" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                                 <tspan x="704.779297" y="160">Sprint</tspan>
                                 <tspan x="700.875977" y="176">Review</tspan>
                             </text>
                         </g>
                         <g class="scrum-event" ng-click="open('sprintRetrospective')">
                             <circle id="sprint-retrospective-oval" stroke="#979797" fill="#51A1C4" sketch:type="MSShapeGroup" cx="844" cy="161" r="45"></circle>
-                            <text id="Sprint" sketch:type="MSTextLayer" font-family="Arial" font-size="12" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
+                            <text id="Sprint2" sketch:type="MSTextLayer" font-family="Arial" font-size="12" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                                 <tspan x="827.667969" y="157">Sprint</tspan>
                                 <tspan x="805.317383" y="171">Retrospective</tspan>
                             </text>
@@ -73,11 +96,11 @@
                                 <tspan x="472.126465" y="90">Test</tspan>
                                 <tspan x="470.04834" y="106">Fails</tspan>
                             </text>
-                            <text id="Write" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
+                            <text id="Write1" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                                 <tspan x="566.126465" y="159">Write</tspan>
                                 <tspan x="566" y="175">Code</tspan>
                             </text>
-                            <text id="Test" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
+                            <text id="Test1" sketch:type="MSTextLayer" font-family="Arial" font-size="14" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                                 <tspan x="472.126465" y="221">Test</tspan>
                                 <tspan x="461.865723" y="237">Passes</tspan>
                             </text>
@@ -106,65 +129,48 @@
                         <text id="Agile-Sprint" sketch:type="MSTextLayer" font-family="Helvetica" font-size="18" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="24.4980469" y="54">Agile Sprint</tspan>
                         </text>
-                        <rect id="daily-work-background" fill="#DC8061" sketch:type="MSShapeGroup" x="192" y="45" width="115" height="35"></rect>
+                        <rect id="daily-work-background1" fill="#DC8061" sketch:type="MSShapeGroup" x="192" y="45" width="115" height="35"></rect>
                         <text id="Daily-Work" sketch:type="MSTextLayer" font-family="Helvetica" font-size="18" font-weight="bold" sketch:alignment="middle" fill="#FFFFFF">
                             <tspan x="203.146484" y="69">Daily Work</tspan>
                         </text>
-                        <rect id="tdd-background" fill="#DC8061" sketch:type="MSShapeGroup" x="361" y="57.5" width="60" height="35"></rect>
+                        <rect id="tdd-background1" fill="#DC8061" sketch:type="MSShapeGroup" x="361" y="57.5" width="60" height="35"></rect>
                         <text id="TDD" sketch:type="MSTextLayer" font-family="Helvetica" font-size="18" font-weight="bold" fill="#FFFFFF">
                             <tspan x="373" y="82">TDD</tspan>
                         </text>
                     </g>
                 </svg>
-            </div>
-            <div class="row">
-	            <div class="col-xs-6 col-sm-3  panel panel-info"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info "><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
-	            <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info"><span class="glyphicon glyphicon-cog"></span> Source Code Control</div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-retweet"></span> Continuous Integration</div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
-	            <div class="col-xs-6 col-sm-3 panel panel-info"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
-            </div>
-            <div ng-controller="ToolsCarouselCtrl">
-                <div style="height: 305px">
-                    <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="templates/carousel.html">
-                        <uib-slide ng-repeat="slide in slides" active="slide.active">
-                            <img ng-src="{{slide.image}}" style="margin:auto;"/>
-                            <div class="carousel-caption">
-                                <p>{{slide.description}}</p>
-                                <a href="{{slide.link}}">Go to {{slide.title}}</a>
-                            </div>
-                        </uib-slide>
-                    </uib-carousel>
-                </div>
+            </section>
+        </div>
+
+        <!--tools-->
+        <div class="tools row">
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
+            <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info tool"><span class="glyphicon glyphicon-cog"></span> Source Code Control</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-retweet"></span> Continuous Integration</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
+        </div>
+
+        <!-- Popular Tools-->
+        <div ng-controller="ToolsCarouselCtrl">
+            <div style="height: 305px">
+                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="templates/carousel.html">
+                    <uib-slide ng-repeat="slide in slides" active="slide.active">
+                        <img ng-src="{{slide.image}}" style="margin:auto;"/>
+                        <div class="carousel-caption">
+                            <p>{{slide.description}}</p>
+                            <a href="{{slide.link}}">Go to {{slide.title}}</a>
+                        </div>
+                    </uib-slide>
+                </uib-carousel>
             </div>
         </div>
 
-        <script type="text/ng-template" id="aaModalContent.html">
-            <div class="modal-header">
-                <h3 class="modal-title">{{ title }}</h3>
-            </div>
-            <div class="modal-body">
-                <p>{{ description }}</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
-            </div>
-        </script>
-        <script type="text/ng-template" id="loginModal.html">
-            <div class="modal-header">
-                <h3 class="modal-title">Choose Provider</h3>
-            </div>
-            <div class="modal-body">
-                <a href="/auth/google" class="btn btn-block btn-social btn-google"><span class="fa fa-google-plus"></span> Google</a>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
-            </div>
-        </script>
     </div>
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="/node_modules/angular-animate/angular-animate.min.js"></script>
     <script type="text/javascript" src="/node_modules/angular-route/angular-route.min.js"></script>

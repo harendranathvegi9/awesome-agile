@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.security;
+package org.awesomeagile.webapp.controller;
 
 /*
  * ================================================================================================
@@ -20,34 +20,33 @@ package org.awesomeagile.webapp.security;
  * ------------------------------------------------------------------------------------------------
  */
 
-import com.google.common.base.MoreObjects;
+import static org.junit.Assert.*;
+
+import com.google.common.collect.ImmutableSet;
 
 import org.awesomeagile.model.team.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.social.security.SocialUser;
-
-import java.util.Collection;
+import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
+import org.awesomeagile.webapp.security.SocialTestUtils;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author sbelov@google.com (Stan Belov)
  */
-public class AwesomeAgileSocialUser extends SocialUser {
+public class UserControllerTest {
 
-  private final User user;
+  private UserController userController;
 
-  public AwesomeAgileSocialUser(User user, Collection<? extends GrantedAuthority> authorities) {
-    super(user.getPrimaryEmail(), "", authorities);
-    this.user = user;
+  @Before
+  public void setUp() throws Exception {
+    userController = new UserController();
   }
 
-  public User getUser() {
-    return user;
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("user", user)
-        .toString();
+  @Test
+  public void testGetCurrentUser() throws Exception {
+    AwesomeAgileSocialUser socialUser = new AwesomeAgileSocialUser(
+        SocialTestUtils.USER_ONE, ImmutableSet.of());
+    User currentUser = userController.getCurrentUser(socialUser);
+    assertEquals(SocialTestUtils.USER_ONE, currentUser);
   }
 }

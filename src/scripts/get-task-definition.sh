@@ -1,26 +1,26 @@
 #!/bin/sh
 
-#if [ "$#" -eq 1 ]; then
-#eval "cat <<EOF
-#$(cat taskdef.json | sed s/%%ENV%%/$1/)
-#EOF
-#" 2> /dev/null
-#else
-#  echo "usage: get-task-definition.sh <deployment environment>"
-#fi
+if [ $# -ne 2 ]; then
+  echo "usage: get-task-definition.sh <deployment environment> <image tag>"
+  exit 1
+fi
 
-if [ "$#" -eq 1 ]; then
 eval "cat <<EOF
-$(cat << EOF | sed s/%%ENV%%/$1/
+$(cat << EOF | sed s/%%ENV%%/$1/g
 {
-    "family": "awesomeagile-webapp", 
+    "family": "awesomeagile-%%ENV%%",
     "containerDefinitions": [
         {
             "name": "awesomeagile",
-            "image": "awesomeagile/awesomeagile-webapp:latest", 
+            "image": "awesomeagile/awesomeagile:$2",
             "cpu": 0,
             "memory": 512,
             "portMappings": [
+                {
+                    "containerPort": 8887,
+                    "hostPort": 8887,
+                    "protocol": "tcp"
+                },
                 {
                     "containerPort": 8888,
                     "hostPort": 8888,
@@ -58,6 +58,3 @@ EOF
 )
 EOF
 " 2> /dev/null
-else
-  echo "usage: get-task-definition.sh <deployment environment>"
-fi
