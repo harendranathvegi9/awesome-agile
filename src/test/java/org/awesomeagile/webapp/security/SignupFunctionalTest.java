@@ -20,17 +20,17 @@ package org.awesomeagile.webapp.security;
  * ------------------------------------------------------------------------------------------------
  */
 
-import static org.apache.commons.lang.math.RandomUtils.nextLong;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import org.awesomeagile.AwesomeAgileApplication;
 import org.awesomeagile.dao.testing.TestDatabase;
-import org.awesomeagile.testutils.NetworkUtils;
+import org.awesomeagile.webapp.security.SignupFunctionalTest.EnvInitializer;
 import org.awesomeagile.webapp.security.testing.LandingPage;
 import org.awesomeagile.webapp.security.testing.google.FakeGoogleServer;
 import org.awesomeagile.webapp.security.testing.google.Person;
@@ -38,23 +38,57 @@ import org.awesomeagile.webapp.security.testing.google.Person.Email;
 import org.awesomeagile.webapp.security.testing.google.Person.Image;
 import org.awesomeagile.webapp.security.testing.google.Person.Name;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * An end-to-end test for the sign up flows.
+ *
  * @author sbelov@google.com (Stan Belov)
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebIntegrationTest(randomPort = true)
+@SpringApplicationConfiguration(classes = {AwesomeAgileApplication.class},
+    initializers = {EnvInitializer.class})
 public class SignupFunctionalTest {
 
   private static final String DATABASE_NAME = "awesomeagile";
-  public static final String CLIENT_ID = "testclient-1.google.com";
-  public static final String CLIENT_SECRET = "verystrongsecret";
+  private static final String CLIENT_ID = "testclient-1.google.com";
+  private static final String CLIENT_SECRET = "verystrongsecret";
+  private static final String DISPLAY_NAME = "sbelov";
+  private final AtomicLong idProvider = new AtomicLong(1);
+
+  public static final class EnvInitializer implements
+      ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+      applicationContext.getEnvironment().getPropertySources().addFirst(
+          new MapPropertySource("overrides",
+              new ImmutableMap.Builder<String, Object>()
+                  .put("spring.datasource.url", testDatabase.getUrl(DATABASE_NAME))
+                  .put("spring.datasource.username", testDatabase.getUserName())
+                  .put("spring.datasource.password", testDatabase.getPassword())
+                  .put("spring.social.google.api.url", fakeGoogleServer.getEndpoint())
+                  .put("spring.social.google.oauth.url", fakeGoogleServer.getEndpoint())
+                  .put("spring.social.google.clientId", CLIENT_ID)
+                  .put("spring.social.google.secret", CLIENT_SECRET)
+                  .put("spring.social.google.scope", "profile email")
+                  .build()));
+    }
+  }
 
   @ClassRule
   public static TestDatabase testDatabase = new TestDatabase(
@@ -64,53 +98,23 @@ public class SignupFunctionalTest {
   @ClassRule
   public static FakeGoogleServer fakeGoogleServer = new FakeGoogleServer();
 
-  private static int port;
+  @Value("${local.server.port}")
+  private int port;
+
   private HtmlUnitDriver driver;
-
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    port = NetworkUtils.findAvailablePort();
-    AwesomeAgileApplication.main(getArguments().toArray(new String[0]));
-  }
-
-  private static List<String> getArguments() {
-    return ImmutableList.of(
-        argument("server.port", port),
-        argument("spring.datasource.url", testDatabase.getUrl(DATABASE_NAME)),
-        argument("spring.datasource.username", testDatabase.getUserName()),
-        argument("spring.datasource.password", testDatabase.getPassword()),
-
-        argument("spring.social.google.api.url", fakeGoogleServer.getEndpoint()),
-        argument("spring.social.google.oauth.url", fakeGoogleServer.getEndpoint()),
-        argument("spring.social.google.clientId", CLIENT_ID),
-        argument("spring.social.google.secret", CLIENT_SECRET),
-        argument("spring.social.google.scope", "profile email")
-    );
-  }
-
-  private static String argument(String name, int value) {
-    return argument(name, String.valueOf(value));
-  }
-
-  private static String argument(String name, String value) {
-    if (!Strings.isNullOrEmpty(value)) {
-      return "--" + name + "=" + value + "";
-    } else {
-      return "--" + name;
-    }
-  }
 
   @Before
   public void setUp() throws Exception {
+    System.out.println("Fake Google OAuth2 server up at: " + fakeGoogleServer.getEndpoint());
+    System.out.println("AwesomeAgile web application up at: " + getEndpoint());
     fakeGoogleServer.setClientId(CLIENT_ID);
     fakeGoogleServer.setClientSecret(CLIENT_SECRET);
     fakeGoogleServer.setRedirectUriPrefixes(
         ImmutableList.of("http://localhost:" + port + "/"));
-    String id = String.valueOf(nextLong());
     fakeGoogleServer.setPerson(
         new Person()
-            .setId(id)
-            .setDisplayName("sbelov")
+            .setId(String.valueOf(idProvider.getAndIncrement()))
+            .setDisplayName(DISPLAY_NAME)
             .setName(new Name("Stan", "Belov"))
             .setEmails(ImmutableList.of(new Email("belov.stan@gmail.com", "account")))
             .setImage(new Image("http://static.google.com/avatar.jpg"))
@@ -119,13 +123,26 @@ public class SignupFunctionalTest {
     driver.setJavascriptEnabled(true);
   }
 
+  /**
+   * Verifies the normal sign up flow:
+   * 1. User clicks on the login button.
+   * 2. User selects Google as an OAuth2 provider.
+   * 3. Google (fake Google OAuth server in this case) authenticates the user
+   * and redirects back to the web application with the code request parameter set.
+   * 4. Web application requests an OAuth2 token based on the code it received.
+   * 5. User is logged in, and his display name is visible on the landing page.
+   *
+   * @throws Exception
+   */
   @Test
-  public void testHello() throws Exception {
-    System.out.println("Fake Google OAuth2 server up at: " + fakeGoogleServer.getEndpoint());
-    String endPoint = "http://localhost:" + port + "/";
-    System.out.println("AwesomeAgile web application up at: " + endPoint);
+  public void testSignupFlow() throws Exception {
     LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
-    landingPage.loginWithGoogle(endPoint);
-    assertEquals("sbelov", landingPage.getUserName());
+    landingPage.loginWithGoogle(getEndpoint());
+    assertEquals(DISPLAY_NAME, landingPage.getUserName());
+    assertFalse(landingPage.isLoginButtonVisible());
+  }
+
+  private String getEndpoint() {
+    return "http://localhost:" + port + "/";
   }
 }

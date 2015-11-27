@@ -53,6 +53,7 @@ public class LandingPage {
 
   public LandingPage loginWithGoogle(String endPoint) {
     driver.get(endPoint);
+    wait.until(ExpectedConditions.visibilityOf(loginButton));
     loginButton.click();
     wait.until(ExpectedConditions.visibilityOf(googleButton));
     googleButton.click();
@@ -65,4 +66,7 @@ public class LandingPage {
     return userName.getText();
   }
 
+  public boolean isLoginButtonVisible() {
+    return loginButton.isDisplayed();
+  }
 }
