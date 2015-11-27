@@ -1,11 +1,10 @@
+[![Build Status](https://travis-ci.org/cs71-caffeine/awesome-agile.svg)](https://travis-ci.org/cs71-caffeine/awesome-agile)
+  [![Code Coverage](https://coveralls.io/repos/cs71-caffeine/awesome-agile/badge.svg?branch=master&service=github)](https://coveralls.io/github/cs71-caffeine/awesome-agile?branch=master)
+
 # awesome-agile
 Awesome Agile Project Management
-</br>
-<a href="https://travis-ci.org/cs71-caffeine/awesome-agile">
-    <img src="https://travis-ci.org/cs71-caffeine/awesome-agile.svg"
-         alt="build status">
-</a>
 
+[http://www.awesomeagile.org](http://awesomeagile.org/)
 
 ## Vision
 A web portal that describes and proposes tools for each component of
@@ -88,7 +87,41 @@ platform.
 - Qanit Al-Syed, Developer
 - Linghong Chen, Developer
 
-## Product Backlog
+## Documents/Resources
+
+### Product Backlog
 
 The product and sprint backlogs are managed via
 [Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
+
+### Definition of Done
+
+Our definition of done is
+[here](https://hackpad.com/Definition-of-Done-cPORmQZISMt).
+
+## Sprints
+
+### Sprint 1
+
+#### Goal
+
+Build core application framework, data models, basic user interface,
+and team on-boarding process.
+
+#### Retrospective
+
+The sprint 1 retrospective document is
+[here](https://hackpad.com/Retrospective-1-VtDkx24ziCL).
+
+### Sprint 2
+
+#### Goal
+
+Build core application framework, data models, basic user interface,
+and team on-boarding process.
+
+This is the same goal as sprint 1 because we took on more than we
+could handle in sprint 1 and we didn't have any stories that we could
+call done according to our definition of done. Sprint 2 is focused on
+finished up the backlog items started in sprint 1, making them meet
+our definition of done so that we can close them out.

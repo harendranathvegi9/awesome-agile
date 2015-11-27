@@ -6,8 +6,15 @@ sudo: required
 services:
   - docker
 
+after_success:
+  - mvn coveralls:report
+
 deploy:
   - provider: script
-    script: awesomeagile-webapp/src/scripts/deploy-test.sh
+    script: src/scripts/deploy-test.sh
     on:
       branch: master
+  - provider: script
+    script: src/scripts/deploy-prod.sh
+    on:
+      tags: true

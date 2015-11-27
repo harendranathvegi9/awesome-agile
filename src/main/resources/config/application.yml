@@ -1,0 +1,29 @@
+info.build:
+  artifact: '@project.artifactId@'
+  name: '@project.name@'
+  description: '@project.description@'
+  version: '@project.version@'
+
+server.port: 8888
+
+# datasource configuration
+spring.datasource:
+  driverClassName: org.postgresql.Driver
+  validation-query: select 1
+
+spring.social:
+  google:
+    scope: 'email profile'
+    oauth.url: 'https://accounts.google.com/o/'
+    api.url: 'https://www.googleapis.com/'
+
+# flyway configuration
+flyway:
+  sql-migration-prefix: v
+  sql-migration-separator: '-'
+
+# spring-boot-actuator configuration
+endpoints:
+  enabled: false
+  health.enabled: true
+  info.enabled: true
