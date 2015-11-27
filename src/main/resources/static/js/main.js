@@ -65,33 +65,6 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
         }
     };
 
-    $scope.toolDescriptions = {
-        hackpad: {
-            'title': 'Hackpad',
-            'image': 'images/hackpad.png',
-            'description': 'Hackpad is a web based text editor tool. It offers real-time collaboration across devices and users.',
-            'link': "https://hackpad.com/"
-        },
-        trello: {
-            'title': 'Trello',
-            'image': 'images/trello.png',
-            'description': "Trello is a collaboration tool that organizes your projects into boards. In one glance, Trello tells you what's being worked on, who's working on what, and where something is in a process.",
-            'link': "https://trello.com/"
-        },
-        github: {
-            'title': 'GitHub',
-            'image': 'images/github.png',
-            'description': "GitHub is a source code repository hosting service, based on Git. While Git is a command line tool, GitHub provides a Web-based graphical interface. It also provides access control and several collaboration features, such as a wikis and basic task management tools for every project.",
-            'link': "https://github.com/"
-        },
-        travisci: {
-            'title': 'Travis CI',
-            'image': 'images/TravisCI.png',
-            'description': "Travis CI is a hosted continuous integration platform that is free for all open source projects hosted on Github. With just a file called .travis.yml containing some information about our project, we can trigger automated builds with every change to our code base in the master branch, other branches or even a pull request.",
-            'link': "https://travis-ci.org/"
-        }
-    };
-
     $scope.openLogin = function () {
         var modalInstance = $uibModal.open({
             animation: true,
@@ -135,12 +108,42 @@ app.controller('loginModalController', function ($scope, $uibModalInstance) {
 
 });
 
-app.controller('ToolsCarouselCtrl', function ($scope) {
+app.controller('aaToolsCarouselCtrl', function ($scope) {
+    toolDescriptions = {
+        hackpad: {
+            'title': 'Hackpad',
+            'image': 'images/hackpad.png',
+            'description': 'Hackpad is a web based text editor tool. It offers real-time collaboration across devices and users.',
+            'link': "https://hackpad.com/"
+        },
+        trello: {
+            'title': 'Trello',
+            'image': 'images/trello.png',
+            'description': "Trello is a collaboration tool that organizes your projects into boards. In one glance, Trello tells you what's being worked on, who's working on what, and where something is in a process.",
+            'link': "https://trello.com/"
+        },
+        github: {
+            'title': 'GitHub',
+            'image': 'images/github.png',
+            'description': "GitHub is a source code repository hosting service, based on Git. While Git is a command line tool, GitHub provides a Web-based graphical interface. It also provides access control and several collaboration features, such as a wikis and basic task management tools for every project.",
+            'link': "https://github.com/"
+        },
+        travisci: {
+            'title': 'Travis CI',
+            'image': 'images/TravisCI.png',
+            'description': "Travis CI is a hosted continuous integration platform that is free for all open source projects hosted on Github. With just a file called .travis.yml containing some information about our project, we can trigger automated builds with every change to our code base in the master branch, other branches or even a pull request.",
+            'link': "https://travis-ci.org/"
+        }
+    };
+
     $scope.myInterval = 5000;
     $scope.noWrapSlides = true;
     var slides = $scope.slides = [];
-    slides.push($scope.toolDescriptions.hackpad);
-    slides.push($scope.toolDescriptions.trello);
-    slides.push($scope.toolDescriptions.github);
-    slides.push($scope.toolDescriptions.travisci);
+    if (toolDescriptions) {
+        slides.push(toolDescriptions.hackpad);
+        slides.push(toolDescriptions.trello);
+        slides.push(toolDescriptions.github);
+        slides.push(toolDescriptions.travisci);
+    }
+
 });
