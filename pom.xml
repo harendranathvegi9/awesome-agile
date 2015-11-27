@@ -33,6 +33,8 @@
     <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
     <license-maven-plugin.version>1.8</license-maven-plugin.version>
     <jetty.version>9.3.5.v20151012</jetty.version>
+    <selenium.version>2.48.2</selenium.version>
+    <xml-apis.version>1.4.01</xml-apis.version>
   </properties>
 
   <parent>
@@ -116,6 +118,17 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+
 
     <!-- test concerns -->
 
@@ -133,6 +146,20 @@
       <groupId>com.spotify</groupId>
       <artifactId>docker-client</artifactId>
       <version>${docker.client.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-htmlunit-driver</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- required for selenium to function correctly -->
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>${xml-apis.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -158,8 +185,12 @@
         <version>${license-maven-plugin.version}</version>
         <configuration>
           <licenseName>apache_v2</licenseName>
-          <processStartTag>================================================================================================</processStartTag>
-          <processEndTag>------------------------------------------------------------------------------------------------</processEndTag>
+          <processStartTag>
+            ================================================================================================
+          </processStartTag>
+          <processEndTag>
+            ------------------------------------------------------------------------------------------------
+          </processEndTag>
           <verbose>false</verbose>
           <sectionDelimiter>%%</sectionDelimiter>
           <addSvnKeyWords>false</addSvnKeyWords>

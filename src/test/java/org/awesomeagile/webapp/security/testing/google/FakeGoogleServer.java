@@ -1,5 +1,28 @@
-package org.awesomeagile.webapp.test.google;
+package org.awesomeagile.webapp.security.testing.google;
 
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
+import com.google.common.collect.ImmutableList;
+
+import org.apache.commons.lang3.StringUtils;
 import org.awesomeagile.testutils.NetworkUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -10,6 +33,8 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,7 +47,6 @@ import java.util.List;
 public class FakeGoogleServer extends ExternalResource {
 
   private static final String CONTEXT_PATH = "/g";
-  private static final String CONFIG_LOCATION = "org.awesomeagile.webapp.test.google";
   private static final String MAPPING_URL = "/*";
 
   private final int port;
@@ -37,10 +61,6 @@ public class FakeGoogleServer extends ExternalResource {
     } catch (IOException ex) {
       throw new RuntimeException("Unable to find a free port", ex);
     }
-  }
-
-  public int getPort() {
-    return port;
   }
 
   public String getEndpoint() {
@@ -112,7 +132,16 @@ public class FakeGoogleServer extends ExternalResource {
 
   private static WebApplicationContext getContext() {
     AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-    context.setConfigLocation(CONFIG_LOCATION);
+    context.setConfigLocation(
+        StringUtils.join(
+            ImmutableList.of(FakeGoogleOAuthServerConfiguration.class, FakeGoogleController.class),
+            ',')
+    );
     return context;
+  }
+
+  @EnableWebMvc
+  static class FakeGoogleOAuthServerConfiguration extends WebMvcConfigurerAdapter {
+
   }
 }

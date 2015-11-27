@@ -15,6 +15,7 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+  ------------------------------------------------------------------------------------------------
   -->
 <!DOCTYPE html>
 <html lang="en" ng-app="awesome-agile">
@@ -43,7 +44,7 @@
                 <div  role="group">
                     <button id="login" type="button" class="btn btn-primary  ng-hide" ng-click="openLogin()" ng-show="loggedOut">Login</button>
                 </div>
-                <span ng-show="loggedIn" ng-cloak>{{ user.displayName }}</span>
+                <span ng-show="loggedIn" ng-cloak id="userName">{{ user.displayName }}</span>
             </div>
         </header>
 

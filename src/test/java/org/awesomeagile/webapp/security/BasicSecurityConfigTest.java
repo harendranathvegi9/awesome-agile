@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.test;
+package org.awesomeagile.webapp.security;
 
 /*
  * ================================================================================================
@@ -23,9 +23,11 @@ package org.awesomeagile.webapp.test;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.awesomeagile.AwesomeAgileApplication;
-import org.awesomeagile.data.test.TestDatabase;
-import org.awesomeagile.webapp.test.BasicSecurityConfigTest.TestConfiguration;
+import org.awesomeagile.dao.testing.TestDatabase;
+import org.awesomeagile.webapp.security.BasicSecurityConfigTest.Env;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -34,8 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -47,15 +47,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.test.util.AssertionErrors.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-import com.google.common.collect.ImmutableMap;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.sql.DataSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = AwesomeAgileApplication.class, initializers = Env.class)
@@ -115,6 +106,12 @@ public class BasicSecurityConfigTest {
     @Test
     public void cssIsUnprotected() throws Exception {
         mvc.perform(get("/css/some.css"))
+            .andExpect(isOkOrNotFound());
+    }
+
+    @Test
+    public void partialsAreUnprotected() throws Exception {
+        mvc.perform(get("/partials/loginModal.html"))
             .andExpect(isOkOrNotFound());
     }
 

@@ -1,4 +1,4 @@
-package org.awesomeagile.data.test;
+package org.awesomeagile.dao.testing;
 
 /*
  * ================================================================================================
