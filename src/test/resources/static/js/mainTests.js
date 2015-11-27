@@ -208,4 +208,55 @@ describe("landing page", function() {
             expect($scope.description).toBe(scrumEvent.description);
         })
     });
+
+    describe('aaToolsCarouselCtrl', function () {
+        it('should set assigned number to myInterval', function () {
+            var $scope = {};
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.myInterval).toBe(5000);
+        });
+        it('should set noWrapSlides to true', function () {
+            var $scope = {};
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.noWrapSlides).toBe(true);
+        });
+        it('should add hackpad tool to carousel slides', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.slides[0].title).toBe('Hackpad');
+        });
+        it('should add Trello tool to carousel slides', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.slides[1].title).toBe('Trello');
+        });
+        it('should add github tool to carousel slides', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.slides[2].title).toBe('GitHub');
+        });
+        it('should add Travis CI tool to carousel slides', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCarouselCtrl', {
+                $scope: $scope
+            });
+
+            expect($scope.slides[3].title).toBe('Travis CI');
+        });
+    });
 });
