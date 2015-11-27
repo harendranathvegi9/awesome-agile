@@ -7,9 +7,9 @@
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
        http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -142,7 +142,7 @@
             </section>
         </div>
 
-        <!--tools--> 
+        <!--tools-->
         <div class="tools row">
             <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
             <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
@@ -155,26 +155,22 @@
         </div>
 
         <!-- Popular Tools-->
-        <div class="row panel panel-info">
-            <div class="panel-heading">Tools</div>
-            <div class="panel-body">
-                <div class="col-xs-6 col-md-3">
-                    <a href="#" class="thumbnail"><img src="images/hackpad.png" alt="hackpad" class="img-responsive"></a>
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <a href="#" class="thumbnail"><img src="images/trello.png" alt="trello" class="img-responsive"></a>
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <a href="#" class="thumbnail"><img src="images/github.png" alt="github" class="img-responsive"></a>
-                </div>
-                <div class="col-xs-6 col-md-3">
-                    <a href="#" class="thumbnail"><img src="images/TravisCl.png" alt="TravisCl" class="img-responsive"></a>
-                </div>
+        <div ng-controller="aaToolsCarouselCtrl">
+            <div style="height: 305px">
+                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="/partials/carousel.html">
+                    <uib-slide ng-repeat="slide in slides" active="slide.active">
+                        <img ng-src="{{slide.image}}" style="margin:auto;"/>
+                        <div class="carousel-caption">
+                            <p>{{slide.description}}</p>
+                            <a href="{{slide.link}}">Go to {{slide.title}}</a>
+                        </div>
+                    </uib-slide>
+                </uib-carousel>
             </div>
         </div>
 
     </div>
-   
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="/node_modules/angular-animate/angular-animate.min.js"></script>
     <script type="text/javascript" src="/node_modules/angular-route/angular-route.min.js"></script>

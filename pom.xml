@@ -182,6 +182,7 @@
                 <exclude>**/*.png</exclude>
                 <exclude>**/*.jpg</exclude>
                 <exclude>**/*.gif</exclude>
+                <exclude>*/partials/**/*</exclude>
               </excludes>
             </configuration>
           </execution>
