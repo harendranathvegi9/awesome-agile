@@ -33,6 +33,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.springframework.social.google.api.plus.ActivitiesPage;
 import org.springframework.social.google.api.plus.Activity;
@@ -77,22 +78,49 @@ public class ConfigurablePlusTemplateTest extends AbstractGoogleApiTest {
         .andRespond(
             withSuccess(jsonResource("people"), APPLICATION_JSON));
     PeoplePage page = google.plusOperations().searchPeople("pivotal", null);
+    assertPeoplePage(page);
+  }
 
-    assertNotNull(page);
-    assertEquals("EAIaAA", page.getNextPageToken());
-    assertEquals(2, page.getItems().size());
+  @Test
+  public void getActivityPlusoners() {
+    String activityId = RandomStringUtils.randomAlphanumeric(32);
+    mockServer
+        .expect(requestTo(
+            "https://www.googleapis.com/plus/v1/activities/"
+                + activityId + "/people/plusoners"))
+        .andExpect(method(GET))
+        .andRespond(
+            withSuccess(jsonResource("people"), APPLICATION_JSON));
+    PeoplePage page = google.plusOperations().getActivityPlusOners(activityId, null);
+    assertPeoplePage(page);
+  }
 
-    assertEquals("105320112436428794490", page.getItems().get(0).getId());
-    assertEquals("Pivotal", page.getItems().get(0).getDisplayName());
-    assertEquals(
-        "https://lh6.googleusercontent.com/-SpRmYYefQfI/AAAAAAAAAAI/AAAAAAAAAE4/utGWIQK75eE/photo.jpg?sz=50",
-        page.getItems().get(0).getImageUrl());
+  @Test
+  public void getActivityResharers() {
+    String activityId = RandomStringUtils.randomAlphanumeric(32);
+    mockServer
+        .expect(requestTo(
+            "https://www.googleapis.com/plus/v1/activities/"
+                + activityId + "/people/resharers"))
+        .andExpect(method(GET))
+        .andRespond(
+            withSuccess(jsonResource("people"), APPLICATION_JSON));
+    PeoplePage page = google.plusOperations().getActivityResharers(activityId, null);
+    assertPeoplePage(page);
+  }
 
-    assertEquals("113677672877589536101", page.getItems().get(1).getId());
-    assertEquals("Pivotal Tracker", page.getItems().get(1).getDisplayName());
-    assertEquals(
-        "https://lh3.googleusercontent.com/-PoFlIF3qlf0/AAAAAAAAAAI/AAAAAAAAAEw/eCwYJIvhyDA/photo.jpg?sz=50",
-        page.getItems().get(1).getImageUrl());
+  @Test
+  public void getPeopleInCircles() {
+    String personId = RandomStringUtils.randomAlphanumeric(32);
+    mockServer
+        .expect(requestTo(
+            "https://www.googleapis.com/plus/v1/people/"
+                + personId + "/people/visible"))
+        .andExpect(method(GET))
+        .andRespond(
+            withSuccess(jsonResource("people"), APPLICATION_JSON));
+    PeoplePage page = google.plusOperations().getPeopleInCircles(personId, null);
+    assertPeoplePage(page);
   }
 
   @Test
@@ -330,5 +358,23 @@ public class ConfigurablePlusTemplateTest extends AbstractGoogleApiTest {
     assertEquals("guznik@gmail.com", person.getAccountEmail());
     assertEquals("https://plus.google.com/+GabrielAxel", person.getUrl());
     assertTrue(person.isPlusUser());*/
+  }
+
+  private void assertPeoplePage(PeoplePage page) {
+    assertNotNull(page);
+    assertEquals("EAIaAA", page.getNextPageToken());
+    assertEquals(2, page.getItems().size());
+
+    assertEquals("105320112436428794490", page.getItems().get(0).getId());
+    assertEquals("Pivotal", page.getItems().get(0).getDisplayName());
+    assertEquals(
+        "https://lh6.googleusercontent.com/-SpRmYYefQfI/AAAAAAAAAAI/AAAAAAAAAE4/utGWIQK75eE/photo.jpg?sz=50",
+        page.getItems().get(0).getImageUrl());
+
+    assertEquals("113677672877589536101", page.getItems().get(1).getId());
+    assertEquals("Pivotal Tracker", page.getItems().get(1).getDisplayName());
+    assertEquals(
+        "https://lh3.googleusercontent.com/-PoFlIF3qlf0/AAAAAAAAAAI/AAAAAAAAAEw/eCwYJIvhyDA/photo.jpg?sz=50",
+        page.getItems().get(1).getImageUrl());
   }
 }

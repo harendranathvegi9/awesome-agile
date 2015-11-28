@@ -174,8 +174,7 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
   }
 
   private StringBuilder peopleBaseUrl() {
-    return new StringBuilder(baseUrl)
-        .append(PEOPLE_URL);
+    return new StringBuilder(baseUrl).append(PEOPLE_URL);
   }
 
   private StringBuilder activitiesBaseUrl() {
