@@ -110,6 +110,10 @@ header{
     font-size: 0.9em;
 }
 
+.tool:hover {
+    background-color: #f7f4ee;
+}
+
 #login{
     width: 120px;
     height:42px;

@@ -144,14 +144,14 @@
 
         <!--tools-->
         <div class="tools row">
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
-            <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info tool"><span class="glyphicon glyphicon-cog"></span> Source Code Control</div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-retweet"></span> Continuous Integration</div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
-            <div class="col-xs-6 col-sm-3 panel panel-info tool"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfReady }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.userStories }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.backlogRefinement }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
+            <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info tool" uib-popover="{{ artifact.sourceCodeManagement }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-cog"></span> Source Code Management</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.continuousIntegration }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-retweet"></span> Continuous Integration</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.pairProgramming }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
+            <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.estimation }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
         </div>
 
         <!-- Popular Tools-->
@@ -162,7 +162,7 @@
                         <img ng-src="{{slide.image}}" style="margin:auto;"/>
                         <div class="carousel-caption">
                             <p>{{slide.description}}</p>
-                            <a href="{{slide.link}}">Go to {{slide.title}}</a>
+                            <a href="{{slide.link}}" target="_blank">Go to {{slide.title}}</a>
                         </div>
                     </uib-slide>
                 </uib-carousel>
