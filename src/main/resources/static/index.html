@@ -164,7 +164,7 @@
         <!-- Popular Tools-->
         <div class="tools row">
         <div id="popularTools" ng-controller="aaToolsCarouselCtrl">
-                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="/src/main/resources/static/partials/carousel.html">
+                <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="/partials/carousel.html">
                     <uib-slide ng-repeat="slide in slides" active="slide.active">
                         <img ng-src="{{slide.image}}" style="margin:auto;"/>
                         <div class="carousel-caption">
