@@ -5,6 +5,7 @@ package org.awesomeagile.webapp.security.google.social;
  * Awesome Agile
  * %%
  * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * Copyright (C) 2011 Gabriel Axel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +50,9 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   private static final String PEOPLE_URL = "plus/v1/people/";
   private static final String ACTIVITIES_PUBLIC = "/activities/public";
-  private static final String ACTIVITIES_URL = "https://www.googleapis.com/plus/v1/activities/";
+  private static final String ACTIVITIES_URL = "plus/v1/activities/";
 
-  private static final String COMMENTS_URL = "https://www.googleapis.com/plus/v1/comments/";
+  private static final String COMMENTS_URL = "plus/v1/comments/";
   private static final String COMMENTS = "/comments";
 
   private static final String PLUSONERS = "/people/plusoners";
@@ -82,11 +83,6 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
     return getEntity(sb.toString(), ActivitiesPage.class);
   }
 
-  private StringBuilder peopleBaseUrl() {
-    return new StringBuilder(baseUrl)
-        .append(PEOPLE_URL);
-  }
-
   @Override
   public ActivitiesPage getActivities(String userId) {
     return getActivities(userId, null);
@@ -104,7 +100,7 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public ActivityComment getComment(String id) {
-    return getEntity(COMMENTS_URL + id, ActivityComment.class);
+    return getEntity(commentsBaseUrl().append(id).toString(), ActivityComment.class);
   }
 
   @Override
@@ -114,10 +110,6 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
       sb.append("?pageToken=").append(pageToken);
     }
     return getEntity(sb.toString(), ActivityCommentsPage.class);
-  }
-
-  private StringBuilder activitiesBaseUrl() {
-    return new StringBuilder(baseUrl).append(ACTIVITIES_URL);
   }
 
   @Override
@@ -157,18 +149,18 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public PeoplePage getActivityResharers(String activityId, String pageToken) {
-    return getEntity(activitiesBaseUrl().append(activityId + RESHARERS).toString(),
+    return getEntity(activitiesBaseUrl().append(activityId).append(RESHARERS).toString(),
         PeoplePage.class);
   }
 
   @Override
   public Moment insertMoment(Moment moment) {
-    return saveEntity(MOMENTS_URL, moment);
+    return saveEntity(currentUserMomentsBaseUrl().toString(), moment);
   }
 
   @Override
   public MomentQueryBuilder momentQuery() {
-    return new MomentQueryBuilderImpl(MOMENTS_URL, restTemplate);
+    return new MomentQueryBuilderImpl(currentUserMomentsBaseUrl().toString(), restTemplate);
   }
 
   @Override
@@ -178,6 +170,23 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public void deleteMoment(String id) {
-    deleteEntity("https://www.googleapis.com/plus/v1/moments", id);
+    deleteEntity(baseUrl + "plus/v1/moments", id);
+  }
+
+  private StringBuilder peopleBaseUrl() {
+    return new StringBuilder(baseUrl)
+        .append(PEOPLE_URL);
+  }
+
+  private StringBuilder activitiesBaseUrl() {
+    return new StringBuilder(baseUrl).append(ACTIVITIES_URL);
+  }
+
+  private StringBuilder currentUserMomentsBaseUrl() {
+    return new StringBuilder(baseUrl).append(MOMENTS_URL);
+  }
+
+  private StringBuilder commentsBaseUrl() {
+    return new StringBuilder(baseUrl).append(COMMENTS_URL);
   }
 }

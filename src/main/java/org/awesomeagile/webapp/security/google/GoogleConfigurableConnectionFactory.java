@@ -5,6 +5,7 @@ package org.awesomeagile.webapp.security.google;
  * Awesome Agile
  * %%
  * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * Copyright (C) 2011 Gabriel Axel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
