@@ -85,7 +85,18 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
                 }
             }
         });
-    }
+    };
+
+    $scope.artifact = {
+        backlogRefinement: "Backlog refinement is the process where the scrum team reviews and revises the product backlog.  This includes providing more clarity to the backlog items, identifying dependencies, as well as adjusting the prioritization of backlog items.",
+        continuousIntegration: "Continuous integration is a development practice where developers integrate code into a common repository multiple times a day.  Each delivery to the common repository triggers automation to verify the quality latest changes as a means of identifying problems early.",
+        definitionOfDone: "The definition of done is an artifact serving as a checklist for scrum teams to identify what needs to be completed in order for a backlog item to be deemed complete.  Examples of this includes requiring a certain level of code quality or writing sufficient documentation.",
+        definitionOfReady: "The definition of ready is an artifact serving as a checklist for scrum teams to identify when a backlog item is ready to be brought into a sprint for work.  This includes defining clear completion criteria and insuring the item is well defined.",
+        estimation: "Estimation is an activity leveraged by scrum teams to size the product backlog of each item based on relative complexity to each other.  Determining these estimates help spark discussion amongst the team about the tasks as well as help them plan their work.",
+        pairProgramming: "Pair programming is a development technique, in which two developers work together on a single workstation.  One developer drives, while the other navigates, and they regularly switch.  This motivates a high level of collaboration between the developers, assists with knowledge transfer, and helps maintain high code quality.",
+        sourceCodeManagement: "Source code management provides development teams coordination of their work predominantly through file management and version control.  It provides a high level of accessibility and transparency amongst the team members on their work and provides a common record of fact.",
+        userStories: "User stories serve as short stories of a feature from the perspective of the person who benefits from the new capability.  This is a shift from defining requirements to looking at the feature through eyes of the user in order to deliver more value."
+    };
 });
 
 app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEvent) {
