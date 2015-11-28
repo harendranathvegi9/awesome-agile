@@ -215,6 +215,7 @@
                 <exclude>**/*.jpg</exclude>
                 <exclude>**/*.gif</exclude>
                 <exclude>*/partials/**/*</exclude>
+                <exclude>**/*.json</exclude>
               </excludes>
             </configuration>
           </execution>
