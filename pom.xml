@@ -143,15 +143,19 @@
       <version>${selenium.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- required for selenium to function correctly -->
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>${xml-apis.version}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
+  <dependencyManagement>
+
+    <dependencies>
+      <!-- required for selenium to function correctly -->
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>${xml-apis.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -199,13 +203,11 @@
                 <root>src/main/resources</root>
                 <root>src/test/resources</root>
               </roots>
-              <excludes>
-                <exclude>**/*.png</exclude>
-                <exclude>**/*.jpg</exclude>
-                <exclude>**/*.gif</exclude>
-                <exclude>*/partials/**/*</exclude>
-                <exclude>**/*.json</exclude>
-              </excludes>
+              <includes>
+                <include>**/*.java</include>
+                <include>**/*.js</include>
+                <include>**/*.sql</include>
+              </includes>
             </configuration>
           </execution>
         </executions>

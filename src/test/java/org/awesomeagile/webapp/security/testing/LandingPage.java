@@ -20,6 +20,7 @@ package org.awesomeagile.webapp.security.testing;
  * ------------------------------------------------------------------------------------------------
  */
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -33,7 +34,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class LandingPage {
 
-  public static final int TIMEOUT = 10;
+  private static final int TIMEOUT = 2;
   @FindBy(id = "login")
   private WebElement loginButton;
 
@@ -67,6 +68,10 @@ public class LandingPage {
   }
 
   public boolean isLoginButtonVisible() {
-    return loginButton.isDisplayed();
+    try {
+      return loginButton.isDisplayed();
+    } catch (NoSuchElementException ex) {
+      return false;
+    }
   }
 }

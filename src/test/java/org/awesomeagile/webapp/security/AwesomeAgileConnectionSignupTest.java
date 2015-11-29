@@ -20,8 +20,15 @@ package org.awesomeagile.webapp.security;
  * ------------------------------------------------------------------------------------------------
  */
 
-import static org.junit.Assert.*;
+import static org.awesomeagile.webapp.security.SocialTestUtils.DISPLAY_NAME;
+import static org.awesomeagile.webapp.security.SocialTestUtils.FACEBOOK;
+import static org.awesomeagile.webapp.security.SocialTestUtils.IMAGE_URL;
+import static org.awesomeagile.webapp.security.SocialTestUtils.PROVIDER_USER_ID_ONE;
+import static org.awesomeagile.webapp.security.SocialTestUtils.USER_EMAIL_ONE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.awesomeagile.dao.UserRepository;
 import org.awesomeagile.model.team.User;
@@ -31,10 +38,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UserProfileBuilder;
-
-import static org.awesomeagile.webapp.security.SocialTestUtils.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author sbelov@google.com (Stan Belov)

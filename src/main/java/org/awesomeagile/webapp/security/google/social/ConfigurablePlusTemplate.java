@@ -21,8 +21,6 @@ package org.awesomeagile.webapp.security.google.social;
  * ------------------------------------------------------------------------------------------------
  */
 
-import static org.springframework.util.StringUtils.hasText;
-
 import org.springframework.social.google.api.impl.AbstractGoogleApiOperations;
 import org.springframework.social.google.api.plus.ActivitiesPage;
 import org.springframework.social.google.api.plus.Activity;
@@ -38,7 +36,6 @@ import org.springframework.social.google.api.plus.impl.PersonQueryBuilderImpl;
 import org.springframework.social.google.api.plus.moments.Moment;
 import org.springframework.social.google.api.plus.moments.MomentQueryBuilder;
 import org.springframework.social.google.api.plus.moments.MomentsPage;
-import org.springframework.social.google.api.plus.moments.impl.MomentQueryBuilderImpl;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -49,16 +46,6 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
     implements PlusOperations {
 
   private static final String PEOPLE_URL = "plus/v1/people/";
-  private static final String ACTIVITIES_PUBLIC = "/activities/public";
-  private static final String ACTIVITIES_URL = "plus/v1/activities/";
-
-  private static final String COMMENTS_URL = "plus/v1/comments/";
-  private static final String COMMENTS = "/comments";
-
-  private static final String PLUSONERS = "/people/plusoners";
-  private static final String RESHARERS = "/people/resharers";
-
-  private static final String MOMENTS_URL = PEOPLE_URL + "me/moments/vault";
 
   private final String baseUrl;
 
@@ -69,28 +56,22 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public Activity getActivity(String id) {
-    return getEntity(activitiesBaseUrl().append(id).toString(), Activity.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public ActivitiesPage getActivities(String userId, String pageToken) {
-    StringBuilder sb = peopleBaseUrl()
-        .append(userId)
-        .append(ACTIVITIES_PUBLIC);
-    if(pageToken != null) {
-      sb.append("?pageToken=").append(pageToken);
-    }
-    return getEntity(sb.toString(), ActivitiesPage.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public ActivitiesPage getActivities(String userId) {
-    return getActivities(userId, null);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public ActivitiesPage searchPublicActivities(String query, String pageToken) {
-    return activityQuery().searchFor(query).fromPage(pageToken).getPage();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -100,16 +81,12 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public ActivityComment getComment(String id) {
-    return getEntity(commentsBaseUrl().append(id).toString(), ActivityComment.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public ActivityCommentsPage getComments(String activityId, String pageToken) {
-    StringBuilder sb = activitiesBaseUrl().append(activityId).append(COMMENTS);
-    if(hasText(pageToken)) {
-      sb.append("?pageToken=").append(pageToken);
-    }
-    return getEntity(sb.toString(), ActivityCommentsPage.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -129,63 +106,45 @@ public class ConfigurablePlusTemplate extends AbstractGoogleApiOperations
 
   @Override
   public PeoplePage getPeopleInCircles(String id, String pageToken) {
-    StringBuilder sb = peopleBaseUrl().append(id).append("/people/visible");
-    if(hasText(pageToken)) {
-      sb.append("?pageToken=").append(pageToken);
-    }
-    return getEntity(sb.toString(), PeoplePage.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public PeoplePage searchPeople(String query, String pageToken) {
-    return personQuery().searchFor(query).fromPage(pageToken).getPage();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public PeoplePage getActivityPlusOners(String activityId, String pageToken) {
-    return getEntity(activitiesBaseUrl().append(activityId).append(PLUSONERS).toString(),
-        PeoplePage.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public PeoplePage getActivityResharers(String activityId, String pageToken) {
-    return getEntity(activitiesBaseUrl().append(activityId).append(RESHARERS).toString(),
-        PeoplePage.class);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Moment insertMoment(Moment moment) {
-    return saveEntity(currentUserMomentsBaseUrl().toString(), moment);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public MomentQueryBuilder momentQuery() {
-    return new MomentQueryBuilderImpl(currentUserMomentsBaseUrl().toString(), restTemplate);
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public MomentsPage getMoments(String pageToken) {
-    return momentQuery().getPage();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void deleteMoment(String id) {
-    deleteEntity(baseUrl + "plus/v1/moments", id);
+    throw new UnsupportedOperationException();
   }
 
   private StringBuilder peopleBaseUrl() {
     return new StringBuilder(baseUrl).append(PEOPLE_URL);
-  }
-
-  private StringBuilder activitiesBaseUrl() {
-    return new StringBuilder(baseUrl).append(ACTIVITIES_URL);
-  }
-
-  private StringBuilder currentUserMomentsBaseUrl() {
-    return new StringBuilder(baseUrl).append(MOMENTS_URL);
-  }
-
-  private StringBuilder commentsBaseUrl() {
-    return new StringBuilder(baseUrl).append(COMMENTS_URL);
   }
 }
