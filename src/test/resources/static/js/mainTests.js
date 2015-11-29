@@ -175,7 +175,7 @@ describe("landing page", function() {
             });
         });
 
-        it('should navigate the user to he dashboard if user is authed', function () {
+        it('should navigate the user to the dashboard if user is authed', function () {
             inject(function ($route, $location) {
                 var url = '/api/user';
                 var httpResponse = {
@@ -335,5 +335,31 @@ describe("landing page", function() {
 
             expect($scope.slides[3].title).toBe('Travis CI');
         });
+    });
+});
+
+describe('Directive', function() {
+    var $compile,
+        $rootScope,
+        httpLocalBackend;
+
+    beforeEach(module('awesome-agile'));
+
+    beforeEach(inject(function(_$compile_, _$rootScope_, $httpBackend){
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+        httpLocalBackend = $httpBackend;
+    }));
+
+    it('Replace agileWorkflow with appropriate content', function() {
+        var element = $compile("<div agile-workflow></div agile-workflow>")($rootScope);
+
+        httpLocalBackend.whenGET('partials/agileWorkflow.html').respond(200, 'Agile Sprint');
+
+        $rootScope.$digest();
+
+        httpLocalBackend.flush();
+
+        expect(element.html()).toContain("Agile Sprint");
     });
 });
