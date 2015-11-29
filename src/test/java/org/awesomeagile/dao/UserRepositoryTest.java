@@ -20,7 +20,6 @@ package org.awesomeagile.dao;
  * ------------------------------------------------------------------------------------------------
  */
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -32,12 +31,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import org.awesomeagile.TestApplication;
-import org.awesomeagile.dao.UserRepositoryTest.TestConfiguration;
-import org.awesomeagile.data.test.TestDatabase;
+import org.awesomeagile.dao.UserRepositoryTest.EnvInitializer;
+import org.awesomeagile.dao.testing.TestDatabase;
 import org.awesomeagile.model.team.User;
 import org.awesomeagile.model.team.UserStatus;
 import org.junit.Before;
@@ -46,8 +46,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -56,13 +57,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.sql.DataSource;
-
 /**
  * @author sbelov@google.com (Stan Belov)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TestApplication.class, TestConfiguration.class})
+@SpringApplicationConfiguration(classes = {TestApplication.class},
+    initializers = {EnvInitializer.class})
 @ActiveProfiles("test")
 public class UserRepositoryTest {
 
@@ -75,11 +75,18 @@ public class UserRepositoryTest {
       DATABASE_NAME
   );
 
-  @Configuration
-  protected static class TestConfiguration {
-    @Bean
-    public DataSource getDataSource() {
-      return testDatabase.getDataSource(DATABASE_NAME);
+  public static final class EnvInitializer implements
+      ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+      applicationContext.getEnvironment().getPropertySources().addFirst(
+          new MapPropertySource("overrides",
+              new ImmutableMap.Builder<String, Object>()
+                  .put("spring.datasource.url", testDatabase.getUrl(DATABASE_NAME))
+                  .put("spring.datasource.username", testDatabase.getUserName())
+                  .put("spring.datasource.password", testDatabase.getPassword())
+                  .build()));
     }
   }
 

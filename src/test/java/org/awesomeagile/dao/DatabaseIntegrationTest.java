@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.test;
+package org.awesomeagile.dao;
 
 /*
  * ================================================================================================
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.apache.commons.lang.math.RandomUtils;
-import org.awesomeagile.data.test.TestDatabase;
+import org.awesomeagile.dao.testing.TestDatabase;
 import org.awesomeagile.model.team.User;
 import org.hamcrest.CustomMatcher;
 import org.junit.ClassRule;

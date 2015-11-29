@@ -1,0 +1,77 @@
+package org.awesomeagile.webapp.security.testing;
+
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+/**
+ * Encapsulates AwesomeAgile landing page for WebDriver-based testing purposes.
+ *
+ * @author sbelov@google.com (Stan Belov)
+ */
+public class LandingPage {
+
+  private static final int TIMEOUT = 2;
+  @FindBy(id = "login")
+  private WebElement loginButton;
+
+  @FindBy(className = "btn-google")
+  private WebElement googleButton;
+
+  @FindBy(id = "userName")
+  private WebElement userName;
+
+  private final WebDriver driver;
+  private final WebDriverWait wait;
+
+  public LandingPage(WebDriver driver) {
+    this.driver = driver;
+    this.wait = new WebDriverWait(driver, TIMEOUT);
+  }
+
+  public LandingPage loginWithGoogle(String endPoint) {
+    driver.get(endPoint);
+    wait.until(ExpectedConditions.visibilityOf(loginButton));
+    loginButton.click();
+    wait.until(ExpectedConditions.visibilityOf(googleButton));
+    googleButton.click();
+    wait.until(ExpectedConditions.urlContains(endPoint));
+    wait.until(ExpectedConditions.visibilityOf(userName));
+    return this;
+  }
+
+  public String getUserName() {
+    return userName.getText();
+  }
+
+  public boolean isLoginButtonVisible() {
+    try {
+      return loginButton.isDisplayed();
+    } catch (NoSuchElementException ex) {
+      return false;
+    }
+  }
+}

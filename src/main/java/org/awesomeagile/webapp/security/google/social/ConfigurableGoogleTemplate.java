@@ -1,10 +1,11 @@
-package org.awesomeagile;
+package org.awesomeagile.webapp.security.google.social;
 
 /*
  * ================================================================================================
  * Awesome Agile
  * %%
  * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * Copyright (C) 2011 Gabriel Axel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +21,30 @@ package org.awesomeagile;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.social.google.api.impl.GoogleTemplate;
+import org.springframework.social.google.api.plus.PlusOperations;
 
-public class PropertySupportConfig {
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-        return c;
-    }
+/**
+ * @author sbelov@google.com (Stan Belov)
+ */
+public class ConfigurableGoogleTemplate extends GoogleTemplate {
+
+  private final String baseApiUrl;
+  private PlusOperations plusOperations;
+
+  public ConfigurableGoogleTemplate(String accessToken, String baseApiUrl) {
+    super(accessToken);
+    this.baseApiUrl = baseApiUrl;
+    initializeOperations();
+  }
+
+  private void initializeOperations() {
+    this.plusOperations = new ConfigurablePlusTemplate(
+        getRestTemplate(), isAuthorized(), baseApiUrl);
+  }
+
+  @Override
+  public PlusOperations plusOperations() {
+    return plusOperations;
+  }
 }

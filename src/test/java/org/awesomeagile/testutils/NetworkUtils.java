@@ -1,4 +1,4 @@
-package org.awesomeagile;
+package org.awesomeagile.testutils;
 
 /*
  * ================================================================================================
@@ -20,14 +20,30 @@ package org.awesomeagile;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import java.io.IOException;
+import java.net.ServerSocket;
 
-public class PropertySupportConfig {
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-        return c;
+/**
+ * Various networking-related utility methods.
+ *
+ * @author sbelov@google.com (Stan Belov)
+ */
+public class NetworkUtils {
+
+  /**
+   * Finds the first available TCP server port.
+   * @return first available TCP server port number.
+   * @throws IOException
+   */
+  public static int findAvailablePort() throws IOException {
+    ServerSocket serverSocket = null;
+    try {
+      serverSocket = new ServerSocket(0);
+      return serverSocket.getLocalPort();
+    } finally {
+      if (serverSocket != null) {
+        serverSocket.close();
+      }
     }
+  }
 }
