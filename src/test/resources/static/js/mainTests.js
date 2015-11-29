@@ -20,11 +20,12 @@
 describe("landing page", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, authService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _authService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
+        authService = _authService_;
         httpLocalBackend = $httpBackend;
 
         uibModalMock = {
@@ -36,6 +37,7 @@ describe("landing page", function() {
         };
 
         spyOn(uibModalMock, "open");
+        spyOn(uibModalInstanceMock, "close");
     }));
 
     describe('$scope.open', function() {
@@ -112,58 +114,88 @@ describe("landing page", function() {
         });
     });
 
-    describe('$scope.init', function () {
-        it('should call the /api/user service should be called and retrieve the user data', function () {
+    describe('authService', function () {
+        it('should set a user to authed when user data is returned from the /api/user service', function () {
             var url = '/api/user';
             var httpResponse = {
                 displayName: 'test user'
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
+
             var $scope = {};
-            var controller = $controller('aaController', {
-                $scope: $scope
+            authService.isAuthed().then(function (result) {
+                expect(result).toEqual(true);
             });
 
             httpLocalBackend.flush();
-
-            expect($rootScope.user).toEqual(httpResponse);
         });
 
-        it('should call the /api/user service and set the user is logged in if a profile returns', function () {
-            var url = '/api/user';
-            var httpResponse = {
-                displayName: 'test user'
-            };
-            httpLocalBackend.expectGET(url).respond(200, httpResponse);
-
-            var $scope = {};
-            var controller = $controller('aaController', {
-                $scope: $scope
-            });
-
-            httpLocalBackend.flush();
-
-            expect($scope.loggedIn).toEqual(true);
-        });
-
-        it('should call the /api/user service and NOT set the user is logged in if a profile does NOT return', function () {
+        it('should NOT set a user to authed when user data is NOT returned from the /api/user service', function () {
             var url = '/api/user';
             var httpResponse = {};
             httpLocalBackend.expectGET(url).respond(401, httpResponse);
 
             var $scope = {};
-            var controller = $controller('aaController', {
-                $scope: $scope
+            authService.isAuthed().then(function (result) {
+                expect(result).toEqual(false);
             });
 
             httpLocalBackend.flush();
+        });
 
-            expect($scope.loggedIn).toEqual(false);
+        it('should NOT set a user to authed when no user data is returned from the /api/user service', function () {
+            var url = '/api/user';
+            var httpResponse = null;
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var $scope = {};
+            authService.isAuthed().then(function (result) {
+                expect(result).toEqual(false);
+            });
+
+            httpLocalBackend.flush();
         });
     });
 
-    describe('$scope.openLogin', function() {
+    describe('routeProvider', function () {
+        it('should navigate the user to the landing page if not authed', function () {
+            inject(function ($route, $location) {
+                var url = '/api/user';
+                var httpResponse = {};
+                httpLocalBackend.expectGET(url).respond(401, httpResponse);
+
+                httpLocalBackend.whenGET('partials/landingPage.html').respond(200, '');
+
+                expect($route.current).toBeUndefined();
+                $location.path('/');
+                $rootScope.$digest();
+
+                expect($route.current.templateUrl).toBe('partials/landingPage.html');
+            });
+        });
+
+        it('should navigate the user to the dashboard if user is authed', function () {
+            inject(function ($route, $location) {
+                var url = '/api/user';
+                var httpResponse = {
+                    displayName: 'test user'
+                };
+                httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+                httpLocalBackend.whenGET('partials/landingPage.html').respond(200, '');
+                httpLocalBackend.whenGET('partials/dashboard.html').respond(200, '');
+
+                expect($route.current).toBeUndefined();
+                $location.path('/dashboard');
+                $rootScope.$digest();
+
+                expect($route.current.templateUrl).toBe('partials/dashboard.html');
+            });
+        });
+    });
+
+    describe('$scope.open', function() {
         it('should open a dialog', function () {
             var $scope = {};
             var controller = $controller('aaController', {
@@ -177,7 +209,52 @@ describe("landing page", function() {
         });
     });
 
+    describe('$scope.openLogin', function() {
+        it('should open a dialog', function () {
+            var $scope = {};
+            var controller = $controller('aaController', {
+                $scope: $scope,
+                $uibModal: uibModalMock
+            });
+
+            $scope.openLogin();
+
+            expect(uibModalMock.open).toHaveBeenCalled();
+        });
+    });
+
+    describe('loginModalController', function () {
+        it('$scope.close', function () {
+            var $scope = {};
+            var controller = $controller('loginModalController', {
+                $scope: $scope,
+                $uibModalInstance: uibModalInstanceMock
+            });
+
+            $scope.close();
+
+            expect(uibModalInstanceMock.close).toHaveBeenCalled();
+        });
+    });
+
     describe('aaModalController', function () {
+        it('$scope.close', function () {
+            var $scope = {};
+            var scrumEvent = {
+                'title': 'testTitle',
+                'description': 'testDescription'
+            };
+            var controller = $controller('aaModalController', {
+                $scope: $scope,
+                $uibModalInstance: uibModalInstanceMock,
+                scrumEvent: scrumEvent
+            });
+
+            $scope.close();
+
+            expect(uibModalInstanceMock.close).toHaveBeenCalled();
+        });
+
         it('should set the title of the modal based on the scrum event', function () {
             var $scope = {};
             var scrumEvent = {
@@ -258,5 +335,31 @@ describe("landing page", function() {
 
             expect($scope.slides[3].title).toBe('Travis CI');
         });
+    });
+});
+
+describe('Directive', function() {
+    var $compile,
+        $rootScope,
+        httpLocalBackend;
+
+    beforeEach(module('awesome-agile'));
+
+    beforeEach(inject(function(_$compile_, _$rootScope_, $httpBackend){
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+        httpLocalBackend = $httpBackend;
+    }));
+
+    it('Replace agileWorkflow with appropriate content', function() {
+        var element = $compile("<div agile-workflow></div agile-workflow>")($rootScope);
+
+        httpLocalBackend.whenGET('partials/agileWorkflow.html').respond(200, 'Agile Sprint');
+
+        $rootScope.$digest();
+
+        httpLocalBackend.flush();
+
+        expect(element.html()).toContain("Agile Sprint");
     });
 });
