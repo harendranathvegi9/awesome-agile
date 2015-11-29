@@ -37,6 +37,7 @@ describe("landing page", function() {
         };
 
         spyOn(uibModalMock, "open");
+        spyOn(uibModalInstanceMock, "close");
     }));
 
     describe('$scope.open', function() {
@@ -142,6 +143,19 @@ describe("landing page", function() {
 
             httpLocalBackend.flush();
         });
+
+        it('should NOT set a user to authed when no user data is returned from the /api/user service', function () {
+            var url = '/api/user';
+            var httpResponse = null;
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var $scope = {};
+            authService.isAuthed().then(function (result) {
+                expect(result).toEqual(false);
+            });
+
+            httpLocalBackend.flush();
+        });
     });
 
     describe('routeProvider', function () {
@@ -181,7 +195,7 @@ describe("landing page", function() {
         });
     });
 
-    describe('$scope.openLogin', function() {
+    describe('$scope.open', function() {
         it('should open a dialog', function () {
             var $scope = {};
             var controller = $controller('aaController', {
@@ -195,7 +209,52 @@ describe("landing page", function() {
         });
     });
 
+    describe('$scope.openLogin', function() {
+        it('should open a dialog', function () {
+            var $scope = {};
+            var controller = $controller('aaController', {
+                $scope: $scope,
+                $uibModal: uibModalMock
+            });
+
+            $scope.openLogin();
+
+            expect(uibModalMock.open).toHaveBeenCalled();
+        });
+    });
+
+    describe('loginModalController', function () {
+        it('$scope.close', function () {
+            var $scope = {};
+            var controller = $controller('loginModalController', {
+                $scope: $scope,
+                $uibModalInstance: uibModalInstanceMock
+            });
+
+            $scope.close();
+
+            expect(uibModalInstanceMock.close).toHaveBeenCalled();
+        });
+    });
+
     describe('aaModalController', function () {
+        it('$scope.close', function () {
+            var $scope = {};
+            var scrumEvent = {
+                'title': 'testTitle',
+                'description': 'testDescription'
+            };
+            var controller = $controller('aaModalController', {
+                $scope: $scope,
+                $uibModalInstance: uibModalInstanceMock,
+                scrumEvent: scrumEvent
+            });
+
+            $scope.close();
+
+            expect(uibModalInstanceMock.close).toHaveBeenCalled();
+        });
+
         it('should set the title of the modal based on the scrum event', function () {
             var $scope = {};
             var scrumEvent = {
