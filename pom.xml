@@ -32,7 +32,6 @@
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
     <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
     <license-maven-plugin.version>1.8</license-maven-plugin.version>
-    <jetty.version>9.3.5.v20151012</jetty.version>
     <selenium.version>2.48.2</selenium.version>
     <xml-apis.version>1.4.01</xml-apis.version>
   </properties>
@@ -118,17 +117,6 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
-
 
     <!-- test concerns -->
 

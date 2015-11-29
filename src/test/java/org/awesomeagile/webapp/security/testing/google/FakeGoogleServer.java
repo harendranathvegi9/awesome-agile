@@ -20,21 +20,19 @@ package org.awesomeagile.webapp.security.testing.google;
  * ------------------------------------------------------------------------------------------------
  */
 
-import com.google.common.collect.ImmutableList;
-
-import org.apache.commons.lang3.StringUtils;
 import org.awesomeagile.testutils.NetworkUtils;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.rules.ExternalResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,13 +45,11 @@ import java.util.List;
 public class FakeGoogleServer extends ExternalResource {
 
   private static final String CONTEXT_PATH = "/g";
-  private static final String MAPPING_URL = "/*";
 
-  private final int port;
-  private Server server;
-  private WebApplicationContext webApplicationContext;
+  private ConfigurableApplicationContext webApplicationContext;
   @Autowired
   private FakeGoogleController controller;
+  private final int port;
 
   public FakeGoogleServer() {
     try {
@@ -99,7 +95,14 @@ public class FakeGoogleServer extends ExternalResource {
 
   private void start() {
     try {
-      startJetty(port);
+      webApplicationContext = SpringApplication.run(
+          new Object[] {
+              FakeGoogleOAuthServerConfiguration.class,
+              PropertyPlaceholderAutoConfiguration.class,
+              DispatcherServletAutoConfiguration.class,
+              ServerPropertiesAutoConfiguration.class},
+          new String[] { "--server.port=" + port });
+      webApplicationContext.getAutowireCapableBeanFactory().autowireBean(this);
     } catch (Exception ex) {
       throw new RuntimeException("Unable to start fake Google OAuth server", ex);
     }
@@ -107,41 +110,20 @@ public class FakeGoogleServer extends ExternalResource {
 
   private void stop() {
     try {
-      server.stop();
+      webApplicationContext.close();
     } catch (Exception ex) {
       throw new RuntimeException("Unable to stop fake Google OAuth server", ex);
     }
   }
 
-  private void startJetty(int port) throws Exception {
-    this.server = new Server(port);
-    webApplicationContext = getContext();
-    server.setHandler(getServletContextHandler(webApplicationContext));
-    server.start();
-    webApplicationContext.getAutowireCapableBeanFactory().autowireBean(this);
-  }
-
-  private static ServletContextHandler getServletContextHandler(WebApplicationContext context) throws IOException {
-    ServletContextHandler contextHandler = new ServletContextHandler();
-    contextHandler.setErrorHandler(null);
-    contextHandler.setContextPath(CONTEXT_PATH);
-    contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), MAPPING_URL);
-    contextHandler.addEventListener(new ContextLoaderListener(context));
-    return contextHandler;
-  }
-
-  private static WebApplicationContext getContext() {
-    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-    context.setConfigLocation(
-        StringUtils.join(
-            ImmutableList.of(FakeGoogleOAuthServerConfiguration.class, FakeGoogleController.class),
-            ',')
-    );
-    return context;
-  }
-
   @EnableWebMvc
-  static class FakeGoogleOAuthServerConfiguration extends WebMvcConfigurerAdapter {
+  @ComponentScan(basePackageClasses = FakeGoogleController.class)
+  public static class FakeGoogleOAuthServerConfiguration {
 
+    @Bean
+    public TomcatEmbeddedServletContainerFactory tomcatEmbeddedServletContainerFactory(
+        @Value("${server.port}") int port) {
+      return new TomcatEmbeddedServletContainerFactory(CONTEXT_PATH, port);
+    }
   }
 }
