@@ -1,0 +1,49 @@
+<div class="container" ng-controller="aaController">
+    <!--site head-->
+    <header class="page-header row">
+        <div id="logo" class="col-sm-12">Awesome Agile </div>
+        <div id="subtitle" class="col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-8">
+            <span>An Agile Coaching Resource</span>
+        </div>
+        <div class="userControls col-sm-2 col-xs-3">
+            <div  role="group">
+                <button id="login" type="button" class="btn btn-primary" ng-click="openLogin()">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <!--work flow-->
+    <div class="row" >
+        <section class="col-xs-12 svg-container">
+            <div agile-workflow></div>
+        </section>
+    </div>
+
+    <!--tools-->
+    <div class="tools row">
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfReady }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-open"></span> Definition of Ready</div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.userStories }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.backlogRefinement }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
+        <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info tool" uib-popover="{{ artifact.sourceCodeManagement }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-cog"></span> Source Code Management</div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.continuousIntegration }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-retweet"></span> Continuous Integration</div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.pairProgramming }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-gift"></span> Pair Programming</div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.estimation }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-tasks"></span> Estimation</div>
+    </div>
+
+    <!-- Popular Tools-->
+    <div class="tools row">
+        <div id="popularTools" ng-controller="aaToolsCarouselCtrl">
+            <uib-carousel interval="myInterval" no-wrap="noWrapSlides" template-url="/partials/carousel.html">
+                <uib-slide ng-repeat="slide in slides" active="slide.active">
+                    <img ng-src="{{slide.image}}" style="margin:auto;"/>
+                    <div class="carousel-caption">
+                        <p>{{slide.description}}</p>
+                        <a href="{{slide.link}}" target="_blank">Go to {{slide.title}}</a>
+                    </div>
+                </uib-slide>
+            </uib-carousel>
+        </div>
+    </div>
+
+</div>

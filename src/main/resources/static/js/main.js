@@ -17,30 +17,71 @@
  * limitations under the License.
  * ------------------------------------------------------------------------------------------------
  */
-var app = angular.module('awesome-agile', ['ui.bootstrap']);
+var app = angular.module('awesome-agile', ['ngRoute', 'ui.bootstrap']);
 
-app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
+app.factory('authService', function ($rootScope, $http, $q) {
 
-    $scope.loggedIn = !!$rootScope.user;
+    $rootScope.user = {
+        isAuthed: false,
+        name: ''
+    };
 
-    $scope.auth = function () {
+    var authService = {};
+
+    authService.isAuthed = function () {
+        var deferred = $q.defer();
+
         $http.get('/api/user').then(function (response) {
             if (response.data) {
-                $rootScope.user = response.data;
-                $scope.loggedIn = true;
-                $scope.loggedOut = false;
+                $rootScope.user.isAuthed = true;
+                $rootScope.user.name = response.data.displayName;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
             }
         }, function () {
-            $scope.loggedOut = true;
+            deferred.resolve(false);
         });
+
+        return deferred.promise;
     };
 
-    $scope.init = function () {
-        $scope.auth();
+    return authService;
+
+});
+
+app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+    $routeProvider
+        .when('/', {
+            templateUrl: 'partials/landingPage.html',
+            allowAnon: true
+        })
+        .when('/dashboard', {
+            templateUrl:'partials/dashboard.html'
+        });
+}]);
+
+app.run(['$rootScope', '$location', 'authService', function ($rootScope, $location, authService) {
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        authService.isAuthed().then(function (isAuthed) {
+            if (!isAuthed && next && !next.allowAnon) {
+                event.preventDefault();
+                $location.path('/');
+            } else if (isAuthed && next && next.templateUrl === 'partials/landingPage.html') {
+                event.preventDefault();
+                $location.path('/dashboard');
+            }
+        });
+    });
+}]);
+
+app.directive('agileWorkflow', function () {
+    return {
+        templateUrl: 'partials/agileWorkflow.html'
     };
+});
 
-    $scope.init();
-
+app.controller('aaController',  function($scope, $uibModal) {
 
     $scope.scrumEvents = {
         'sprintPlanning': {
@@ -68,7 +109,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.openLogin = function () {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: '/partials/loginModal.html',
+            templateUrl: 'partials/loginModal.html',
             controller: 'loginModalController',
             size: 'sm'
         });
@@ -77,7 +118,7 @@ app.controller('aaController',  function($scope, $uibModal, $http, $rootScope) {
     $scope.open = function (scrumEvent) {
         var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: '/partials/aaModalContent.html',
+            templateUrl: 'partials/aaModalContent.html',
             controller: 'aaModalController',
             resolve: {
                 scrumEvent: function () {
