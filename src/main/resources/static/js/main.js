@@ -94,7 +94,7 @@ app.controller('aaController',  function($scope, $uibModal) {
         },
         'tdd': {
             'title': 'Test Driven Development',
-            'description': 'Test driven development is a software development process where work is completed in a cycle.  It begins with writing a test, which fails, then writing just enough code to make it pass and repeat.'
+            'description': 'Test driven development is a software development process where work is completed in a cycle. It begins with writing a test, which fails, continuing with writing just enough code to make the test pass, then refactoring the code to improve its design, meaning making a few steps of tiny changes in source code each of which still passes the test. This cycle is then repeated.'
         },
         'sprintReview': {
             'title': 'Sprint Review',

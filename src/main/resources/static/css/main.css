@@ -94,7 +94,7 @@ header{
 }
 #subtitle{
     font-weight:bold;
-    font-size:1.5em;
+    font-size:1.6em;
 }
 
 .tools{
@@ -126,21 +126,46 @@ header{
 }
 
 /*=================landing page basic looking mobile===========================================================*/
-@media screen and (max-width: 480px) {
+
+@media screen  and (max-width: 479px) {
     .tool{
         height:auto;
         padding:5px;
+        font-size: 0.75em;
     }
 
     #login{
-        width: 70px;
+        width: 60px;
         height:30px;
         opacity:0.8;
     }
 
     #subtitle{
         font-weight:bold;
-        font-size:0.9em;
+        font-size:0.95em;
     }
 }
+
+@media screen and (min-width: 480px) and (max-width: 779px) {
+    #login{
+        width: 100px;
+        height:40px;
+        opacity:0.8;
+    }
+    #subtitle{
+    font-weight:bold;
+    font-size:1.4em;
+}
+
+
+}
+@media screen and (min-width: 780px) and (max-width: 979px) {
+    .tool{
+        height:auto;
+        padding:5px;
+        font-size:0.85em;
+    }
+
+}
+
 
