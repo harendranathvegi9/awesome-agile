@@ -1,5 +1,25 @@
 package org.awesomeagile.integrations.hackpad;
 
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
@@ -25,6 +45,11 @@ public class RestTemplateHackpadClient implements HackpadClient {
     private final String baseUrl;
     private final RestTemplate restTemplate;
 
+    /**
+     * Create an instance of the RestTemplate based Hackpad Client
+     * @param restTemplate A RestTemplate instance
+     * @param baseUrl The base URL the client should use for API calls
+     */
     @Autowired
     public RestTemplateHackpadClient(
         @Hackpad RestTemplate restTemplate,
@@ -61,10 +86,19 @@ public class RestTemplateHackpadClient implements HackpadClient {
         }
     }
 
+    /**
+     * An object to represent status responses for Hackpad API calls
+     * @author phheller
+     *
+     */
     public static class HackpadStatus {
         @JsonProperty
         private boolean success;
 
+        /**
+         * Indicate call success
+         * @return True on a successful call, false otherwise
+         */
         public boolean isSuccess() {
             return success;
         }

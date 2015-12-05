@@ -1,8 +1,26 @@
 package org.awesomeagile.integrations.hackpad;
 
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -25,7 +43,7 @@ public class HackpadClientTest {
     private MockRestServiceServer mockServer;
     private RestTemplate restTemplate;
     private RestTemplateHackpadClient client;
-    
+
     public HackpadClientTest() {
         // TODO Auto-generated constructor stub
         restTemplate = new RestTemplate();
@@ -55,7 +73,7 @@ public class HackpadClientTest {
         String res = client.getHackpad(new PadIdentity("12345"));
         assertEquals("<html>works!</html>", res);
     }
-    
+
     @Test
     public void testCreateHackpad() {
         mockServer.expect(requestTo("http://test/api/1.0/pad/create"))
@@ -63,7 +81,7 @@ public class HackpadClientTest {
         .andExpect(header(HTTP.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE))
         .andExpect(content().string("The Title"))
         .andRespond(withSuccess("{\"padId\":\"C0E68BD495E9\"}", MediaType.APPLICATION_JSON));
-        
+
         PadIdentity id = client.createHackpad("The Title");
         assertEquals("C0E68BD495E9", id.getPadId());
     }

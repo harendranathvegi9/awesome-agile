@@ -48,6 +48,22 @@ $(cat << EOF | sed s/%%ENV%%/$1/g
                 {
                     "name": "SPRING_SOCIAL_GOOGLE_SECRET",
                     "value": "\${AWS_%%ENV%%_GOOGLE_SECRET}"
+                },
+                {
+                    "name": "HACKPAD_URL",
+                    "value": "\${AWS_%%ENV%%_HACKPAD_URL}"
+                },
+                {
+                    "name": "HACKPAD_TEMPLATES_DEFNREADY",
+                    "value": "\${AWS_%%ENV%%_HACKPAD_TEMPLATES_DEFNREADY}"
+                },
+                {
+                    "name": "HACKPAD_CLIENT_ID",
+                    "value": "\${AWS_%%ENV%%_HACKPAD_CLIENT_ID}"
+                },
+                {
+                    "name": "HACKPAD_CLIENT_SECRET",
+                    "value": "\${AWS_%%ENV%%_HACKPAD_CLIENT_SECRET}"
                 }
             ]
         }
