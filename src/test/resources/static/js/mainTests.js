@@ -17,14 +17,15 @@
  * limitations under the License.
  * ------------------------------------------------------------------------------------------------
  */
-describe("landing page", function() {
+describe("awesome agile", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, authService, documentsService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, $window, authService, documentsService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, _authService_, _documentsService_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _$window_, _authService_, _documentsService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
+        $window = _$window_;
         authService = _authService_;
         documentsService = _documentsService_;
         httpLocalBackend = $httpBackend;
@@ -382,7 +383,9 @@ describe("landing page", function() {
         it('should call the documentsService createDefReady function when createDefReady is executed', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
                 $scope: $scope,
+                $window: $window,
                 documentsService: documentsService
             });
 
@@ -391,6 +394,23 @@ describe("landing page", function() {
             $scope.createDefReady();
 
             expect(documentsService.createDefReady).toHaveBeenCalled();
+        });
+
+        it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
+            var $scope = $rootScope.$new();
+            $scope.defReady = 'https://hackpad.com/someid';
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService
+            });
+
+            spyOn($window, "open");
+
+            $scope.viewDefReady();
+
+            expect($window.open).toHaveBeenCalledWith($scope.defReady, '_blank');
         });
     });
 });

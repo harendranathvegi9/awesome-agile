@@ -169,12 +169,5 @@ header{
 }
 
 .action {
-    color: #337ab7;
     float: right;
-    font-size: 18px;
-}
-
-.action:hover {
-    color: #0b97c4;
-    cursor: pointer;
 }

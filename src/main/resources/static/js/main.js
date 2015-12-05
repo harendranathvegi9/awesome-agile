@@ -228,8 +228,15 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 });
 
-app.controller('aaToolsCtrl', function ($scope, documentsService) {
+app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService) {
     $scope.createDefReady = function () {
         documentsService.createDefReady();
+        $scope.defReady = $rootScope.documents.defready;
+    };
+
+    $scope.viewDefReady = function () {
+        if ($scope.defReady) {
+            $window.open($scope.defReady, '_blank');
+        }
     };
 });
