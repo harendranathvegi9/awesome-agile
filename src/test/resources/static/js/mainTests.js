@@ -20,12 +20,13 @@
 describe("landing page", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, authService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, authService, documentsService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, _authService_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _authService_, _documentsService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         authService = _authService_;
+        documentsService = _documentsService_;
         httpLocalBackend = $httpBackend;
 
         uibModalMock = {
@@ -122,8 +123,6 @@ describe("landing page", function() {
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(true);
             });
@@ -136,7 +135,6 @@ describe("landing page", function() {
             var httpResponse = {};
             httpLocalBackend.expectGET(url).respond(401, httpResponse);
 
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(false);
             });
@@ -149,9 +147,52 @@ describe("landing page", function() {
             var httpResponse = null;
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(false);
+            });
+
+            httpLocalBackend.flush();
+        });
+    });
+
+    describe('documentsService', function () {
+        it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
+            var url = '/api/hackpad/defready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBe(httpResponse.url);
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
+            var url = '/api/hackpad/defready';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
+            var url = '/api/hackpad/defready';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(401, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBeUndefined();
             });
 
             httpLocalBackend.flush();
@@ -334,6 +375,22 @@ describe("landing page", function() {
             });
 
             expect($scope.slides[3].title).toBe('Travis CI');
+        });
+    });
+
+    describe('aaToolsCtrl', function () {
+        it('should call the documentsService createDefReady function when createDefReady is executed', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $scope: $scope,
+                documentsService: documentsService
+            });
+
+            spyOn(documentsService, "createDefReady");
+
+            $scope.createDefReady();
+
+            expect(documentsService.createDefReady).toHaveBeenCalled();
         });
     });
 });
