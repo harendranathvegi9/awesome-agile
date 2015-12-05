@@ -28,8 +28,8 @@
     <div class="tools row" ng-controller="aaToolsCtrl">
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfReady }}" popover-trigger="mouseenter">
             <span class="glyphicon glyphicon-open"></span> Definition of Ready</span>
-            <button type="button" class="btn btn-warning btn-xs action" ng-click="createDefReady()" ng-hide="defReady">Create</button>
-            <button type="button" class="btn btn-success btn-xs action" ng-click="viewDefReady()" ng-show="defReady">View</button>
+            <button type="button" class="btn btn-warning btn-xs action" ng-click="createDefReady()" ng-hide="defready">Create</button>
+            <button type="button" class="btn btn-success btn-xs action" ng-click="viewDefReady()" ng-show="defready">View</button>
         </div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.userStories }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-user"></span> User Stories</div>

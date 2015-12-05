@@ -50,6 +50,31 @@ app.factory('authService', function ($rootScope, $http, $q) {
 
 });
 
+app.factory('dashboardService', function ($rootScope, $http, $q) {
+
+    var dashboardService = {};
+
+    dashboardService.getInfo = function () {
+        var deferred = $q.defer();
+
+        $http.get('/api/dashboard').then(function (response) {
+            if (response.data.documents) {
+                $rootScope.documents = response.data.documents;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+
+        return deferred.promise;
+    };
+
+    return dashboardService;
+
+});
+
 app.factory('documentsService', function ($rootScope, $http, $q) {
 
     $rootScope.documents = {};
@@ -228,15 +253,24 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 });
 
-app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService) {
+app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
+
+    var init = function () {
+        dashboardService.getInfo().then(function () {
+            $scope.defready = $rootScope.documents.defready;
+        });
+    };
+
+    init();
+
     $scope.createDefReady = function () {
         documentsService.createDefReady();
-        $scope.defReady = $rootScope.documents.defready;
+        $scope.defready = $rootScope.documents.defready;
     };
 
     $scope.viewDefReady = function () {
-        if ($scope.defReady) {
-            $window.open($scope.defReady, '_blank');
+        if ($scope.defready) {
+            $window.open($scope.defready, '_blank');
         }
     };
 });

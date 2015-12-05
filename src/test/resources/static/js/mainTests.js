@@ -20,13 +20,14 @@
 describe("awesome agile", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, $window, authService, documentsService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, $window, authService, documentsService, dashboardService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, _$window_, _authService_, _documentsService_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _$window_, _authService_, _documentsService_, _dashboardService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         $window = _$window_;
         authService = _authService_;
+        dashboardService = _dashboardService_;
         documentsService = _documentsService_;
         httpLocalBackend = $httpBackend;
 
@@ -194,6 +195,52 @@ describe("awesome agile", function() {
 
             documentsService.createDefReady().then(function () {
                 expect($rootScope.documents.defready).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
+    });
+
+    describe('dashboardService', function () {
+        it('should add the returned documents to the rootScope on successful GET to /api/dashboard with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual(httpResponse.documents);
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT add any documents to the rootScope on successful GET to /api/dashboard with an improper response with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual({});
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT change the rootSCope on a failed GET to the /api/dashboard with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectGET(url).respond(401, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual({});
             });
 
             httpLocalBackend.flush();
@@ -380,13 +427,38 @@ describe("awesome agile", function() {
     });
 
     describe('aaToolsCtrl', function () {
+        it('should call the dashboard service on init and set any documents to the scope', function () {
+            var $scope = $rootScope.$new();
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            httpLocalBackend.flush();
+
+            expect($scope.defready).toBe(httpResponse.documents.defready);
+        });
+
         it('should call the documentsService createDefReady function when createDefReady is executed', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
-                documentsService: documentsService
+                documentsService: documentsService,
+                dashboardService: dashboardService
             });
 
             spyOn(documentsService, "createDefReady");
@@ -398,19 +470,20 @@ describe("awesome agile", function() {
 
         it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
             var $scope = $rootScope.$new();
-            $scope.defReady = 'https://hackpad.com/someid';
+            $scope.defready = 'https://hackpad.com/someid';
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
-                documentsService: documentsService
+                documentsService: documentsService,
+                dashboardService: dashboardService
             });
 
             spyOn($window, "open");
 
             $scope.viewDefReady();
 
-            expect($window.open).toHaveBeenCalledWith($scope.defReady, '_blank');
+            expect($window.open).toHaveBeenCalledWith($scope.defready, '_blank');
         });
     });
 });
