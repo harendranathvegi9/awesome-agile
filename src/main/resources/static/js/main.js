@@ -266,6 +266,9 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsSe
     $scope.createDefReady = function () {
         $scope.defReadyLoading = true;
         documentsService.createDefReady().then(function () {
+            if ($rootScope.documents && $rootScope.documents.defready) {
+                $window.open($rootScope.documents.defready, '_blank');
+            }
             $scope.defReadyLoading = false;
         });
     };
