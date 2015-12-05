@@ -50,6 +50,34 @@ app.factory('authService', function ($rootScope, $http, $q) {
 
 });
 
+app.factory('documentsService', function ($rootScope, $http, $q) {
+
+    $rootScope.documents = {};
+
+    var documentsService = {};
+
+    documentsService.createDefReady = function () {
+        var deferred = $q.defer();
+
+        var request = {};
+        $http.post('/api/hackpad/defready', request).then(function (response) {
+            if (response.data) {
+                $rootScope.documents.defready = response.data.url;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+
+        return deferred.promise;
+    };
+
+    return documentsService;
+
+});
+
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
@@ -200,8 +228,8 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 });
 
-app.controller('aaToolsCtrl', function ($scope) {
-    $scope.createHackpad = function () {
-        console.log('creating hackpad');
+app.controller('aaToolsCtrl', function ($scope, documentsService) {
+    $scope.createDefReady = function () {
+        documentsService.createDefReady();
     };
 });
