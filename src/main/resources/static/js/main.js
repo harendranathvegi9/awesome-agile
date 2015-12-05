@@ -199,3 +199,9 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
     }
 
 });
+
+app.controller('aaToolsCtrl', function ($scope) {
+    $scope.createHackpad = function () {
+        console.log('creating hackpad');
+    };
+});
