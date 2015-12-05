@@ -24,16 +24,20 @@ import java.util.Objects;
  * @author sbelov@google.com (Stan Belov)
  */
 public class HackpadPostTest {
-
+  public static final String CLIENT_ID = "FiE4R5tmkef";
+  public static final String SECRET = "eAvjusoCwiM4jG2yL3lUWZ8C7n3IOWT8";
+  public static final String CREATE_URL = "https://hackpad.com/api/1.0/pad/create";
+  public static final String UPDATE_URL = "https://hackpad.com/api/1.0/pad/{padId}/content";
+  public static final String GET_URL = "https://hackpad.com/api/1.0/pad/{padId}/content/latest.html";
 
   @Test
   public void testCreatePage() throws Exception {
     BaseProtectedResourceDetails resource = new BaseProtectedResourceDetails();
     resource.setConsumerKey(CLIENT_ID);
     resource.setSharedSecret(new SharedConsumerSecretImpl(SECRET));
-    resource.setAdditionalRequestHeaders(ImmutableMap.of(
-        "email", "belov.stan@gmail.com"
-    ));
+//    resource.setAdditionalRequestHeaders(ImmutableMap.of(
+//        "email", "belov.stan@gmail.com"
+//    ));
     resource.setAcceptsAuthorizationHeader(false);
     OAuthRestTemplate restTemplate = new OAuthRestTemplate(resource);
 
@@ -55,10 +59,21 @@ public class HackpadPostTest {
     assertNotNull(status);
     assertTrue(status.isSuccess());
     System.out.println(status);
-    String response = restTemplate.getForObject(OPTIONS_URL, String.class,
-        ImmutableMap.of(
-            "padId", padIdentity.getPadId()));
-    System.out.println(response);
+    String padContent = restTemplate
+        .getForObject(GET_URL, String.class, ImmutableMap.of("padId", padIdentity.getPadId()));
+    System.out.println(padContent);
+
+    updateEntity =
+        new HttpEntity<>(padContent,
+            headers);
+    status = restTemplate.postForObject(UPDATE_URL, updateEntity, HackpadStatus.class,
+        ImmutableMap.of("padId", padIdentity.getPadId()));
+    assertNotNull(status);
+    assertTrue(status.isSuccess());
+//    String response = restTemplate.getForObject(OPTIONS_URL, String.class,
+//        ImmutableMap.of(
+//            "padId", padIdentity.getPadId()));
+//    System.out.println(response);
   }
 
   private static class HackpadStatus {

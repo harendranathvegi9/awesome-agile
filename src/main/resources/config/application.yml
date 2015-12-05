@@ -27,3 +27,11 @@ endpoints:
   enabled: false
   health.enabled: true
   info.enabled: true
+
+hackpad:
+  client:
+    id: xxx
+    secret: yyy
+  url: https://hackpad.com/
+  templates:
+    defnready: 1Jw6QcU2nT3
