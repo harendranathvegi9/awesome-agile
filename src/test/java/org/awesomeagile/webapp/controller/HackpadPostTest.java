@@ -25,11 +25,6 @@ import java.util.Objects;
  */
 public class HackpadPostTest {
 
-  public static final String CLIENT_ID = "FiE4R5tmkef";
-  public static final String SECRET = "eAvjusoCwiM4jG2yL3lUWZ8C7n3IOWT8";
-  public static final String CREATE_URL = "https://hackpad.com/api/1.0/pad/create";
-  public static final String UPDATE_URL = "https://hackpad.com/api/1.0/pad/{padId}/content";
-  public static final String OPTIONS_URL = "https://hackpad.com/api/1.0/pad/{padId}/options";
 
   @Test
   public void testCreatePage() throws Exception {
