@@ -255,6 +255,8 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
 
+    $scope.defReadyLoading = false;
+
     var init = function () {
         dashboardService.getInfo();
     };
@@ -262,7 +264,10 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsSe
     init();
 
     $scope.createDefReady = function () {
-        documentsService.createDefReady();
+        $scope.defReadyLoading = true;
+        documentsService.createDefReady().then(function () {
+            $scope.defReadyLoading = false;
+        });
     };
 
     $scope.viewDefReady = function () {

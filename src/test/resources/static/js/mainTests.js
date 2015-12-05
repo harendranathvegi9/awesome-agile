@@ -20,11 +20,12 @@
 describe("awesome agile", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, $window, authService, documentsService, dashboardService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, $q, $window, authService, documentsService, dashboardService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, _$window_, _authService_, _documentsService_, _dashboardService_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _$q_, _$window_, _authService_, _documentsService_, _dashboardService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
+        $q = _$q_;
         $window = _$window_;
         authService = _authService_;
         dashboardService = _dashboardService_;
@@ -451,7 +452,7 @@ describe("awesome agile", function() {
             expect($rootScope.documents.defready).toBe(httpResponse.documents.defready);
         });
 
-        it('should call the documentsService createDefReady function when createDefReady is executed', function () {
+        it('should have the loading state of getting the definition of ready set to false by default', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
@@ -461,11 +462,69 @@ describe("awesome agile", function() {
                 dashboardService: dashboardService
             });
 
-            spyOn(documentsService, "createDefReady");
+            expect($scope.defReadyLoading).toBe(false);
+        });
+
+        it('should call the documentsService createDefReady function when createDefReady is executed and set definition of ready loading to true while in process', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
 
             $scope.createDefReady();
 
-            expect(documentsService.createDefReady).toHaveBeenCalled();
+            expect($scope.defReadyLoading).toBe(true);
+
+            httpLocalBackend.flush();
+        });
+
+        it('should call the documentsService createDefReady function when createDefReady is executed and set definition of ready loading to false on success', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefReady();
+
+            httpLocalBackend.flush();
+
+            expect($scope.defReadyLoading).toBe(false);
         });
 
         it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
