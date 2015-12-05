@@ -1,7 +1,5 @@
 package org.awesomeagile.webapp.config;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.awesomeagile.annotations.Hackpad;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
 import org.awesomeagile.model.document.PadIdentity;
@@ -11,10 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecretImpl;
 import org.springframework.security.oauth.consumer.BaseProtectedResourceDetails;
 import org.springframework.security.oauth.consumer.client.OAuthRestTemplate;
-
-import java.util.Map;
-
-import javax.inject.Named;
 
 /**
  * @author sbelov@google.com (Stan Belov)

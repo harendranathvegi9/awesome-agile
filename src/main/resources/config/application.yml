@@ -30,8 +30,8 @@ endpoints:
 
 hackpad:
   client:
-    id: xxx
-    secret: yyy
+    id:
+    secret:
   url: https://hackpad.com/
   templates:
     defnready: 1Jw6QcU2nT3
