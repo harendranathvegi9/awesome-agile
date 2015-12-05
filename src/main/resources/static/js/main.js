@@ -85,7 +85,7 @@ app.factory('documentsService', function ($rootScope, $http, $q) {
         var deferred = $q.defer();
 
         var request = {};
-        $http.post('/api/hackpad/defready', request).then(function (response) {
+        $http.post('/api/hackpad/defnready', request).then(function (response) {
             if (response.data) {
                 $rootScope.documents.defready = response.data.url;
                 deferred.resolve(true);
@@ -256,21 +256,18 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
 
     var init = function () {
-        dashboardService.getInfo().then(function () {
-            $scope.defready = $rootScope.documents.defready;
-        });
+        dashboardService.getInfo();
     };
 
     init();
 
     $scope.createDefReady = function () {
         documentsService.createDefReady();
-        $scope.defready = $rootScope.documents.defready;
     };
 
     $scope.viewDefReady = function () {
-        if ($scope.defready) {
-            $window.open($scope.defready, '_blank');
+        if ($rootScope.documents.defready) {
+            $window.open($rootScope.documents.defready, '_blank');
         }
     };
 });

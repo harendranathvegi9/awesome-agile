@@ -159,7 +159,7 @@ describe("awesome agile", function() {
 
     describe('documentsService', function () {
         it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
-            var url = '/api/hackpad/defready';
+            var url = '/api/hackpad/defnready';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
@@ -173,7 +173,7 @@ describe("awesome agile", function() {
         });
 
         it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
-            var url = '/api/hackpad/defready';
+            var url = '/api/hackpad/defnready';
             var httpResponse = {
                 foo: 'bar'
             };
@@ -187,7 +187,7 @@ describe("awesome agile", function() {
         });
 
         it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
-            var url = '/api/hackpad/defready';
+            var url = '/api/hackpad/defnready';
             var httpResponse = {
                 foo: 'bar'
             };
@@ -448,7 +448,7 @@ describe("awesome agile", function() {
 
             httpLocalBackend.flush();
 
-            expect($scope.defready).toBe(httpResponse.documents.defready);
+            expect($rootScope.documents.defready).toBe(httpResponse.documents.defready);
         });
 
         it('should call the documentsService createDefReady function when createDefReady is executed', function () {
@@ -470,7 +470,7 @@ describe("awesome agile", function() {
 
         it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
             var $scope = $rootScope.$new();
-            $scope.defready = 'https://hackpad.com/someid';
+            $rootScope.documents.defready = 'https://hackpad.com/someid';
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
@@ -483,7 +483,7 @@ describe("awesome agile", function() {
 
             $scope.viewDefReady();
 
-            expect($window.open).toHaveBeenCalledWith($scope.defready, '_blank');
+            expect($window.open).toHaveBeenCalledWith($rootScope.documents.defready, '_blank');
         });
     });
 });
