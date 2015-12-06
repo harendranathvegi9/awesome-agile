@@ -1,4 +1,4 @@
-package org.awesomeagile.model.document;
+package org.awesomeagile.webapp.page;
 
 /*
  * ================================================================================================
@@ -20,10 +20,19 @@ package org.awesomeagile.model.document;
  * ------------------------------------------------------------------------------------------------
  */
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
 /**
+ * Represents a newly created hackpad page.
+ *
  * @author sbelov@google.com (Stan Belov)
  */
-public enum DocumentType {
-  DEFINITION_OF_READY,
-  DEFINITION_OF_DONE
+public class HackpadPage {
+  @FindBy(tagName = "body")
+  private WebElement body;
+
+  public String getContent() {
+    return body.getText();
+  }
 }

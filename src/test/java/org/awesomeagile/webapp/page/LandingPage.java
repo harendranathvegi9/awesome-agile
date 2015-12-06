@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.security.testing;
+package org.awesomeagile.webapp.page;
 
 /*
  * ================================================================================================
