@@ -32,6 +32,13 @@ public class CreatedDocument {
   private final String url;
 
   /**
+   * Default constructor for JSON deserialization
+   */
+  public CreatedDocument() {
+    this(null);
+  }
+
+  /**
    * Construct a new CreatedDocument object
    * @param url The URL where the document can be found
    */

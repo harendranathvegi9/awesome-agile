@@ -20,8 +20,6 @@ package org.awesomeagile.integrations.hackpad;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.awesomeagile.model.document.PadIdentity;
-
 /**
  * @author sbelov@google.com (Stan Belov)
  */

@@ -29,7 +29,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.protocol.HTTP;
-import org.awesomeagile.model.document.PadIdentity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +44,6 @@ public class HackpadClientTest {
     private RestTemplateHackpadClient client;
 
     public HackpadClientTest() {
-        // TODO Auto-generated constructor stub
         restTemplate = new RestTemplate();
         client = new RestTemplateHackpadClient(restTemplate, "http://test");
     }

@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.security.testing.google;
+package org.awesomeagile.testing.google;
 
 /*
  * ================================================================================================

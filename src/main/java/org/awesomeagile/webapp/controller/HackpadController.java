@@ -22,9 +22,9 @@ package org.awesomeagile.webapp.controller;
 
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
+import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
-import org.awesomeagile.model.document.PadIdentity;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

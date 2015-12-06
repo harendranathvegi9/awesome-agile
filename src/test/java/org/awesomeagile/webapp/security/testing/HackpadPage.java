@@ -1,4 +1,4 @@
-package org.awesomeagile;
+package org.awesomeagile.webapp.security.testing;
 
 /*
  * ================================================================================================
@@ -20,23 +20,19 @@ package org.awesomeagile;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 /**
+ * Represents a newly created hackpad page.
+ *
  * @author sbelov@google.com (Stan Belov)
  */
-@SpringBootApplication(
-    scanBasePackages = {
-        "org.awesomeagile.webapp",
-        "org.awesomeagile.dao",
-        "org.awesomeagile.integrations",
-        "org.awesomeagile.model"})
-@EnableConfigurationProperties
-public class AwesomeAgileApplication {
+public class HackpadPage {
+  @FindBy(tagName = "body")
+  private WebElement body;
 
-  public static void main(String[] args) {
-    SpringApplication.run(AwesomeAgileApplication.class, args);
+  public String getContent() {
+    return body.getText();
   }
 }

@@ -1,4 +1,4 @@
-package org.awesomeagile.model.document;
+package org.awesomeagile.integrations.hackpad;
 
 /*
  * ================================================================================================
@@ -27,31 +27,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * An object to hold Hackpad Document Identities
- * @author sbelov@google.com (Stan Belov)
+ * An object to represent status responses for Hackpad API calls
+ * @author phheller
+ *
  */
-public class PadIdentity {
-
+public class HackpadStatus {
     @JsonProperty
-    private String padId;
+    private boolean success;
 
-    public PadIdentity() {
+    public HackpadStatus(boolean success) {
+        this.success = success;
     }
 
     /**
-     * Create an instance of PadIdentity
-     * @param padId The padId as returned by Hackpad
+     * Empty constructor for JSON deserialization
      */
-    public PadIdentity(String padId) {
-        this.padId = padId;
+    public HackpadStatus() {
     }
 
     /**
-     * Get the padId for a given document
-     * @return the padId as a String
+     * Indicate call success
+     * @return True on a successful call, false otherwise
      */
-    public String getPadId() {
-        return padId;
+    public boolean isSuccess() {
+        return success;
     }
 
     @Override
@@ -62,17 +61,17 @@ public class PadIdentity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PadIdentity that = (PadIdentity) o;
-        return Objects.equals(padId, that.padId);
+        HackpadStatus that = (HackpadStatus) o;
+        return Objects.equals(success, that.success);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(padId);
+        return Objects.hash(success);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("padId", padId).toString();
+        return MoreObjects.toStringHelper(this).add("success", success).toString();
     }
 }

@@ -23,22 +23,22 @@ package org.awesomeagile.webapp.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.ImmutableSet;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
+import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
-import org.awesomeagile.model.document.PadIdentity;
 import org.awesomeagile.model.team.User;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sbelov@google.com (Stan Belov)

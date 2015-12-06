@@ -21,8 +21,8 @@ package org.awesomeagile.webapp.config;
  */
 
 import org.awesomeagile.annotations.Hackpad;
+import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
-import org.awesomeagile.model.document.PadIdentity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

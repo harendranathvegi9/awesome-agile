@@ -20,21 +20,15 @@ package org.awesomeagile.integrations.hackpad;
  * ------------------------------------------------------------------------------------------------
  */
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.awesomeagile.annotations.Hackpad;
-import org.awesomeagile.model.document.PadIdentity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
 
 @Component
 public class RestTemplateHackpadClient implements HackpadClient {
@@ -83,46 +77,6 @@ public class RestTemplateHackpadClient implements HackpadClient {
             ImmutableMap.of("padId", padIdentity.getPadId()));
         if (!status.isSuccess()) {
             throw new RuntimeException("Failure to update a Hackpad.");
-        }
-    }
-
-    /**
-     * An object to represent status responses for Hackpad API calls
-     * @author phheller
-     *
-     */
-    public static class HackpadStatus {
-        @JsonProperty
-        private boolean success;
-
-        /**
-         * Indicate call success
-         * @return True on a successful call, false otherwise
-         */
-        public boolean isSuccess() {
-            return success;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            HackpadStatus that = (HackpadStatus) o;
-            return Objects.equals(success, that.success);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(success);
-        }
-
-        @Override
-        public String toString() {
-            return MoreObjects.toStringHelper(this).add("success", success).toString();
         }
     }
 

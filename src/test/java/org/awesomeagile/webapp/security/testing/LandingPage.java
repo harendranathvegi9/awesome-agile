@@ -34,7 +34,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class LandingPage {
 
-  private static final int TIMEOUT = 2;
+  private static final int TIMEOUT = 5;
   @FindBy(id = "login")
   private WebElement loginButton;
 
@@ -43,6 +43,12 @@ public class LandingPage {
 
   @FindBy(id = "userName")
   private WebElement userName;
+
+  @FindBy(id = "btnCreateDefReady")
+  private WebElement createDefinitionOfReadyButton;
+
+  @FindBy(id = "btnViewDefReady")
+  private WebElement viewDefinitionOfReadyButton;
 
   private final WebDriver driver;
   private final WebDriverWait wait;
@@ -60,6 +66,12 @@ public class LandingPage {
     googleButton.click();
     wait.until(ExpectedConditions.urlContains(endPoint));
     wait.until(ExpectedConditions.visibilityOf(userName));
+    return this;
+  }
+
+  public LandingPage createDefinitionOfReady() {
+    createDefinitionOfReadyButton.click();
+    wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfReadyButton));
     return this;
   }
 

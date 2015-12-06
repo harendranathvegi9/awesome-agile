@@ -22,6 +22,8 @@ package org.awesomeagile.model.document;
 
 import com.google.common.base.MoreObjects;
 
+import org.awesomeagile.integrations.hackpad.PadIdentity;
+
 import java.util.Objects;
 
 /**
