@@ -1,4 +1,4 @@
-package org.awesomeagile;
+package org.awesomeagile.error;
 
 /*
  * ================================================================================================
@@ -20,23 +20,17 @@ package org.awesomeagile;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
+ * An Exception to return 404 to HTTP clients
  * @author sbelov@google.com (Stan Belov)
  */
-@SpringBootApplication(
-    scanBasePackages = {
-        "org.awesomeagile.webapp",
-        "org.awesomeagile.dao",
-        "org.awesomeagile.integrations",
-        "org.awesomeagile.model"})
-@EnableConfigurationProperties
-public class AwesomeAgileApplication {
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
 
-  public static void main(String[] args) {
-    SpringApplication.run(AwesomeAgileApplication.class, args);
+  public ResourceNotFoundException(String message) {
+    super(message);
   }
 }

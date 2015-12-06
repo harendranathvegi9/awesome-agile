@@ -1,4 +1,4 @@
-package org.awesomeagile.webapp.security;
+package org.awesomeagile.webapp;
 
 /*
  * ================================================================================================
@@ -20,23 +20,33 @@ package org.awesomeagile.webapp.security;
  * ------------------------------------------------------------------------------------------------
  */
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
+import org.apache.commons.lang3.StringUtils;
 import org.awesomeagile.AwesomeAgileApplication;
 import org.awesomeagile.dao.testing.TestDatabase;
-import org.awesomeagile.webapp.security.SignupFunctionalTest.EnvInitializer;
-import org.awesomeagile.webapp.security.testing.LandingPage;
-import org.awesomeagile.webapp.security.testing.google.FakeGoogleServer;
-import org.awesomeagile.webapp.security.testing.google.Person;
-import org.awesomeagile.webapp.security.testing.google.Person.Email;
-import org.awesomeagile.webapp.security.testing.google.Person.Image;
-import org.awesomeagile.webapp.security.testing.google.Person.Name;
+import org.awesomeagile.integrations.hackpad.PadIdentity;
+import org.awesomeagile.testing.google.FakeGoogleServer;
+import org.awesomeagile.testing.google.Person;
+import org.awesomeagile.testing.google.Person.Email;
+import org.awesomeagile.testing.google.Person.Image;
+import org.awesomeagile.testing.google.Person.Name;
+import org.awesomeagile.testing.hackpad.FakeHackpadServer;
+import org.awesomeagile.webapp.AwesomeAgileFunctionalTest.EnvInitializer;
+import org.awesomeagile.webapp.page.HackpadPage;
+import org.awesomeagile.webapp.page.LandingPage;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -62,12 +72,16 @@ import java.util.concurrent.atomic.AtomicLong;
 @WebIntegrationTest(randomPort = true)
 @SpringApplicationConfiguration(classes = {AwesomeAgileApplication.class},
     initializers = {EnvInitializer.class})
-public class SignupFunctionalTest {
+public class AwesomeAgileFunctionalTest {
 
   private static final String DATABASE_NAME = "awesomeagile";
   private static final String CLIENT_ID = "testclient-1.google.com";
   private static final String CLIENT_SECRET = "verystrongsecret";
+  private static final String HACKPAD_CLIENT_ID = "hackpadclient";
+  private static final String HACKPAD_CLIENT_SECRET = "hackpadsecret";
   private static final String DISPLAY_NAME = "sbelov";
+  public static final String DEFINITION_OF_READY_TEMPLATE_ID = "Defnready-xyz";
+  public static final String DEFINITION_OF_READY_CONTENTS = "This is the definition of ready";
   private final AtomicLong idProvider = new AtomicLong(1);
 
   public static final class EnvInitializer implements
@@ -86,6 +100,10 @@ public class SignupFunctionalTest {
                   .put("spring.social.google.clientId", CLIENT_ID)
                   .put("spring.social.google.secret", CLIENT_SECRET)
                   .put("spring.social.google.scope", "profile email")
+                  .put("hackpad.client.id", HACKPAD_CLIENT_ID)
+                  .put("hackpad.client.secret", HACKPAD_CLIENT_SECRET)
+                  .put("hackpad.url", fakeHackpadServer.getEndpoint())
+                  .put("hackpad.templates.defnready", DEFINITION_OF_READY_TEMPLATE_ID)
                   .build()));
     }
   }
@@ -98,6 +116,9 @@ public class SignupFunctionalTest {
   @ClassRule
   public static FakeGoogleServer fakeGoogleServer = new FakeGoogleServer();
 
+  @ClassRule
+  public static FakeHackpadServer fakeHackpadServer = new FakeHackpadServer();
+
   @Value("${local.server.port}")
   private int port;
 
@@ -106,6 +127,7 @@ public class SignupFunctionalTest {
   @Before
   public void setUp() throws Exception {
     System.out.println("Fake Google OAuth2 server up at: " + fakeGoogleServer.getEndpoint());
+    System.out.println("Fake Hackpad server up at: " + fakeHackpadServer.getEndpoint());
     System.out.println("AwesomeAgile web application up at: " + getEndpoint());
     fakeGoogleServer.setClientId(CLIENT_ID);
     fakeGoogleServer.setClientSecret(CLIENT_SECRET);
@@ -119,6 +141,11 @@ public class SignupFunctionalTest {
             .setEmails(ImmutableList.of(new Email("belov.stan@gmail.com", "account")))
             .setImage(new Image("http://static.google.com/avatar.jpg"))
     );
+    fakeHackpadServer.setClientId(HACKPAD_CLIENT_ID);
+    fakeHackpadServer.setClientSecret(HACKPAD_CLIENT_SECRET);
+    fakeHackpadServer.addHackpad(
+        new PadIdentity(DEFINITION_OF_READY_TEMPLATE_ID),
+        DEFINITION_OF_READY_CONTENTS);
     driver = new HtmlUnitDriver(BrowserVersion.CHROME);
     driver.setJavascriptEnabled(true);
   }
@@ -140,6 +167,30 @@ public class SignupFunctionalTest {
     landingPage.loginWithGoogle(getEndpoint());
     assertEquals(DISPLAY_NAME, landingPage.getUserName());
     assertFalse(landingPage.isLoginButtonVisible());
+  }
+
+  @Test
+  public void testCreateDefinitionOfReady() throws Exception {
+    assertEquals(1, fakeHackpadServer.getHackpads().size());
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    landingPage.loginWithGoogle(getEndpoint());
+    assertThat(driver.getWindowHandles(), hasSize(1));
+    String firstWindow = driver.getWindowHandle();
+    landingPage.createDefinitionOfReady();
+    assertThat(driver.getWindowHandles(), hasSize(2));
+    assertEquals(2, fakeHackpadServer.getHackpads().size());
+
+    String newWindow = Iterables.getFirst(Sets.difference(
+        driver.getWindowHandles(),
+        ImmutableSet.of(firstWindow)), null);
+    driver.switchTo().window(newWindow);
+    HackpadPage hackpadPage = PageFactory.initElements(driver, HackpadPage.class);
+    assertEquals(DEFINITION_OF_READY_CONTENTS, hackpadPage.getContent());
+    String newHackpadUrl = driver.getCurrentUrl();
+    String newHackpadId = StringUtils.substringAfterLast(newHackpadUrl, "/");
+    assertNotEquals(DEFINITION_OF_READY_TEMPLATE_ID, newHackpadId);
+    String newHackpad = fakeHackpadServer.getHackpad(new PadIdentity(newHackpadId));
+    assertEquals(DEFINITION_OF_READY_CONTENTS, newHackpad);
   }
 
   private String getEndpoint() {

@@ -1,4 +1,4 @@
-package org.awesomeagile;
+package org.awesomeagile.annotations;
 
 /*
  * ================================================================================================
@@ -20,23 +20,21 @@ package org.awesomeagile;
  * ------------------------------------------------------------------------------------------------
  */
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation for specifying Hackpad-specific configuration beans and properties.
+ *
  * @author sbelov@google.com (Stan Belov)
  */
-@SpringBootApplication(
-    scanBasePackages = {
-        "org.awesomeagile.webapp",
-        "org.awesomeagile.dao",
-        "org.awesomeagile.integrations",
-        "org.awesomeagile.model"})
-@EnableConfigurationProperties
-public class AwesomeAgileApplication {
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Hackpad {
 
-  public static void main(String[] args) {
-    SpringApplication.run(AwesomeAgileApplication.class, args);
-  }
 }

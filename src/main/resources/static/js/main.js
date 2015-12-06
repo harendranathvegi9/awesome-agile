@@ -50,6 +50,59 @@ app.factory('authService', function ($rootScope, $http, $q) {
 
 });
 
+app.factory('dashboardService', function ($rootScope, $http, $q) {
+
+    var dashboardService = {};
+
+    dashboardService.getInfo = function () {
+        var deferred = $q.defer();
+
+        $http.get('/api/dashboard').then(function (response) {
+            if (response.data.documents) {
+                $rootScope.documents = response.data.documents;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+
+        return deferred.promise;
+    };
+
+    return dashboardService;
+
+});
+
+app.factory('documentsService', function ($rootScope, $http, $q) {
+
+    $rootScope.documents = {};
+
+    var documentsService = {};
+
+    documentsService.createDefReady = function () {
+        var deferred = $q.defer();
+
+        var request = {};
+        $http.post('/api/hackpad/defnready', request).then(function (response) {
+            if (response.data) {
+                $rootScope.documents.defready = response.data.url;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+
+        return deferred.promise;
+    };
+
+    return documentsService;
+
+});
+
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
@@ -198,4 +251,31 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
         slides.push(toolDescriptions.travisci);
     }
 
+});
+
+app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
+
+    $scope.defReadyLoading = false;
+
+    var init = function () {
+        dashboardService.getInfo();
+    };
+
+    init();
+
+    $scope.createDefReady = function () {
+        $scope.defReadyLoading = true;
+        documentsService.createDefReady().then(function () {
+            if ($rootScope.documents && $rootScope.documents.defready) {
+                $window.open($rootScope.documents.defready, '_blank');
+            }
+            $scope.defReadyLoading = false;
+        });
+    };
+
+    $scope.viewDefReady = function () {
+        if ($rootScope.documents.defready) {
+            $window.open($rootScope.documents.defready, '_blank');
+        }
+    };
 });
