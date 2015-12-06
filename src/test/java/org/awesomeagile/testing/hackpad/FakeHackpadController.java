@@ -3,12 +3,18 @@ package org.awesomeagile.testing.hackpad;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.awesomeagile.integrations.hackpad.HackpadStatus;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
@@ -38,14 +44,24 @@ class FakeHackpadController {
       method = RequestMethod.GET,
       produces = MediaType.TEXT_HTML_VALUE)
   @ResponseBody
-  public String getHackpad(@PathVariable("padId") String padId) {
+  public String getHackpad(
+      @PathVariable("padId") String padId,
+      @RequestParam("oauth_consumer_key") String key) {
+    if (!clientId.equals(key)) {
+      throw new BadCredentialsException("Invalid client ID: " + key);
+    }
     return hackpads.get(new PadIdentity(padId));
   }
 
   @RequestMapping(value = "/api/1.0/pad/create", method = RequestMethod.POST,
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody
-  public PadIdentity createHackpad(@RequestBody String content) {
+  public PadIdentity createHackpad(
+      @RequestBody String content,
+      @RequestParam("oauth_consumer_key") String key) {
+    if (!clientId.equals(key)) {
+      throw new BadCredentialsException("Invalid client ID: " + key);
+    }
     PadIdentity padIdentity = new PadIdentity(RandomStringUtils.randomAlphanumeric(8));
     hackpads.put(padIdentity, content);
     return padIdentity;
@@ -59,13 +75,23 @@ class FakeHackpadController {
   @ResponseBody
   public HackpadStatus updateHackpad(
       @PathVariable("padId") String padId,
-      @RequestBody String content) {
+      @RequestBody String content,
+      @RequestParam("oauth_consumer_key") String key) {
+    if (!clientId.equals(key)) {
+      throw new BadCredentialsException("Invalid client ID: " + key);
+    }
     PadIdentity padIdentity = new PadIdentity(padId);
     if (!hackpads.containsKey(padIdentity)) {
       return new HackpadStatus(false);
     }
     hackpads.put(padIdentity, content);
     return new HackpadStatus(true);
+  }
+
+  @ResponseBody
+  @ExceptionHandler({AuthenticationException.class})
+  public ResponseEntity<String> handleAuthenticationException(AuthenticationException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
   }
 
   public FakeHackpadController setClientId(String clientId) {
