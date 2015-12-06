@@ -17,15 +17,19 @@
  * limitations under the License.
  * ------------------------------------------------------------------------------------------------
  */
-describe("landing page", function() {
+describe("awesome agile", function() {
     beforeEach(module('awesome-agile'));
 
-    var $controller, $rootScope, authService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
+    var $controller, $rootScope, $q, $window, authService, documentsService, dashboardService, httpLocalBackend, uibModalMock, uibModalInstanceMock;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_, _authService_, $httpBackend){
+    beforeEach(inject(function(_$controller_, _$rootScope_, _$q_, _$window_, _authService_, _documentsService_, _dashboardService_, $httpBackend){
         $controller = _$controller_;
         $rootScope = _$rootScope_;
+        $q = _$q_;
+        $window = _$window_;
         authService = _authService_;
+        dashboardService = _dashboardService_;
+        documentsService = _documentsService_;
         httpLocalBackend = $httpBackend;
 
         uibModalMock = {
@@ -122,8 +126,6 @@ describe("landing page", function() {
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(true);
             });
@@ -136,7 +138,6 @@ describe("landing page", function() {
             var httpResponse = {};
             httpLocalBackend.expectGET(url).respond(401, httpResponse);
 
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(false);
             });
@@ -149,9 +150,98 @@ describe("landing page", function() {
             var httpResponse = null;
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var $scope = {};
             authService.isAuthed().then(function (result) {
                 expect(result).toEqual(false);
+            });
+
+            httpLocalBackend.flush();
+        });
+    });
+
+    describe('documentsService', function () {
+        it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBe(httpResponse.url);
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(401, httpResponse);
+
+            documentsService.createDefReady().then(function () {
+                expect($rootScope.documents.defready).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
+    });
+
+    describe('dashboardService', function () {
+        it('should add the returned documents to the rootScope on successful GET to /api/dashboard with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual(httpResponse.documents);
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT add any documents to the rootScope on successful GET to /api/dashboard with an improper response with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual({});
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT change the rootSCope on a failed GET to the /api/dashboard with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectGET(url).respond(401, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual({});
             });
 
             httpLocalBackend.flush();
@@ -334,6 +424,125 @@ describe("landing page", function() {
             });
 
             expect($scope.slides[3].title).toBe('Travis CI');
+        });
+    });
+
+    describe('aaToolsCtrl', function () {
+        it('should call the dashboard service on init and set any documents to the scope', function () {
+            var $scope = $rootScope.$new();
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            httpLocalBackend.flush();
+
+            expect($rootScope.documents.defready).toBe(httpResponse.documents.defready);
+        });
+
+        it('should have the loading state of getting the definition of ready set to false by default', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            expect($scope.defReadyLoading).toBe(false);
+        });
+
+        it('should call the documentsService createDefReady function when createDefReady is executed and set definition of ready loading to true while in process', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefReady();
+
+            expect($scope.defReadyLoading).toBe(true);
+
+            httpLocalBackend.flush();
+        });
+
+        it('should call the documentsService createDefReady function when createDefReady is executed and set definition of ready loading to false on success', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    defready: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/defnready';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefReady();
+
+            httpLocalBackend.flush();
+
+            expect($scope.defReadyLoading).toBe(false);
+        });
+
+        it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
+            var $scope = $rootScope.$new();
+            $rootScope.documents.defready = 'https://hackpad.com/someid';
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            spyOn($window, "open");
+
+            $scope.viewDefReady();
+
+            expect($window.open).toHaveBeenCalledWith($rootScope.documents.defready, '_blank');
         });
     });
 });
