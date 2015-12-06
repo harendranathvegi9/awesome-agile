@@ -27,3 +27,12 @@ endpoints:
   enabled: false
   health.enabled: true
   info.enabled: true
+
+# hackpad integration placeholders for testing
+hackpad:
+  client:
+    id: some_client_id
+    secret: some_client_secret
+  url: https://some-hackpad-site/
+  templates:
+    defnready: some-template-padId
