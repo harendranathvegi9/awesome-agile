@@ -125,3 +125,16 @@ could handle in sprint 1 and we didn't have any stories that we could
 call done according to our definition of done. Sprint 2 is focused on
 finished up the backlog items started in sprint 1, making them meet
 our definition of done so that we can close them out.
+
+#### Retrospective
+
+The sprint 2 retrospective document is
+[here](https://hackpad.com/Retrospective-2-KAJDeNuvZjI).
+
+### Sprint 3
+
+#### Goal
+
+Add an integration with Hackpad to facilitate creation of Definition of Ready
+and Definition of Done pages, and persist links to those pages for further
+modification and review.
