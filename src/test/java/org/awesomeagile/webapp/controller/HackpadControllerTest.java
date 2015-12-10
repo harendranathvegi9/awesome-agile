@@ -126,5 +126,11 @@ public class HackpadControllerTest {
     public Map<PadIdentity, String> getContentByPadId() {
       return contentByPadId;
     }
+
+    @Override
+    public void createUser(String email, String name) {
+        // TODO Auto-generated method stub
+        
+    }
   }
 }

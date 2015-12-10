@@ -47,6 +47,13 @@ public interface HackpadClient {
   void updateHackpad(PadIdentity padIdentity, String content);
 
   /**
+   * Create a Hackpad user
+   * @param email The user's email address.
+   * @param name The user's name.
+   */
+  void createUser(String email, String name);
+
+  /**
    * Construct an absolute URL for a Hackpad resource
    * @param apiUrl The API path, relative to the client base URL.
    * @return The concatenation of the client base URL and the API path.

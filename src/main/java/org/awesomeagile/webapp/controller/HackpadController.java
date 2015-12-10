@@ -25,7 +25,10 @@ import org.awesomeagile.integrations.hackpad.HackpadClient;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
+import org.awesomeagile.model.team.User;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -46,6 +49,8 @@ import java.util.Map;
 public class HackpadController {
     private final Map<String, HackpadDocumentTemplate> templates;
     private final HackpadClient client;
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * Create the Hackpad controller
@@ -74,6 +79,13 @@ public class HackpadController {
         HackpadDocumentTemplate template = templates.get(documentType);
         if (template == null) {
             throw new ResourceNotFoundException("Bad document type");
+        }
+
+        User user = principal.getUser();
+        try {
+            client.createUser(user.getPrimaryEmail(), user.getDisplayName());
+        } catch (RuntimeException e) {
+            log.warn("While creating hackpad user: " + e.getMessage(), e);
         }
         PadIdentity identity = client.createHackpad(template.getTitle());
         client.updateHackpad(identity, client.getHackpad(template.getPadIdentity()));

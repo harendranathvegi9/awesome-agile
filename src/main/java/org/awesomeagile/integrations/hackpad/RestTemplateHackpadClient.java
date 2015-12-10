@@ -29,12 +29,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class RestTemplateHackpadClient implements HackpadClient {
     private static final String CREATE_URL = "/api/1.0/pad/create";
     private static final String UPDATE_URL = "/api/1.0/pad/{padId}/content";
     private static final String GET_URL = "/api/1.0/pad/{padId}/content/latest.html";
+    private static final String CREATE_USER_URL = "/api/1.0/user/create";
 
     private final String baseUrl;
     private final RestTemplate restTemplate;
@@ -85,4 +87,21 @@ public class RestTemplateHackpadClient implements HackpadClient {
         return baseUrl + apiUrl;
     }
 
+    @Override
+    public void createUser(String email, String name) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(
+                fullUrl(CREATE_USER_URL))
+                    .queryParam("name", name)
+                    .queryParam("email", email);
+
+        HackpadStatus status = restTemplate.postForObject(
+                builder.build().encode().toUri(), entity, HackpadStatus.class);
+        if (!status.isSuccess()) {
+            throw new RuntimeException("Failure to add a Hackpad user.");
+        }
+    }
 }
