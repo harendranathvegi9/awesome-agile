@@ -191,6 +191,7 @@ public class AwesomeAgileFunctionalTest {
     assertNotEquals(DEFINITION_OF_READY_TEMPLATE_ID, newHackpadId);
     String newHackpad = fakeHackpadServer.getHackpad(new PadIdentity(newHackpadId));
     assertEquals(DEFINITION_OF_READY_CONTENTS, newHackpad);
+    Thread.sleep(Long.MAX_VALUE);
   }
 
   private String getEndpoint() {

@@ -20,12 +20,25 @@ package org.awesomeagile.model.document;
  * ------------------------------------------------------------------------------------------------
  */
 
-import javax.persistence.*;
+import com.google.common.base.MoreObjects;
 
 import org.awesomeagile.model.AbstractAuditable;
 import org.awesomeagile.model.team.User;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "document", schema = "teams")
@@ -37,17 +50,22 @@ public class Document extends AbstractAuditable<Long> {
     @Column(unique = true, nullable = false, updatable = false)
     private String url;
     
-    @NotEmpty
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, updatable=false)
+    @Column(nullable = false, updatable = false)
     private DocumentType documentType;
     
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
     
     public Document() {
+    }
+
+    public Document(DocumentType documentType, String url) {
+        this.documentType = documentType;
+        this.url = url;
     }
 
     public String getUrl() {
@@ -77,4 +95,31 @@ public class Document extends AbstractAuditable<Long> {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Document document = (Document) o;
+        return Objects.equals(url, document.url)
+            && Objects.equals(documentType, document.documentType)
+            && Objects.equals(user, document.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url, documentType, user);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("url", url)
+            .add("documentType", documentType)
+            .add("user", user)
+            .toString();
+    }
 }

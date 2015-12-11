@@ -21,9 +21,16 @@ package org.awesomeagile.dao;
  */
 
 import org.awesomeagile.model.document.Document;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
 
 @Repository
 public interface DocumentRepository extends CrudRepository<Document, Long> {
+
+  @Query("select d from Document d where d.user.id = :userId")
+  Collection<Document> findAllByUserId(@Param("userId") Long userId);
 }

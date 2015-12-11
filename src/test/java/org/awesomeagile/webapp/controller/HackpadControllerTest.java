@@ -22,15 +22,20 @@ package org.awesomeagile.webapp.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableSet;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.awesomeagile.dao.DocumentRepository;
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
+import org.awesomeagile.model.document.Document;
+import org.awesomeagile.model.document.DocumentType;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
 import org.awesomeagile.model.team.User;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
@@ -45,22 +50,23 @@ import java.util.Map;
  */
 public class HackpadControllerTest {
 
-  private static final String SHINY_TEMPLATE = "shinytemplate";
   private static final String BASE_URL = "http://hackpad.org/";
   private TestHackpadClient hackpadClient;
   private HackpadController controller;
   private Map<String, HackpadDocumentTemplate> templates;
   private String shinyTemplatePadId;
+  private DocumentRepository documentRepository;
 
   @Before
   public void setUp() throws Exception {
+    documentRepository = mock(DocumentRepository.class);
     hackpadClient = new TestHackpadClient(BASE_URL);
     templates = new HashMap<>();
-    controller = new HackpadController(hackpadClient, templates);
+    controller = new HackpadController(hackpadClient, templates, documentRepository);
     shinyTemplatePadId = RandomStringUtils.randomAlphanumeric(8);
     PadIdentity padIdentity = new PadIdentity(shinyTemplatePadId);
     templates.put(
-        SHINY_TEMPLATE,
+        DocumentType.DEFINITION_OF_DONE.name(),
         new HackpadDocumentTemplate("New shiny template", padIdentity));
     hackpadClient.getContentByPadId().put(
         padIdentity,
@@ -69,14 +75,20 @@ public class HackpadControllerTest {
 
   @Test
   public void testCreateNewHackpadSuccess() throws Exception {
+    User user = new User().setPrimaryEmail("user@domain.com");
     CreatedDocument document = controller.createNewHackpad(
-        new AwesomeAgileSocialUser(new User().setPrimaryEmail("user@domain.com"), ImmutableSet.of()),
-        SHINY_TEMPLATE);
+        new AwesomeAgileSocialUser(user, ImmutableSet.of()),
+        DocumentType.DEFINITION_OF_DONE.name());
     assertNotNull(document);
     String padId = StringUtils.removeStart(document.getUrl(), BASE_URL);
     String content = hackpadClient.getContentByPadId().get(new PadIdentity(padId));
     assertNotNull(content);
     assertEquals(content, "<html><body>New and shiny document</body></html>");
+    Document expectedDocument = new Document()
+        .setUrl(document.getUrl())
+        .setDocumentType(DocumentType.DEFINITION_OF_DONE)
+        .setUser(user);
+    verify(documentRepository).save(expectedDocument);
   }
 
   @Test(expected = ResourceNotFoundException.class)
@@ -86,10 +98,20 @@ public class HackpadControllerTest {
         "other_template");
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testCreateNewHackpadClientError() throws Exception {
+    hackpadClient.setReturnNullOnCreate(true);
+    User user = new User().setPrimaryEmail("user@domain.com");
+    controller.createNewHackpad(
+        new AwesomeAgileSocialUser(user, ImmutableSet.of()),
+        DocumentType.DEFINITION_OF_DONE.name());
+  }
+
   private static class TestHackpadClient implements HackpadClient {
 
     private final String baseUrl;
     private final Map<PadIdentity, String> contentByPadId = new HashMap<>();
+    private boolean returnNullOnCreate;
 
     private TestHackpadClient(String baseUrl) {
       this.baseUrl = baseUrl;
@@ -103,8 +125,16 @@ public class HackpadControllerTest {
       return contentByPadId.get(padIdentity);
     }
 
+    public TestHackpadClient setReturnNullOnCreate(boolean returnNullOnCreate) {
+      this.returnNullOnCreate = returnNullOnCreate;
+      return this;
+    }
+
     @Override
     public PadIdentity createHackpad(String title) {
+      if (returnNullOnCreate) {
+        return null;
+      }
       PadIdentity newPadId = new PadIdentity(RandomStringUtils.randomAlphanumeric(8));
       contentByPadId.put(newPadId, title);
       return newPadId;

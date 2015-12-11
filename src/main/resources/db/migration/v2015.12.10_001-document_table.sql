@@ -24,5 +24,5 @@ CREATE TABLE "teams"."document" (
   user_id BIGINT NOT NULL REFERENCES "teams"."user" (id),
   created_date TIMESTAMPTZ NOT NULL,
   last_modified_date TIMESTAMPTZ NOT NULL,
-  UNIQUE (url)
+  UNIQUE (user_id, document_type)
 );
