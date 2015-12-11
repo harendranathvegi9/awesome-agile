@@ -20,15 +20,19 @@ package org.awesomeagile.webapp.controller;
  * ------------------------------------------------------------------------------------------------
  */
 
+import org.awesomeagile.dao.DocumentRepository;
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
+import org.awesomeagile.model.document.Document;
+import org.awesomeagile.model.document.DocumentType;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,6 +63,9 @@ public class HackpadController {
         this.templates = templates;
     }
 
+    @Autowired
+    private DocumentRepository documentRepository;
+
     /**
      * Create a Hackpad on behalf of an authenticated caller
      * @param principal The entity requesting the Hackpad creation
@@ -69,13 +76,26 @@ public class HackpadController {
      */
     @RequestMapping(method = RequestMethod.POST, path = "/api/hackpad/{doctype}")
     @ResponseBody
+    @Transactional
     public CreatedDocument createNewHackpad(@AuthenticationPrincipal AwesomeAgileSocialUser principal,
             @PathVariable("doctype") String documentType) throws MalformedURLException {
         HackpadDocumentTemplate template = templates.get(documentType);
         if (template == null) {
             throw new ResourceNotFoundException("Bad document type");
         }
+
         PadIdentity identity = client.createHackpad(template.getTitle());
+        if (identity == null)
+            throw new RuntimeException("unknown error creating hackpad template " + template.getTitle());
+
+        String documentUrl = client.fullUrl(identity.getPadId());
+
+        Document doc = new Document();
+        doc.setUser(principal.getUser());
+        doc.setUrl(documentUrl);
+        doc.setDocumentType(DocumentType.valueOf(documentType));
+        documentRepository.save(doc);
+
         client.updateHackpad(identity, client.getHackpad(template.getPadIdentity()));
         return new CreatedDocument(client.fullUrl(identity.getPadId()));
     }

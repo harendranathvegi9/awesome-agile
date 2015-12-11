@@ -1,6 +1,5 @@
 package org.awesomeagile.model.team;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -8,13 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.awesomeagile.model.AbstractAuditable;
-import org.awesomeagile.model.document.Document;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -76,9 +73,6 @@ public class User extends AbstractAuditable<Long> {
   @NotNull
   @Column(nullable = false, updatable = false)
   private String authProviderUserId;
-  
-  @OneToMany(mappedBy = "user")
-  private Collection<Document> documents;
 
   public User() {
   }
@@ -174,10 +168,6 @@ public class User extends AbstractAuditable<Long> {
     return this;
   }
   
-  public Collection<Document> getDocuments() {
-      return documents;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

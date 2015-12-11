@@ -160,7 +160,7 @@ describe("awesome agile", function() {
 
     describe('documentsService', function () {
         it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
@@ -174,7 +174,7 @@ describe("awesome agile", function() {
         });
 
         it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
             };
@@ -188,7 +188,7 @@ describe("awesome agile", function() {
         });
 
         it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
             };
@@ -483,7 +483,7 @@ describe("awesome agile", function() {
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
@@ -514,7 +514,7 @@ describe("awesome agile", function() {
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };

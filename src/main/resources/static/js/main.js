@@ -85,7 +85,7 @@ app.factory('documentsService', function ($rootScope, $http, $q) {
         var deferred = $q.defer();
 
         var request = {};
-        $http.post('/api/hackpad/defnready', request).then(function (response) {
+        $http.post('/api/hackpad/DEFINITION_OF_READY', request).then(function (response) {
             if (response.data) {
                 $rootScope.documents.defready = response.data.url;
                 deferred.resolve(true);

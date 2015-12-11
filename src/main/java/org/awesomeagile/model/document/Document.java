@@ -1,12 +1,26 @@
 package org.awesomeagile.model.document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+/*
+ * ================================================================================================
+ * Awesome Agile
+ * %%
+ * Copyright (C) 2015 Mark Warren, Phillip Heller, Matt Kubej, Linghong Chen, Stanislav Belov, Qanit Al
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ------------------------------------------------------------------------------------------------
+ */
+
+import javax.persistence.*;
 
 import org.awesomeagile.model.AbstractAuditable;
 import org.awesomeagile.model.team.User;
@@ -24,6 +38,7 @@ public class Document extends AbstractAuditable<Long> {
     private String url;
     
     @NotEmpty
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable=false)
     private DocumentType documentType;
     
@@ -39,24 +54,27 @@ public class Document extends AbstractAuditable<Long> {
         return url;
     }
 
-    public void setUrl(String url) {
+    public Document setUrl(String url) {
         this.url = url;
+        return this;
     }
 
     public DocumentType getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(DocumentType documentType) {
+    public Document setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
+        return this;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public Document setUser(User user) {
         this.user = user;
+        return this;
     }
 
 }
