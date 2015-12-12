@@ -70,8 +70,16 @@ public class LandingPage {
   }
 
   public LandingPage createDefinitionOfReady() {
+    wait.until(ExpectedConditions.visibilityOf(createDefinitionOfReadyButton));
     createDefinitionOfReadyButton.click();
     wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfReadyButton));
+    return this;
+  }
+
+  public LandingPage viewDefinitionOfReady() {
+    int windowCount = driver.getWindowHandles().size();
+    viewDefinitionOfReadyButton.click();
+    wait.until(ExpectedConditions.numberOfWindowsToBe(windowCount + 1));
     return this;
   }
 
@@ -82,6 +90,20 @@ public class LandingPage {
   public boolean isLoginButtonVisible() {
     try {
       return loginButton.isDisplayed();
+    } catch (NoSuchElementException ex) {
+      return false;
+    }
+  }
+
+  public LandingPage waitForDefinitionOfReady() {
+    wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfReadyButton));
+    return this;
+  }
+
+  public boolean isDefinitionOfReadyViewable() {
+    try {
+      return viewDefinitionOfReadyButton.isDisplayed() &&
+          !createDefinitionOfReadyButton.isDisplayed();
     } catch (NoSuchElementException ex) {
       return false;
     }
