@@ -53,7 +53,7 @@ public class LandingPage {
   @FindBy(id = "btnCreateDefDone")
   private WebElement createDefinitionOfDoneButton;
 
-  @FindBy(id = "btnViewDefReady")
+  @FindBy(id = "btnViewDefDone")
   private WebElement viewDefinitionOfDoneButton;
 
   private final WebDriver driver;
@@ -84,7 +84,7 @@ public class LandingPage {
 
   public LandingPage createDefinitionOfDone() {
     wait.until(ExpectedConditions.visibilityOf(createDefinitionOfDoneButton));
-    createDefinitionOfReadyButton.click();
+    createDefinitionOfDoneButton.click();
     wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfDoneButton));
     return this;
   }
