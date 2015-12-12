@@ -145,6 +145,10 @@ public class AwesomeAgileFunctionalTest {
     fakeHackpadServer.addHackpad(
         new PadIdentity(DEFINITION_OF_READY_TEMPLATE_ID),
         DEFINITION_OF_READY_CONTENTS);
+    fakeHackpadServer.addHackpad(
+        new PadIdentity(DEFINITION_OF_DONE_TEMPLATE_ID),
+        DEFINITION_OF_DONE_CONTENTS);
+
     driver = new HtmlUnitDriver(BrowserVersion.CHROME);
     driver.setJavascriptEnabled(true);
   }
@@ -184,14 +188,14 @@ public class AwesomeAgileFunctionalTest {
 
   @Test
   public void testCreateDefinitionOfReady() throws Exception {
-    assertEquals(1, fakeHackpadServer.getHackpads().size());
+    assertEquals(2, fakeHackpadServer.getHackpads().size());
     LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
     landingPage.loginWithGoogle(getEndpoint());
     assertThat(driver.getWindowHandles(), hasSize(1));
     String firstWindow = driver.getWindowHandle();
     landingPage.createDefinitionOfReady();
     assertThat(driver.getWindowHandles(), hasSize(2));
-    assertEquals(2, fakeHackpadServer.getHackpads().size());
+    assertEquals(3, fakeHackpadServer.getHackpads().size());
 
     String newWindow = Iterables.getFirst(Sets.difference(
         driver.getWindowHandles(),
@@ -208,14 +212,14 @@ public class AwesomeAgileFunctionalTest {
 
   @Test
   public void testCreateDefinitionOfDone() throws Exception {
-    assertEquals(1, fakeHackpadServer.getHackpads().size());
+    assertEquals(2, fakeHackpadServer.getHackpads().size());
     LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
     landingPage.loginWithGoogle(getEndpoint());
     assertThat(driver.getWindowHandles(), hasSize(1));
     String firstWindow = driver.getWindowHandle();
     landingPage.createDefinitionOfDone();
     assertThat(driver.getWindowHandles(), hasSize(2));
-    assertEquals(2, fakeHackpadServer.getHackpads().size());
+    assertEquals(3, fakeHackpadServer.getHackpads().size());
 
     String newWindow = Iterables.getFirst(Sets.difference(
         driver.getWindowHandles(),
