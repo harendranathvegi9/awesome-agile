@@ -163,7 +163,7 @@ app.controller('aaController',  function($scope, $uibModal) {
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'partials/loginModal.html',
-            controller: 'loginModalController',
+            controller: 'genericModalController',
             size: 'sm'
         });
     };
@@ -205,7 +205,7 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
     };
 });
 
-app.controller('loginModalController', function ($scope, $uibModalInstance) {
+app.controller('genericModalController', function ($scope, $uibModalInstance) {
 
     $scope.close = function () {
         $uibModalInstance.close();
@@ -253,7 +253,7 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 });
 
-app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
+app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, $uibModal, documentsService, dashboardService) {
 
     $scope.dashboardLoading = true;
     $scope.defReadyLoading = false;
@@ -271,6 +271,12 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsSe
         documentsService.createDefReady().then(function () {
             if ($rootScope.documents && $rootScope.documents.DEFINITION_OF_READY) {
                 $window.open($rootScope.documents.DEFINITION_OF_READY, '_blank');
+            } else {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'partials/errorModal.html',
+                    controller: 'genericModalController'
+                });
             }
             $scope.defReadyLoading = false;
         });
