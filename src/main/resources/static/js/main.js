@@ -59,7 +59,12 @@ app.factory('dashboardService', function ($rootScope, $http, $q) {
 
         $http.get('/api/dashboard').then(function (response) {
             if (response.data.documents) {
-                $rootScope.documents.DEFINITION_OF_READY = response.data.documents.DEFINITION_OF_READY;
+                if (response.data.documents.DEFINITION_OF_READY) {
+                    $rootScope.documents.DEFINITION_OF_READY = response.data.documents.DEFINITION_OF_READY;
+                }
+                if (response.data.documents.DEFINITION_OF_DONE) {
+                    $rootScope.documents.DEFINITION_OF_DONE = response.data.documents.DEFINITION_OF_DONE;
+                }
                 deferred.resolve(true);
             } else {
                 deferred.resolve(false);
@@ -99,11 +104,27 @@ app.factory('documentsService', function ($rootScope, $http, $q) {
         return deferred.promise;
     };
 
+    documentsService.createDefDone = function() {
+        var deferred = $q.defer();
+        var request = {};
+        $http.post('/api/hackpad/DEFINITION_OF_DONE', request).then(function (response) {
+            if (response.data) {
+                $rootScope.documents.DEFINITION_OF_DONE = response.data.url;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+        return deferred.promise;
+    }
+
     return documentsService;
 
 });
 
-app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'partials/landingPage.html',
@@ -257,6 +278,7 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, $uibModal, 
 
     $scope.dashboardLoading = true;
     $scope.defReadyLoading = false;
+    $scope.defDoneLoading = false;
 
     var init = function () {
         dashboardService.getInfo().then(function () {
@@ -285,6 +307,28 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, $uibModal, 
     $scope.viewDefReady = function () {
         if ($rootScope.documents.DEFINITION_OF_READY) {
             $window.open($rootScope.documents.DEFINITION_OF_READY, '_blank');
+        }
+    };
+
+    $scope.createDefDone = function () {
+        $scope.defDoneLoading = true;
+        documentsService.createDefDone().then(function () {
+            if ($rootScope.documents && $rootScope.documents.DEFINITION_OF_DONE) {
+                $window.open($rootScope.documents.DEFINITION_OF_DONE, '_blank');
+            } else {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'partials/errorModal.html',
+                    controller: 'genericModalController'
+                });
+            }
+            $scope.defDoneLoading = false;
+        });
+    };
+
+    $scope.viewDefDone = function () {
+        if ($rootScope.documents.DEFINITION_OF_DONE) {
+            $window.open($rootScope.documents.DEFINITION_OF_DONE, '_blank');
         }
     };
 });

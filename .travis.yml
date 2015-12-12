@@ -18,3 +18,4 @@ deploy:
     script: src/scripts/deploy-prod.sh
     on:
       tags: true
+
