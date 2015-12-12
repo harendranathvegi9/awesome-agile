@@ -313,10 +313,10 @@ describe("awesome agile", function() {
         });
     });
 
-    describe('loginModalController', function () {
+    describe('genericModalController', function () {
         it('$scope.close', function () {
             var $scope = {};
-            var controller = $controller('loginModalController', {
+            var controller = $controller('genericModalController', {
                 $scope: $scope,
                 $uibModalInstance: uibModalInstanceMock
             });
@@ -443,6 +443,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -459,6 +460,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -481,6 +483,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -496,6 +499,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -509,6 +513,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -540,6 +545,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -565,6 +571,32 @@ describe("awesome agile", function() {
             expect($scope.defReadyLoading).toBe(false);
         });
 
+        it('should display an error dialog when createDefReady fails to provide to a definition of ready', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {};
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/DEFINITION_OF_READY';
+            var httpResponse = {};
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefReady();
+
+            httpLocalBackend.flush();
+
+            expect(uibModalMock.open).toHaveBeenCalled();
+        });
+
         it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
             var $scope = $rootScope.$new();
             $rootScope.documents.DEFINITION_OF_READY = 'https://hackpad.com/someid';
@@ -572,6 +604,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });

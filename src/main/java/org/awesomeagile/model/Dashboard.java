@@ -20,7 +20,6 @@ package org.awesomeagile.model;
  * ------------------------------------------------------------------------------------------------
  */
 
-
 import com.google.common.base.MoreObjects;
 
 import org.awesomeagile.model.document.DocumentType;

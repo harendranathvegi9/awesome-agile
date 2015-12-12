@@ -20,7 +20,6 @@ package org.awesomeagile.webapp.controller;
  * ------------------------------------------------------------------------------------------------
  */
 
-
 import static org.apache.commons.lang.math.RandomUtils.nextLong;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.junit.Assert.assertEquals;

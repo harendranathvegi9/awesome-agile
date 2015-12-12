@@ -22,9 +22,13 @@ package org.awesomeagile.webapp.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -44,6 +48,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -56,6 +61,7 @@ public class HackpadControllerTest {
   private Map<String, HackpadDocumentTemplate> templates;
   private String shinyTemplatePadId;
   private DocumentRepository documentRepository;
+  private static AtomicLong idProvider = new AtomicLong(1);
 
   @Before
   public void setUp() throws Exception {
@@ -75,7 +81,7 @@ public class HackpadControllerTest {
 
   @Test
   public void testCreateNewHackpadSuccess() throws Exception {
-    User user = new User().setPrimaryEmail("user@domain.com");
+    User user = createUser().setPrimaryEmail("user@domain.com");
     CreatedDocument document = controller.createNewHackpad(
         new AwesomeAgileSocialUser(user, ImmutableSet.of()),
         DocumentType.DEFINITION_OF_DONE.name());
@@ -91,17 +97,42 @@ public class HackpadControllerTest {
     verify(documentRepository).save(expectedDocument);
   }
 
+  private User createUser() {
+    User user = new User();
+    user.setId(idProvider.getAndIncrement());
+    return user;
+  }
+
+  @Test
+  public void testCreateNewHackpadExistingDocument() throws Exception {
+    User user = createUser().setPrimaryEmail("user@domain.com");
+    // Pre-create a document of the type 'Definition of ready'
+    PadIdentity originalPadIdentity = hackpadClient.createHackpad("title");
+    when(documentRepository.findAllByUserId(user.getId()))
+        .thenReturn(ImmutableList.of(new Document()
+            .setDocumentType(DocumentType.DEFINITION_OF_DONE)
+            .setUrl(hackpadClient.fullUrl(originalPadIdentity.getPadId()))));
+    CreatedDocument document = controller.createNewHackpad(
+        new AwesomeAgileSocialUser(user, ImmutableSet.of()),
+        DocumentType.DEFINITION_OF_DONE.name());
+    assertNotNull(document);
+    assertEquals(2, hackpadClient.getContentByPadId().size());
+    String returnedPadId = StringUtils.removeStart(document.getUrl(), BASE_URL);
+    assertEquals(originalPadIdentity.getPadId(), returnedPadId);
+    verify(documentRepository, never()).save(any(Document.class));
+  }
+
   @Test(expected = ResourceNotFoundException.class)
   public void testCreateNewHackpadBadDocumentType() throws Exception {
     controller.createNewHackpad(
-        new AwesomeAgileSocialUser(new User().setPrimaryEmail("user@domain.com"), ImmutableSet.of()),
+        new AwesomeAgileSocialUser(createUser().setPrimaryEmail("user@domain.com"), ImmutableSet.of()),
         "other_template");
   }
 
   @Test(expected = RuntimeException.class)
   public void testCreateNewHackpadClientError() throws Exception {
     hackpadClient.setReturnNullOnCreate(true);
-    User user = new User().setPrimaryEmail("user@domain.com");
+    User user = createUser().setPrimaryEmail("user@domain.com");
     controller.createNewHackpad(
         new AwesomeAgileSocialUser(user, ImmutableSet.of()),
         DocumentType.DEFINITION_OF_DONE.name());
