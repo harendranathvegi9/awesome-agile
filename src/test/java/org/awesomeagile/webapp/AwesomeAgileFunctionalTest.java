@@ -84,6 +84,8 @@ public class AwesomeAgileFunctionalTest {
   private static final String DISPLAY_NAME = "sbelov";
   private static final String DEFINITION_OF_READY_TEMPLATE_ID = "Defnready-xyz";
   private static final String DEFINITION_OF_READY_CONTENTS = "This is the definition of ready";
+  private static final String DEFINITION_OF_DONE_TEMPLATE_ID = "Defndone-xyz";
+  private static final String DEFINITION_OF_DONE_CONTENTS = "This is the definition of done";
   private static final AtomicLong idProvider = new AtomicLong(1);
 
   public static final class EnvInitializer implements
@@ -106,6 +108,7 @@ public class AwesomeAgileFunctionalTest {
                   .put("hackpad.client.secret", HACKPAD_CLIENT_SECRET)
                   .put("hackpad.url", fakeHackpadServer.getEndpoint())
                   .put("hackpad.templates.defnready", DEFINITION_OF_READY_TEMPLATE_ID)
+                  .put("hackpad.templates.defndone", DEFINITION_OF_DONE_TEMPLATE_ID)
                   .build()));
     }
   }
@@ -201,6 +204,30 @@ public class AwesomeAgileFunctionalTest {
     assertNotEquals(DEFINITION_OF_READY_TEMPLATE_ID, newHackpadId);
     String newHackpad = fakeHackpadServer.getHackpad(new PadIdentity(newHackpadId));
     assertEquals(DEFINITION_OF_READY_CONTENTS, newHackpad);
+  }
+
+  @Test
+  public void testCreateDefinitionOfDone() throws Exception {
+    assertEquals(1, fakeHackpadServer.getHackpads().size());
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    landingPage.loginWithGoogle(getEndpoint());
+    assertThat(driver.getWindowHandles(), hasSize(1));
+    String firstWindow = driver.getWindowHandle();
+    landingPage.createDefinitionOfDone();
+    assertThat(driver.getWindowHandles(), hasSize(2));
+    assertEquals(2, fakeHackpadServer.getHackpads().size());
+
+    String newWindow = Iterables.getFirst(Sets.difference(
+        driver.getWindowHandles(),
+        ImmutableSet.of(firstWindow)), null);
+    driver.switchTo().window(newWindow);
+    HackpadPage hackpadPage = PageFactory.initElements(driver, HackpadPage.class);
+    assertEquals(DEFINITION_OF_DONE_CONTENTS, hackpadPage.getContent());
+    String newHackpadUrl = driver.getCurrentUrl();
+    String newHackpadId = StringUtils.substringAfterLast(newHackpadUrl, "/");
+    assertNotEquals(DEFINITION_OF_DONE_TEMPLATE_ID, newHackpadId);
+    String newHackpad = fakeHackpadServer.getHackpad(new PadIdentity(newHackpadId));
+    assertEquals(DEFINITION_OF_DONE_CONTENTS, newHackpad);
   }
 
   /**

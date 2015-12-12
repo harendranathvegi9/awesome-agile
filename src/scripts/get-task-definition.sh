@@ -58,6 +58,10 @@ $(cat << EOF | sed s/%%ENV%%/$1/g
                     "value": "\${AWS_%%ENV%%_HACKPAD_TEMPLATES_DEFNREADY}"
                 },
                 {
+                    "name": "HACKPAD_TEMPLATES_DEFNDONE",
+                    "value": "\${AWS_%%ENV%%_HACKPAD_TEMPLATES_DEFNDONE}"
+                },
+                {
                     "name": "HACKPAD_CLIENT_ID",
                     "value": "\${AWS_%%ENV%%_HACKPAD_CLIENT_ID}"
                 },
