@@ -167,7 +167,7 @@ describe("awesome agile", function() {
             httpLocalBackend.expectPOST(url).respond(200, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBe(httpResponse.url);
+                expect($rootScope.documents.DEFINITION_OF_READY).toBe(httpResponse.url);
             });
 
             httpLocalBackend.flush();
@@ -181,7 +181,7 @@ describe("awesome agile", function() {
             httpLocalBackend.expectPOST(url).respond(200, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBeUndefined();
+                expect($rootScope.documents.DEFINITION_OF_READY).toBeUndefined();
             });
 
             httpLocalBackend.flush();
@@ -195,7 +195,7 @@ describe("awesome agile", function() {
             httpLocalBackend.expectPOST(url).respond(401, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBeUndefined();
+                expect($rootScope.documents.DEFINITION_OF_READY).toBeUndefined();
             });
 
             httpLocalBackend.flush();
@@ -207,7 +207,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -434,7 +434,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -449,7 +449,7 @@ describe("awesome agile", function() {
 
             httpLocalBackend.flush();
 
-            expect($rootScope.documents.defready).toBe(httpResponse.documents.defready);
+            expect($rootScope.documents.DEFINITION_OF_READY).toBe(httpResponse.documents.DEFINITION_OF_READY);
         });
 
         it('should have the loading state of getting the definition of ready set to false by default', function () {
@@ -478,7 +478,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -509,7 +509,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -529,7 +529,7 @@ describe("awesome agile", function() {
 
         it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
             var $scope = $rootScope.$new();
-            $rootScope.documents.defready = 'https://hackpad.com/someid';
+            $rootScope.documents.DEFINITION_OF_READY = 'https://hackpad.com/someid';
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
@@ -542,7 +542,7 @@ describe("awesome agile", function() {
 
             $scope.viewDefReady();
 
-            expect($window.open).toHaveBeenCalledWith($rootScope.documents.defready, '_blank');
+            expect($window.open).toHaveBeenCalledWith($rootScope.documents.DEFINITION_OF_READY, '_blank');
         });
     });
 });
