@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Return relevant details for current user for dashboard view
  * @author sbelov@google.com (Stan Belov)
  */
 @Controller
@@ -51,6 +52,13 @@ public class DashboardController {
     this.documentRepository = documentRepository;
   }
 
+  /**
+   * Return relevant details for current user as JSON document for dashboard
+   *   view
+   * @param principal the identity of the current user
+   * @return A Document object to be serialized to JSON and returned to the 
+   *   caller
+   */
   @RequestMapping(method = RequestMethod.GET, path = "/api/dashboard")
   @ResponseBody
   public Dashboard getDashboard(@AuthenticationPrincipal AwesomeAgileSocialUser principal) {
