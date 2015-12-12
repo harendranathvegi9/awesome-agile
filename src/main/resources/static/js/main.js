@@ -99,6 +99,22 @@ app.factory('documentsService', function ($rootScope, $http, $q) {
         return deferred.promise;
     };
 
+    documentsService.createDefDone = function() {
+        var deferred = $q.defer();
+        var request = {};
+        $http.post('/api/hackpad/DEFINITON_OF_DONE', request).then(function (response) {
+            if (response.data) {
+                $rootScope.documents.DEFINITION_OF_DONE = response.data.url;
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+        }, function () {
+            deferred.resolve(false);
+        });
+        return deferred.promise;
+    }
+
     return documentsService;
 
 });
@@ -279,6 +295,22 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsSe
     $scope.viewDefReady = function () {
         if ($rootScope.documents.DEFINITION_OF_READY) {
             $window.open($rootScope.documents.DEFINITION_OF_READY, '_blank');
+        }
+    };
+
+    $scope.createDefDone = function () {
+        $scope.defDoneLoading = true;
+        documentsService.createDefDone().then(function () {
+            if ($rootScope.documents && $rootScope.documents.DEFINITION_OF_DONE) {
+                $window.open($rootScope.documents.DEFINITION_OF_DONE, '_blank');
+            }
+            $scope.defDoneLoading = false;
+        });
+    };
+
+    $scope.viewDefDone = function () {
+        if ($rootScope.documents.DEFINITION_OF_DONE) {
+            $window.open($rootScope.documents.DEFINITION_OF_DONE, '_blank');
         }
     };
 });
