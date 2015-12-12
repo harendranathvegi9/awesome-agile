@@ -159,7 +159,7 @@ describe("awesome agile", function() {
     });
 
     describe('documentsService', function () {
-        it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
+        it('should set the definition of ready document within the documents object on a successful /api/hackpad/DEFINITION_OF_READY POST with a valid response', function () {
             var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
@@ -173,7 +173,7 @@ describe("awesome agile", function() {
             httpLocalBackend.flush();
         });
 
-        it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
+        it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/DEFINITION_OF_READY POST without a valid response', function () {
             var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
@@ -187,7 +187,7 @@ describe("awesome agile", function() {
             httpLocalBackend.flush();
         });
 
-        it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
+        it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/DEFINITION_OF_READY POST', function () {
             var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
@@ -200,6 +200,48 @@ describe("awesome agile", function() {
 
             httpLocalBackend.flush();
         });
+
+        it('should set the definition of done document within the documents object on a successful /api/hackpad/DEFINITION_OF_DONE POST with a valid response', function () {
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefDone().then(function () {
+                expect($rootScope.documents.DEFINITION_OF_DONE).toBe(httpResponse.url);
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of done document within the documents object on a successful /api/hackpad/DEFINITION_OF_DONE POST without a valid response', function () {
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            documentsService.createDefDone().then(function () {
+                expect($rootScope.documents.DEFINITION_OF_DONE).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
+
+        it('should NOT set the definition of done document within the documents object on a failed /api/hackpad/DEFINITION_OF_DONE POST', function () {
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {
+                foo: 'bar'
+            };
+            httpLocalBackend.expectPOST(url).respond(401, httpResponse);
+
+            documentsService.createDefDone().then(function () {
+                expect($rootScope.documents.DEFINITION_OF_DONE).toBeUndefined();
+            });
+
+            httpLocalBackend.flush();
+        });
     });
 
     describe('dashboardService', function () {
@@ -208,6 +250,21 @@ describe("awesome agile", function() {
             var httpResponse = {
                 documents: {
                     DEFINITION_OF_READY: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            dashboardService.getInfo().then(function () {
+                expect($rootScope.documents).toEqual(httpResponse.documents);
+            });
+
+            httpLocalBackend.flush();
+        });
+        it('should add the returned documents to the rootScope on successful GET to /api/dashboard with a getInfo call', function () {
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    DEFINITION_OF_DONE: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -507,6 +564,20 @@ describe("awesome agile", function() {
             expect($scope.defReadyLoading).toBe(false);
         });
 
+        it('should have the loading state of getting the definition of done set to false by default', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            expect($scope.defDoneLoading).toBe(false);
+        });
+
         it('should call the documentsService createDefReady function when createDefReady is executed and set definition of ready loading to true while in process', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
@@ -535,6 +606,38 @@ describe("awesome agile", function() {
             $scope.createDefReady();
 
             expect($scope.defReadyLoading).toBe(true);
+
+            httpLocalBackend.flush();
+        });
+
+        it('should call the documentsService createDefDone function when createDefDone is executed and set definition of done loading to true while in process', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    DEFINITION_OF_DONE: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefDone();
+
+            expect($scope.defDoneLoading).toBe(true);
 
             httpLocalBackend.flush();
         });
@@ -571,6 +674,38 @@ describe("awesome agile", function() {
             expect($scope.defReadyLoading).toBe(false);
         });
 
+        it('should call the documentsService createDefDone function when createDefDone is executed and set definition of done loading to false on success', function () {
+            var $scope = $rootScope.$new();
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    DEFINITION_OF_DONE: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {
+                url: 'http://hackpad.com/someid'
+            };
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefDone();
+
+            httpLocalBackend.flush();
+
+            expect($scope.defDoneLoading).toBe(false);
+        });
+
         it('should display an error dialog when createDefReady fails to provide to a definition of ready', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
@@ -597,9 +732,35 @@ describe("awesome agile", function() {
             expect(uibModalMock.open).toHaveBeenCalled();
         });
 
-        it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
+        it('should display an error dialog when createDefDone fails to provide to a definition of done', function () {
             var $scope = $rootScope.$new();
-            $rootScope.documents.DEFINITION_OF_READY = 'https://hackpad.com/someid';
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {};
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/DEFINITION_OF_DONE';
+            var httpResponse = {};
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefDone();
+
+            httpLocalBackend.flush();
+
+            expect(uibModalMock.open).toHaveBeenCalled();
+        });
+
+        it('should open a new tab with the definition of done when viewDefDone is executed', function () {
+            var $scope = $rootScope.$new();
+            $rootScope.documents.DEFINITION_OF_DONE = 'https://hackpad.com/someid';
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
@@ -611,9 +772,9 @@ describe("awesome agile", function() {
 
             spyOn($window, "open");
 
-            $scope.viewDefReady();
+            $scope.viewDefDone();
 
-            expect($window.open).toHaveBeenCalledWith($rootScope.documents.DEFINITION_OF_READY, '_blank');
+            expect($window.open).toHaveBeenCalledWith($rootScope.documents.DEFINITION_OF_DONE, '_blank');
         });
     });
 });
