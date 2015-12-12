@@ -255,10 +255,13 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
 
+    $scope.dashboardLoading = true;
     $scope.defReadyLoading = false;
 
     var init = function () {
-        dashboardService.getInfo();
+        dashboardService.getInfo().then(function () {
+            $scope.dashboardLoading = false;
+        });
     };
 
     init();

@@ -452,6 +452,44 @@ describe("awesome agile", function() {
             expect($rootScope.documents.DEFINITION_OF_READY).toBe(httpResponse.documents.DEFINITION_OF_READY);
         });
 
+        it('should set the dashboard loading to true by default', function () {
+            var $scope = $rootScope.$new();
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            expect($scope.dashboardLoading).toBe(true);
+        });
+
+        it('should set the dashboard loading to false upon completing the dashboard service call', function () {
+            var $scope = $rootScope.$new();
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            httpLocalBackend.flush();
+
+            expect($scope.dashboardLoading).toBe(false);
+        });
+
         it('should have the loading state of getting the definition of ready set to false by default', function () {
             var $scope = $rootScope.$new();
             var controller = $controller('aaToolsCtrl', {
