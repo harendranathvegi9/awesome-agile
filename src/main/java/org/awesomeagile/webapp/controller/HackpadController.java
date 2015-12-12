@@ -20,6 +20,8 @@ package org.awesomeagile.webapp.controller;
  * ------------------------------------------------------------------------------------------------
  */
 
+import com.google.common.collect.Maps;
+
 import org.awesomeagile.dao.DocumentRepository;
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
@@ -70,7 +72,7 @@ public class HackpadController {
     /**
      * Create a Hackpad on behalf of an authenticated caller
      * @param principal The entity requesting the Hackpad creation
-     * @param documentType The type of document the entity wishes to be created
+     * @param documentTypeValue The type of document the entity wishes to be created
      * @return A CreatedDocument instance, from which the document URL can be
      *  retrieved.
      * @throws MalformedURLException
@@ -80,10 +82,18 @@ public class HackpadController {
     @Transactional
     public CreatedDocument createNewHackpad(
         @AuthenticationPrincipal AwesomeAgileSocialUser principal,
-        @PathVariable("doctype") String documentType) throws MalformedURLException {
-        HackpadDocumentTemplate template = templates.get(documentType);
+        @PathVariable("doctype") String documentTypeValue) throws MalformedURLException {
+        HackpadDocumentTemplate template = templates.get(documentTypeValue);
         if (template == null) {
             throw new ResourceNotFoundException("Bad document type");
+        }
+
+        Map<DocumentType, Document> documentsByType = Maps.uniqueIndex(documentRepository
+            .findAllByUserId(principal.getUser().getId()), Document.GET_TYPE);
+        DocumentType type = DocumentType.valueOf(documentTypeValue);
+        Document existingDocument = documentsByType.get(type);
+        if (existingDocument != null) {
+            return new CreatedDocument(existingDocument.getUrl());
         }
 
         PadIdentity identity = client.createHackpad(template.getTitle());
@@ -98,7 +108,7 @@ public class HackpadController {
         Document doc = new Document()
             .setUser(principal.getUser())
             .setUrl(documentUrl)
-            .setDocumentType(DocumentType.valueOf(documentType));
+            .setDocumentType(type);
         documentRepository.save(doc);
 
         return new CreatedDocument(documentUrl);

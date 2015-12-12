@@ -20,6 +20,7 @@ package org.awesomeagile.model.document;
  * ------------------------------------------------------------------------------------------------
  */
 
+import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 
 import org.awesomeagile.model.AbstractAuditable;
@@ -45,6 +46,14 @@ import javax.validation.constraints.NotNull;
 @SequenceGenerator(name = "idgen", sequenceName = "teams.document_id_seq")
 @EntityListeners(AuditingEntityListener.class)
 public class Document extends AbstractAuditable<Long> {
+
+    public static Function<Document, DocumentType> GET_TYPE =
+        new Function<Document, DocumentType>() {
+        @Override
+        public DocumentType apply(Document input) {
+            return input.getDocumentType();
+        }
+    };
     
     @NotEmpty
     @Column(unique = true, nullable = false, updatable = false)
@@ -59,7 +68,7 @@ public class Document extends AbstractAuditable<Long> {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
-    
+
     public Document() {
     }
 
