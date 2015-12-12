@@ -1,5 +1,20 @@
 package org.awesomeagile.model.team;
 
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.awesomeagile.model.AbstractAuditable;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 /*
  * ================================================================================================
  * Awesome Agile
@@ -21,21 +36,6 @@ package org.awesomeagile.model.team;
  */
 
 import com.google.common.base.MoreObjects;
-
-import org.awesomeagile.model.AbstractAuditable;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author sbelov@google.com (Stan Belov)
@@ -167,7 +167,7 @@ public class User extends AbstractAuditable<Long> {
     this.authProviderUserId = authProviderUserId;
     return this;
   }
-
+  
   @Override
   public boolean equals(Object o) {
     if (this == o) {

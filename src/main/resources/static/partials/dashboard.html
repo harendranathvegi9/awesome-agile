@@ -28,9 +28,9 @@
     <div class="tools row" ng-controller="aaToolsCtrl">
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfReady }}" popover-trigger="mouseenter">
             <span class="glyphicon glyphicon-open"></span> Definition of Ready</span>
-            <button type="button" id="btnCreateDefReady" class="btn btn-warning btn-xs action" ng-disabled="defReadyLoading" ng-click="createDefReady()" ng-hide="documents.defready">Create <span ng-show="defReadyLoading" class="fa fa-refresh fa-spin"></span></button>
+            <button type="button" id="btnCreateDefReady" class="btn btn-warning btn-xs action" ng-disabled="defReadyLoading" ng-click="createDefReady()" ng-hide="documents.DEFINITION_OF_READY || dashboardLoading" ng-show="!dashboardLoading">Create <span ng-show="defReadyLoading" class="fa fa-refresh fa-spin"></span></button>
 
-            <button type="button" id="btnViewDefReady" class="btn btn-success btn-xs action" ng-click="viewDefReady()" ng-show="documents.defready">View</button>
+            <button type="button" id="btnViewDefReady" class="btn btn-success btn-xs action" ng-click="viewDefReady()" ng-show="documents.DEFINITION_OF_READY">View</button>
         </div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.userStories }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-user"></span> User Stories</div>

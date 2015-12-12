@@ -59,7 +59,7 @@ app.factory('dashboardService', function ($rootScope, $http, $q) {
 
         $http.get('/api/dashboard').then(function (response) {
             if (response.data.documents) {
-                $rootScope.documents = response.data.documents;
+                $rootScope.documents.DEFINITION_OF_READY = response.data.documents.DEFINITION_OF_READY;
                 deferred.resolve(true);
             } else {
                 deferred.resolve(false);
@@ -85,9 +85,9 @@ app.factory('documentsService', function ($rootScope, $http, $q) {
         var deferred = $q.defer();
 
         var request = {};
-        $http.post('/api/hackpad/defnready', request).then(function (response) {
+        $http.post('/api/hackpad/DEFINITION_OF_READY', request).then(function (response) {
             if (response.data) {
-                $rootScope.documents.defready = response.data.url;
+                $rootScope.documents.DEFINITION_OF_READY = response.data.url;
                 deferred.resolve(true);
             } else {
                 deferred.resolve(false);
@@ -163,7 +163,7 @@ app.controller('aaController',  function($scope, $uibModal) {
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'partials/loginModal.html',
-            controller: 'loginModalController',
+            controller: 'genericModalController',
             size: 'sm'
         });
     };
@@ -205,7 +205,7 @@ app.controller('aaModalController', function ($scope, $uibModalInstance, scrumEv
     };
 });
 
-app.controller('loginModalController', function ($scope, $uibModalInstance) {
+app.controller('genericModalController', function ($scope, $uibModalInstance) {
 
     $scope.close = function () {
         $uibModalInstance.close();
@@ -253,12 +253,15 @@ app.controller('aaToolsCarouselCtrl', function ($scope) {
 
 });
 
-app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsService, dashboardService) {
+app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, $uibModal, documentsService, dashboardService) {
 
+    $scope.dashboardLoading = true;
     $scope.defReadyLoading = false;
 
     var init = function () {
-        dashboardService.getInfo();
+        dashboardService.getInfo().then(function () {
+            $scope.dashboardLoading = false;
+        });
     };
 
     init();
@@ -266,16 +269,22 @@ app.controller('aaToolsCtrl', function ($rootScope, $scope, $window, documentsSe
     $scope.createDefReady = function () {
         $scope.defReadyLoading = true;
         documentsService.createDefReady().then(function () {
-            if ($rootScope.documents && $rootScope.documents.defready) {
-                $window.open($rootScope.documents.defready, '_blank');
+            if ($rootScope.documents && $rootScope.documents.DEFINITION_OF_READY) {
+                $window.open($rootScope.documents.DEFINITION_OF_READY, '_blank');
+            } else {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'partials/errorModal.html',
+                    controller: 'genericModalController'
+                });
             }
             $scope.defReadyLoading = false;
         });
     };
 
     $scope.viewDefReady = function () {
-        if ($rootScope.documents.defready) {
-            $window.open($rootScope.documents.defready, '_blank');
+        if ($rootScope.documents.DEFINITION_OF_READY) {
+            $window.open($rootScope.documents.DEFINITION_OF_READY, '_blank');
         }
     };
 });

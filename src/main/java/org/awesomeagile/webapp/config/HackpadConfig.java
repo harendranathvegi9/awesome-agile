@@ -22,6 +22,7 @@ package org.awesomeagile.webapp.config;
 
 import org.awesomeagile.annotations.Hackpad;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
+import org.awesomeagile.model.document.DocumentType;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -71,7 +72,7 @@ public class HackpadConfig {
    * @return An instance of HackpadDocumentTemplate that is available as a 
    *    document type for createHackpad API calls from clients
    */
-  @Bean(name = "defnready")
+  @Bean(name = "DEFINITION_OF_READY")
   public HackpadDocumentTemplate getDefinitionOfReadyTemplate() {
     return new HackpadDocumentTemplate(
         "Definition of Ready",

@@ -160,42 +160,42 @@ describe("awesome agile", function() {
 
     describe('documentsService', function () {
         it('should set the definition of ready document within the documents object on a successful /api/hackpad/defready POST with a valid response', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
             httpLocalBackend.expectPOST(url).respond(200, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBe(httpResponse.url);
+                expect($rootScope.documents.DEFINITION_OF_READY).toBe(httpResponse.url);
             });
 
             httpLocalBackend.flush();
         });
 
         it('should NOT set the definition of ready document within the documents object on a successful /api/hackpad/defready POST without a valid response', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
             };
             httpLocalBackend.expectPOST(url).respond(200, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBeUndefined();
+                expect($rootScope.documents.DEFINITION_OF_READY).toBeUndefined();
             });
 
             httpLocalBackend.flush();
         });
 
         it('should NOT set the definition of ready document within the documents object on a failed /api/hackpad/defready POST', function () {
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 foo: 'bar'
             };
             httpLocalBackend.expectPOST(url).respond(401, httpResponse);
 
             documentsService.createDefReady().then(function () {
-                expect($rootScope.documents.defready).toBeUndefined();
+                expect($rootScope.documents.DEFINITION_OF_READY).toBeUndefined();
             });
 
             httpLocalBackend.flush();
@@ -207,7 +207,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -313,10 +313,10 @@ describe("awesome agile", function() {
         });
     });
 
-    describe('loginModalController', function () {
+    describe('genericModalController', function () {
         it('$scope.close', function () {
             var $scope = {};
-            var controller = $controller('loginModalController', {
+            var controller = $controller('genericModalController', {
                 $scope: $scope,
                 $uibModalInstance: uibModalInstanceMock
             });
@@ -434,7 +434,7 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
@@ -443,13 +443,54 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
 
             httpLocalBackend.flush();
 
-            expect($rootScope.documents.defready).toBe(httpResponse.documents.defready);
+            expect($rootScope.documents.DEFINITION_OF_READY).toBe(httpResponse.documents.DEFINITION_OF_READY);
+        });
+
+        it('should set the dashboard loading to true by default', function () {
+            var $scope = $rootScope.$new();
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            expect($scope.dashboardLoading).toBe(true);
+        });
+
+        it('should set the dashboard loading to false upon completing the dashboard service call', function () {
+            var $scope = $rootScope.$new();
+
+            var url = '/api/dashboard';
+            var httpResponse = {
+                documents: {
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
+                }
+            };
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            httpLocalBackend.flush();
+
+            expect($scope.dashboardLoading).toBe(false);
         });
 
         it('should have the loading state of getting the definition of ready set to false by default', function () {
@@ -458,6 +499,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -471,6 +513,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -478,12 +521,12 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
@@ -502,6 +545,7 @@ describe("awesome agile", function() {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -509,12 +553,12 @@ describe("awesome agile", function() {
             var url = '/api/dashboard';
             var httpResponse = {
                 documents: {
-                    defready: 'http://hackpad.com/someid'
+                    DEFINITION_OF_READY: 'http://hackpad.com/someid'
                 }
             };
             httpLocalBackend.expectGET(url).respond(200, httpResponse);
 
-            var url = '/api/hackpad/defnready';
+            var url = '/api/hackpad/DEFINITION_OF_READY';
             var httpResponse = {
                 url: 'http://hackpad.com/someid'
             };
@@ -527,13 +571,40 @@ describe("awesome agile", function() {
             expect($scope.defReadyLoading).toBe(false);
         });
 
-        it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
+        it('should display an error dialog when createDefReady fails to provide to a definition of ready', function () {
             var $scope = $rootScope.$new();
-            $rootScope.documents.defready = 'https://hackpad.com/someid';
             var controller = $controller('aaToolsCtrl', {
                 $rootScope: $rootScope,
                 $scope: $scope,
                 $window: $window,
+                $uibModal: uibModalMock,
+                documentsService: documentsService,
+                dashboardService: dashboardService
+            });
+
+            var url = '/api/dashboard';
+            var httpResponse = {};
+            httpLocalBackend.expectGET(url).respond(200, httpResponse);
+
+            var url = '/api/hackpad/DEFINITION_OF_READY';
+            var httpResponse = {};
+            httpLocalBackend.expectPOST(url).respond(200, httpResponse);
+
+            $scope.createDefReady();
+
+            httpLocalBackend.flush();
+
+            expect(uibModalMock.open).toHaveBeenCalled();
+        });
+
+        it('should open a new tab with the definition of ready when viewDefReady is executed', function () {
+            var $scope = $rootScope.$new();
+            $rootScope.documents.DEFINITION_OF_READY = 'https://hackpad.com/someid';
+            var controller = $controller('aaToolsCtrl', {
+                $rootScope: $rootScope,
+                $scope: $scope,
+                $window: $window,
+                $uibModal: uibModalMock,
                 documentsService: documentsService,
                 dashboardService: dashboardService
             });
@@ -542,7 +613,7 @@ describe("awesome agile", function() {
 
             $scope.viewDefReady();
 
-            expect($window.open).toHaveBeenCalledWith($rootScope.documents.defready, '_blank');
+            expect($window.open).toHaveBeenCalledWith($rootScope.documents.DEFINITION_OF_READY, '_blank');
         });
     });
 });

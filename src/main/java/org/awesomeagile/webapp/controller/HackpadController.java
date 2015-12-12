@@ -20,15 +20,21 @@ package org.awesomeagile.webapp.controller;
  * ------------------------------------------------------------------------------------------------
  */
 
+import com.google.common.collect.Maps;
+
+import org.awesomeagile.dao.DocumentRepository;
 import org.awesomeagile.error.ResourceNotFoundException;
 import org.awesomeagile.integrations.hackpad.HackpadClient;
 import org.awesomeagile.integrations.hackpad.PadIdentity;
 import org.awesomeagile.model.document.CreatedDocument;
+import org.awesomeagile.model.document.Document;
+import org.awesomeagile.model.document.DocumentType;
 import org.awesomeagile.model.document.HackpadDocumentTemplate;
 import org.awesomeagile.webapp.security.AwesomeAgileSocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,37 +52,65 @@ import java.util.Map;
 public class HackpadController {
     private final Map<String, HackpadDocumentTemplate> templates;
     private final HackpadClient client;
+    private DocumentRepository documentRepository;
 
     /**
      * Create the Hackpad controller
      * @param client A Hackpad client instance, against which API calls are added.
      * @param templates A Map of Template instances for various document types
+     * @param documentRepository repository for {@link Document} objects
      */
     @Autowired
     public HackpadController(HackpadClient client,
-            Map<String, HackpadDocumentTemplate> templates) {
+        Map<String, HackpadDocumentTemplate> templates,
+        DocumentRepository documentRepository) {
         this.client = client;
         this.templates = templates;
+        this.documentRepository = documentRepository;
     }
 
     /**
      * Create a Hackpad on behalf of an authenticated caller
      * @param principal The entity requesting the Hackpad creation
-     * @param documentType The type of document the entity wishes to be created
+     * @param documentTypeValue The type of document the entity wishes to be created
      * @return A CreatedDocument instance, from which the document URL can be
      *  retrieved.
      * @throws MalformedURLException
      */
     @RequestMapping(method = RequestMethod.POST, path = "/api/hackpad/{doctype}")
     @ResponseBody
-    public CreatedDocument createNewHackpad(@AuthenticationPrincipal AwesomeAgileSocialUser principal,
-            @PathVariable("doctype") String documentType) throws MalformedURLException {
-        HackpadDocumentTemplate template = templates.get(documentType);
+    @Transactional
+    public CreatedDocument createNewHackpad(
+        @AuthenticationPrincipal AwesomeAgileSocialUser principal,
+        @PathVariable("doctype") String documentTypeValue) throws MalformedURLException {
+        HackpadDocumentTemplate template = templates.get(documentTypeValue);
         if (template == null) {
             throw new ResourceNotFoundException("Bad document type");
         }
+
+        Map<DocumentType, Document> documentsByType = Maps.uniqueIndex(documentRepository
+            .findAllByUserId(principal.getUser().getId()), Document.GET_TYPE);
+        DocumentType type = DocumentType.valueOf(documentTypeValue);
+        Document existingDocument = documentsByType.get(type);
+        if (existingDocument != null) {
+            return new CreatedDocument(existingDocument.getUrl());
+        }
+
         PadIdentity identity = client.createHackpad(template.getTitle());
+        if (identity == null) {
+            throw new RuntimeException(
+                "Unknown error creating hackpad template " + template.getTitle());
+        }
+
         client.updateHackpad(identity, client.getHackpad(template.getPadIdentity()));
-        return new CreatedDocument(client.fullUrl(identity.getPadId()));
+
+        String documentUrl = client.fullUrl(identity.getPadId());
+        Document doc = new Document()
+            .setUser(principal.getUser())
+            .setUrl(documentUrl)
+            .setDocumentType(type);
+        documentRepository.save(doc);
+
+        return new CreatedDocument(documentUrl);
     }
 }

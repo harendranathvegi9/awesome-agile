@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -61,6 +62,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -80,9 +82,9 @@ public class AwesomeAgileFunctionalTest {
   private static final String HACKPAD_CLIENT_ID = "hackpadclient";
   private static final String HACKPAD_CLIENT_SECRET = "hackpadsecret";
   private static final String DISPLAY_NAME = "sbelov";
-  public static final String DEFINITION_OF_READY_TEMPLATE_ID = "Defnready-xyz";
-  public static final String DEFINITION_OF_READY_CONTENTS = "This is the definition of ready";
-  private final AtomicLong idProvider = new AtomicLong(1);
+  private static final String DEFINITION_OF_READY_TEMPLATE_ID = "Defnready-xyz";
+  private static final String DEFINITION_OF_READY_CONTENTS = "This is the definition of ready";
+  private static final AtomicLong idProvider = new AtomicLong(1);
 
   public static final class EnvInitializer implements
       ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -133,21 +135,29 @@ public class AwesomeAgileFunctionalTest {
     fakeGoogleServer.setClientSecret(CLIENT_SECRET);
     fakeGoogleServer.setRedirectUriPrefixes(
         ImmutableList.of("http://localhost:" + port + "/"));
-    fakeGoogleServer.setPerson(
-        new Person()
-            .setId(String.valueOf(idProvider.getAndIncrement()))
-            .setDisplayName(DISPLAY_NAME)
-            .setName(new Name("Stan", "Belov"))
-            .setEmails(ImmutableList.of(new Email("belov.stan@gmail.com", "account")))
-            .setImage(new Image("http://static.google.com/avatar.jpg"))
-    );
+    fakeGoogleServer.setPerson(createUser());
     fakeHackpadServer.setClientId(HACKPAD_CLIENT_ID);
     fakeHackpadServer.setClientSecret(HACKPAD_CLIENT_SECRET);
+    fakeHackpadServer.getHackpads().clear();
     fakeHackpadServer.addHackpad(
         new PadIdentity(DEFINITION_OF_READY_TEMPLATE_ID),
         DEFINITION_OF_READY_CONTENTS);
     driver = new HtmlUnitDriver(BrowserVersion.CHROME);
     driver.setJavascriptEnabled(true);
+  }
+
+  private Person createUser() {
+    long userId = idProvider.getAndIncrement();
+    return new Person()
+        .setId(String.valueOf(userId))
+        .setDisplayName(DISPLAY_NAME)
+        .setName(new Name("Stan", "Belov"))
+        .setEmails(ImmutableList.of(new Email(emailForUser(userId), "account")))
+        .setImage(new Image("http://static.google.com/avatar.jpg"));
+  }
+
+  private static String emailForUser(long id) {
+    return String.format("user%03d@gmail.com", id);
   }
 
   /**
@@ -191,6 +201,142 @@ public class AwesomeAgileFunctionalTest {
     assertNotEquals(DEFINITION_OF_READY_TEMPLATE_ID, newHackpadId);
     String newHackpad = fakeHackpadServer.getHackpad(new PadIdentity(newHackpadId));
     assertEquals(DEFINITION_OF_READY_CONTENTS, newHackpad);
+  }
+
+  /**
+   * Tests the fact that dashboard view can retrieve links
+   * to the previously created Hackpad documents with the following steps:
+   * 1. Log in.
+   * 2. Click on create definition of ready button and wait until the view button is visible.
+   * 3. Refresh Awesome Agile window.
+   * 4. Verify that the view button is visible, and create button is invisible.
+   * 5. Click on the view button and verify the contents.
+   * @throws Exception
+   */
+  @Test
+  public void testDashboard() throws Exception {
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    landingPage.loginWithGoogle(getEndpoint());
+    assertThat(driver.getWindowHandles(), hasSize(1));
+    String firstWindow = driver.getWindowHandle();
+    landingPage.createDefinitionOfReady();
+    closeWindowsExceptFor(driver, firstWindow);
+    assertEquals(1, driver.getWindowHandles().size());
+    driver.switchTo().window(firstWindow);
+    driver.navigate().refresh();
+    landingPage.waitForDefinitionOfReady();
+    assertTrue(landingPage.isDefinitionOfReadyViewable());
+    landingPage.viewDefinitionOfReady();
+    String newWindow = Iterables.getFirst(Sets.difference(
+        driver.getWindowHandles(),
+        ImmutableSet.of(firstWindow)), null);
+    driver.switchTo().window(newWindow);
+    HackpadPage hackpadPage = PageFactory.initElements(driver, HackpadPage.class);
+    assertEquals(DEFINITION_OF_READY_CONTENTS, hackpadPage.getContent());
+    String newHackpadUrl = driver.getCurrentUrl();
+    String newHackpadId = StringUtils.substringAfterLast(newHackpadUrl, "/");
+    assertNotEquals(DEFINITION_OF_READY_TEMPLATE_ID, newHackpadId);
+  }
+
+  @Test
+  public void testDashboardReopenBrowser() throws Exception {
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    landingPage.loginWithGoogle(getEndpoint());
+    assertThat(driver.getWindowHandles(), hasSize(1));
+    landingPage.createDefinitionOfReady();
+
+    HtmlUnitDriver driverTwo = new HtmlUnitDriver(BrowserVersion.CHROME);
+    driverTwo.setJavascriptEnabled(true);
+
+    // Open a completely new browser with no cookies
+    // Verify that view button is visible for this same user,
+    // and we're able to open his Definition of ready hackpad
+    LandingPage landingPageTwo = PageFactory.initElements(driverTwo, LandingPage.class);
+    landingPageTwo.loginWithGoogle(getEndpoint());
+    landingPageTwo.waitForDefinitionOfReady();
+    assertTrue(landingPageTwo.isDefinitionOfReadyViewable());
+    landingPageTwo.viewDefinitionOfReady();
+    String newWindow = Iterables.getFirst(Sets.difference(
+        driverTwo.getWindowHandles(),
+        ImmutableSet.of(driverTwo.getWindowHandle())), null);
+    driverTwo.switchTo().window(newWindow);
+    HackpadPage hackpadPage = PageFactory.initElements(driverTwo, HackpadPage.class);
+    assertEquals(DEFINITION_OF_READY_CONTENTS, hackpadPage.getContent());
+  }
+
+  /**
+   * Verifies that different users get different dashboards with links to different documents
+   * @throws Exception
+   */
+  @Test
+  public void testSeparateDashboards() throws Exception {
+    String templateOne = DEFINITION_OF_READY_CONTENTS + "1";
+    String templateTwo = DEFINITION_OF_READY_CONTENTS + "2";
+
+    Person userOne = createUser();
+    Person userTwo = createUser();
+
+    // Create hackpad for user #1
+    fakeGoogleServer.setPerson(userOne);
+
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    landingPage.loginWithGoogle(getEndpoint());
+    fakeHackpadServer.addHackpad(
+        new PadIdentity(DEFINITION_OF_READY_TEMPLATE_ID),
+        templateOne);
+    String currentWindow = driver.getWindowHandle();
+    landingPage.createDefinitionOfReady();
+    closeWindowsExceptFor(driver, currentWindow);
+
+
+    // Log in with user #2, there should be no definition of ready on the dashboard
+    fakeGoogleServer.setPerson(userTwo);
+
+    HtmlUnitDriver driverTwo = new HtmlUnitDriver(BrowserVersion.CHROME);
+    driverTwo.setJavascriptEnabled(true);
+    LandingPage landingPageTwo = PageFactory.initElements(driverTwo, LandingPage.class);
+    landingPageTwo.loginWithGoogle(getEndpoint());
+    assertFalse(landingPageTwo.isDefinitionOfReadyViewable());
+
+    // Create another definition of ready
+    fakeHackpadServer.addHackpad(
+        new PadIdentity(DEFINITION_OF_READY_TEMPLATE_ID),
+        templateTwo);
+    String currentWindowTwo = driverTwo.getWindowHandle();
+    landingPageTwo.createDefinitionOfReady();
+    closeWindowsExceptFor(driverTwo, currentWindowTwo);
+
+    assertDefinitionOfReadyContents(driver, templateOne);
+
+    assertDefinitionOfReadyContents(driverTwo, templateTwo);
+  }
+
+  private static void closeWindowsExceptFor(HtmlUnitDriver driver, String currentWindow) {
+    Set<String> difference = ImmutableSet.copyOf(Sets.difference(
+        driver.getWindowHandles(),
+        ImmutableSet.of(currentWindow)));
+    for (String window : difference) {
+      driver.switchTo().window(window).close();
+    }
+    driver.switchTo().window(currentWindow);
+  }
+
+  private static void assertDefinitionOfReadyContents(HtmlUnitDriver driver, String contents) {
+    // Refresh the dashboard for user #1; he should have definition of ready viewable
+    LandingPage landingPage = PageFactory.initElements(driver, LandingPage.class);
+    driver.navigate().refresh();
+    String currentWindow = driver.getWindowHandle();
+    landingPage.waitForDefinitionOfReady();
+    assertTrue(landingPage.isDefinitionOfReadyViewable());
+    landingPage.viewDefinitionOfReady();
+
+    // Verify definition of ready contents for user #1
+    String newWindow = Iterables.getFirst(Sets.difference(
+        driver.getWindowHandles(),
+        ImmutableSet.of(currentWindow)), null);
+    driver.switchTo().window(newWindow);
+    HackpadPage hackpadPage = PageFactory.initElements(driver, HackpadPage.class);
+    assertEquals(contents, hackpadPage.getContent());
   }
 
   private String getEndpoint() {
