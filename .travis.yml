@@ -11,11 +11,15 @@ after_success:
 
 deploy:
   - provider: script
+    skip_cleanup: true
     script: src/scripts/deploy-test.sh
     on:
       branch: master
   - provider: script
+    skip_cleanup: true
     script: src/scripts/deploy-prod.sh
     on:
       tags: true
 
+after_script:
+  - mvn cleanup

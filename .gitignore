@@ -46,4 +46,4 @@ target/
 
 # frontend plugin stuff
 node*
-
+node_modules/
