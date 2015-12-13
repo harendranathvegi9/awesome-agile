@@ -72,7 +72,7 @@
 
 .carousel-control.tools-slider{
     color: black;
-    background-image: none; !important;
+    background-image: none !important;
 }
 
 .carousel-control .glyphicon-chevron-left, .carousel-control .icon-prev {

@@ -36,3 +36,4 @@ hackpad:
   url: https://some-hackpad-site/
   templates:
     defnready: some-template-padId
+    defndone: some-other-template-padId

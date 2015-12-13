@@ -23,4 +23,3 @@ deploy:
 
 after_script:
   - mvn cleanup
-

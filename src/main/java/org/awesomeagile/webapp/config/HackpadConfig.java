@@ -50,6 +50,9 @@ public class HackpadConfig {
   @Value("${hackpad.templates.defnready}")
   private String hackpadDefinitonOfReady;
 
+  @Value("${hackpad.templates.defndone}")
+  private String hackpadDefinitonOfDone;
+
   @Hackpad
   @Bean
   public String getHackpadBaseUrl() {
@@ -77,5 +80,18 @@ public class HackpadConfig {
     return new HackpadDocumentTemplate(
         "Definition of Ready",
         new PadIdentity(hackpadDefinitonOfReady));
+  }
+
+  /**
+   * A Document template for definition of done, that refers to an existing
+   * Hackpad document
+   * @return An instance of HackpadDocumentTemplate that is available as a 
+   *    document type for createHackpad API calls from clients
+   */
+  @Bean(name = "DEFINITION_OF_DONE")
+  public HackpadDocumentTemplate getDefinitionOfDoneTemplate() {
+    return new HackpadDocumentTemplate(
+        "Definition of Done",
+        new PadIdentity(hackpadDefinitonOfDone));
   }
 }

@@ -50,6 +50,12 @@ public class LandingPage {
   @FindBy(id = "btnViewDefReady")
   private WebElement viewDefinitionOfReadyButton;
 
+  @FindBy(id = "btnCreateDefDone")
+  private WebElement createDefinitionOfDoneButton;
+
+  @FindBy(id = "btnViewDefDone")
+  private WebElement viewDefinitionOfDoneButton;
+
   private final WebDriver driver;
   private final WebDriverWait wait;
 
@@ -76,9 +82,23 @@ public class LandingPage {
     return this;
   }
 
+  public LandingPage createDefinitionOfDone() {
+    wait.until(ExpectedConditions.visibilityOf(createDefinitionOfDoneButton));
+    createDefinitionOfDoneButton.click();
+    wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfDoneButton));
+    return this;
+  }
+
   public LandingPage viewDefinitionOfReady() {
     int windowCount = driver.getWindowHandles().size();
     viewDefinitionOfReadyButton.click();
+    wait.until(ExpectedConditions.numberOfWindowsToBe(windowCount + 1));
+    return this;
+  }
+
+  public LandingPage viewDefinitionOfDone() {
+    int windowCount = driver.getWindowHandles().size();
+    viewDefinitionOfDoneButton.click();
     wait.until(ExpectedConditions.numberOfWindowsToBe(windowCount + 1));
     return this;
   }
@@ -104,6 +124,20 @@ public class LandingPage {
     try {
       return viewDefinitionOfReadyButton.isDisplayed() &&
           !createDefinitionOfReadyButton.isDisplayed();
+    } catch (NoSuchElementException ex) {
+      return false;
+    }
+  }
+
+  public LandingPage waitForDefinitionOfDone() {
+    wait.until(ExpectedConditions.visibilityOf(viewDefinitionOfDoneButton));
+    return this;
+  }
+
+  public boolean isDefinitionOfDoneViewable() {
+    try {
+      return viewDefinitionOfDoneButton.isDisplayed() &&
+          !createDefinitionOfDoneButton.isDisplayed();
     } catch (NoSuchElementException ex) {
       return false;
     }

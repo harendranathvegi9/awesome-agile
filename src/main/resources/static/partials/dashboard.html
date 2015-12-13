@@ -32,7 +32,11 @@
 
             <button type="button" id="btnViewDefReady" class="btn btn-success btn-xs action" ng-click="viewDefReady()" ng-show="documents.DEFINITION_OF_READY">View</button>
         </div>
-        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-save"></span> Definition of Done </div>
+        <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.definitionOfDone }}" popover-trigger="mouseenter">
+            <span class="glyphicon glyphicon-save"></span> Definition of Done
+            <button type="button" id="btnCreateDefDone" class="btn btn-warning btn-xs action" ng-disabled="defDoneLoading" ng-click="createDefDone()" ng-hide="documents.DEFINITION_OF_DONE || dashboardLoading" ng-show="!dashboardLoading">Create <span ng-show="defDoneLoading" class="fa fa-refresh fa-spin"></span></button>
+            <button type="button" id="btnViewDefDone" class="btn btn-success btn-xs action" ng-click="viewDefDone()" ng-show="documents.DEFINITION_OF_DONE">View</button>
+        </div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.userStories }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-user"></span> User Stories</div>
         <div class="col-xs-6 col-sm-3 panel panel-info tool" uib-popover="{{ artifact.backlogRefinement }}" popover-trigger="mouseenter"> <span class="glyphicon glyphicon-th"></span> Backlog Refinement</div>
         <div class="col-xs-6 col-sm-3 panel col-sm-3 panel-info tool" uib-popover="{{ artifact.sourceCodeManagement }}" popover-trigger="mouseenter"><span class="glyphicon glyphicon-cog"></span> Source Code Management</div>
