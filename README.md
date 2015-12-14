@@ -94,10 +94,15 @@ platform.
 The product and sprint backlogs are managed via
 [Trello](https://trello.com/b/F8I0MYXS/awesome-agile).
 
+### Definition of Ready
+
+Our definition of ready is
+[here](https://github.com/cs71-caffeine/awesome-agile/wiki/Definition-of-Ready)
+
 ### Definition of Done
 
 Our definition of done is
-[here](https://hackpad.com/Definition-of-Done-cPORmQZISMt).
+[here](https://github.com/cs71-caffeine/awesome-agile/wiki/Definition-of-Done)
 
 ## Sprints
 
@@ -138,3 +143,9 @@ The sprint 2 retrospective document is
 Add an integration with Hackpad to facilitate creation of Definition of Ready
 and Definition of Done pages, and persist links to those pages for further
 modification and review.
+
+#### Retrospective
+
+The sprint 3 retrospective document is
+[here](https://hackpad.com/Retrospective-3-iDiwmH566CM)
+
